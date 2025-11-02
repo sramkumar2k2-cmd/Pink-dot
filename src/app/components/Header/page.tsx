@@ -67,7 +67,8 @@ export default function Header() {
     setOpenDropdown(null);
   }, [pathname]);
 
-  // Close dropdown when clicking anywhere (inside or outside), but not on menu link or toggle button
+  // Close dropdown when clicking anywhere (ins
+  // ide or outside), but not on menu link or toggle button
   useEffect(() => {
     const handleTouchStart = (event: TouchEvent) => {
       touchStartTimeRef.current = Date.now();
@@ -286,7 +287,9 @@ export default function Header() {
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? '✕' : '☰'}
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
       </div>
 

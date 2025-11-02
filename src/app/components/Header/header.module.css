@@ -5,6 +5,18 @@
   top: 0;
   z-index: 1000;
   border-bottom: 1px solid var(--button-secondary-border);
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .container {
@@ -15,6 +27,8 @@
   align-items: center;
   height: 60px;
   padding-left: 0;
+  width: 100%;
+  flex-direction: row;
 }
 
 .logo {
@@ -26,6 +40,9 @@
   padding-left: 0;
   background: transparent;
   display: inline-block;
+  order: 0 !important;
+  flex: 0 0 auto;
+  margin-right: auto;
 }
 
 .logoImage {
@@ -34,6 +51,11 @@
   width: auto;
   background: transparent;
   mix-blend-mode: normal;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover .logoImage {
+  transform: scale(1.05);
 }
 
 .nav {
@@ -47,12 +69,51 @@
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
   position: relative;
   display: flex;
   align-items: center;
   gap: 0.3rem;
   height: 45px;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #000000;
+  transition: width 0.3s ease;
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+.link:hover {
+  color: #000000;
+  transform: translateY(-2px);
+}
+
+.active {
+  color: #000000;
+  font-weight: 600;
+}
+
+.active::after {
+  width: 100%;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
 }
 
 .dropdownToggle {
@@ -65,22 +126,17 @@
   align-items: center;
   color: inherit;
   pointer-events: auto;
+  transition: transform 0.2s ease;
 }
 
 .dropdownToggle:hover {
   color: #000000;
+  transform: rotate(180deg);
 }
 
 .dropdownToggle svg {
   pointer-events: none;
-}
-
-.link:hover {
-  color: #000000;
-}
-
-.active {
-  color: #000000;
+  transition: transform 0.2s ease;
 }
 
 .dropdown {
@@ -109,14 +165,37 @@
   border-radius: 8px;
   padding: 0.5rem 0;
   margin-top: 0.5rem;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
 }
 
 .dropdownContent.dropdownOpen {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dropdown:hover .dropdownContent {
   display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  animation: fadeInDown 0.3s ease-out;
 }
 
 .dropdownLink {
@@ -157,11 +236,29 @@
 
 .mobileButton {
   display: none;
-  background: none;
-  border: none;
+  background: transparent;
+  border: 1px solid var(--button-secondary-border, #e0e0e0);
+  border-radius: 4px;
   color: #000000;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 10px 8px;
+  width: 38px;
+  height: 38px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  order: 2;
+  flex: 0 0 auto;
+}
+
+.mobileButton span {
+  width: 6px;
+  height: 6px;
+  background: #000000;
+  border-radius: 50%;
+  display: block;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
@@ -178,7 +275,20 @@
   }
 
   .mobileButton {
-    display: block;
+    display: flex !important;
+    order: 1;
+    margin-left: auto;
+  }
+  
+  .logo {
+    order: 0 !important;
+    margin-right: auto;
+  }
+  
+  .container {
+    justify-content: space-between;
+    width: 100%;
+    flex-direction: row;
   }
 
   .mobileMenu {

@@ -17,6 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Pink Dot - Modern Fashion & Lifestyle",
   description: "Discover our unique collection of thoughtfully curated items",
+  icons: {
+    icon: '/images/icon.png',
+    shortcut: '/images/icon.png',
+    apple: '/images/icon.png',
+  },
 };
 
 export default function RootLayout({

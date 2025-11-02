@@ -96,7 +96,10 @@ export default function Footer() {
           </div>
           <div className={styles.linksGrid}>
             {footerSections.map((section) => (
-              <div key={section.title} className={styles.section}>
+              <div 
+                key={section.title} 
+                className={`${styles.section} ${section.title === 'Shop' || section.title === 'Collections' ? styles.largeFontSection : ''}`}
+              >
                 <h3>{section.title}</h3>
                 <div className={styles.links}>
                   {section.links.map((link) => (
