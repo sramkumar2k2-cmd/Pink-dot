@@ -1,6 +1,6 @@
 .header {
   padding: 0.5rem 2rem;
-  background-color: #FAE7F3;
+  background-color: #F8D5E8;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -102,7 +102,7 @@
   position: absolute;
   top: 100%;
   left: -1rem;
-  background-color: #FAE7F3;
+  background-color: #F8D5E8;
   min-width: 220px;
   box-shadow: 0 8px 16px rgba(0,0,0,0.1);
   border: 1px solid var(--button-secondary-border);
@@ -187,7 +187,7 @@
     top: 90px;
     left: 0;
     right: 0;
-    background-color: #FAE7F3;
+    background-color: #F8D5E8;
     padding: 1rem;
     border-bottom: 1px solid var(--button-secondary-border);
   }
