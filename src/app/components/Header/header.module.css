@@ -25,7 +25,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  min-height: 60px;
   padding-left: 0;
   width: 100%;
   flex-direction: row;
@@ -39,23 +39,24 @@
   margin-left: 0;
   padding-left: 0;
   background: transparent;
-  display: inline-block;
+  display: flex;
+  align-items: center;
   order: 0 !important;
   flex: 0 0 auto;
   margin-right: auto;
+  height: auto;
+  overflow: hidden;
+  line-height: 0;
 }
 
 .logoImage {
   display: block;
-  height: 60px;
-  width: auto;
+  height: auto;
+  width: 160px;
+  max-width: 100%;
   background: transparent;
   mix-blend-mode: normal;
-  transition: transform 0.3s ease;
-}
-
-.logo:hover .logoImage {
-  transform: scale(1.05);
+  object-fit: contain;
 }
 
 .nav {
@@ -169,13 +170,15 @@
   transform: translateY(-10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
+  z-index: 1001;
 }
 
 .dropdownContent.dropdownOpen {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
   animation: fadeInDown 0.3s ease-out;
 }
 
@@ -191,10 +194,11 @@
 }
 
 .dropdown:hover .dropdownContent {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  display: block !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
   animation: fadeInDown 0.3s ease-out;
 }
 
@@ -237,8 +241,8 @@
 .mobileButton {
   display: none;
   background: transparent;
-  border: 1px solid var(--button-secondary-border, #e0e0e0);
-  border-radius: 4px;
+  border: none;
+  border-radius: 0;
   color: #000000;
   cursor: pointer;
   padding: 10px 8px;
@@ -250,6 +254,18 @@
   gap: 5px;
   order: 2;
   flex: 0 0 auto;
+  box-shadow: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobileButton:hover,
+.mobileButton:active,
+.mobileButton:focus {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
 }
 
 .mobileButton span {
@@ -267,7 +283,17 @@
   }
 
   .logoImage {
-    height: 80px;
+    width: 140px;
+    height: auto;
+    max-width: 100%;
+  }
+  
+  .logo {
+    height: auto;
+  }
+  
+  .container {
+    min-height: 60px;
   }
 
   .nav {
@@ -291,15 +317,37 @@
     flex-direction: row;
   }
 
+  .mobileMenuBackdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 998;
+  }
+
+  .mobileMenuBackdrop.open {
+    display: block;
+  }
+
   .mobileMenu {
     display: none;
     position: fixed;
-    top: 90px;
-    left: 0;
-    right: 0;
+    top: 92px;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-height: calc(100vh - 92px - 2rem);
     background-color: #F8D5E8;
     padding: 1rem;
-    border-bottom: 1px solid var(--button-secondary-border);
+    border: 1px solid var(--button-secondary-border);
+    border-radius: 8px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .mobileMenu.open {
@@ -338,5 +386,11 @@
   /* Hide desktop dropdown in mobile */
   .dropdown .dropdownContent {
     display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .logoImage {
+    width: 120px;
   }
 }

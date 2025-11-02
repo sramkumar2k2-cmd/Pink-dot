@@ -65,74 +65,84 @@ export default function Header() {
   // Close dropdown when route changes
   useEffect(() => {
     setOpenDropdown(null);
+    setIsMobileMenuOpen(false); // Close mobile menu on route change
   }, [pathname]);
 
-  // Close dropdown when clicking anywhere (ins
-  // ide or outside), but not on menu link or toggle button
+  // Prevent body scroll when mobile menu is open, but allow menu to scroll
   useEffect(() => {
-    const handleTouchStart = (event: TouchEvent) => {
-      touchStartTimeRef.current = Date.now();
-      lastTouchTargetRef.current = event.target as HTMLElement;
-    };
+    if (isMobileMenuOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Restore body scroll
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
 
-    const handleClickAnywhere = (event: MouseEvent) => {
-      // Ignore clicks that happen immediately after touch (mobile devices)
-      const timeSinceTouch = Date.now() - touchStartTimeRef.current;
-      if (timeSinceTouch < 300 && lastTouchTargetRef.current) {
-        // This is likely a click from a touch event, ignore it
-        const target = event.target as HTMLElement;
-        if (lastTouchTargetRef.current.contains(target) || target.contains(lastTouchTargetRef.current)) {
+    // Cleanup on unmount
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  // Close dropdown when clicking outside, but not when interacting with dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      if (openDropdown && dropdownRef.current) {
+        const target = (event.target as HTMLElement) || 
+                      (event instanceof TouchEvent && event.touches?.[0]?.target as HTMLElement);
+        
+        if (!target) return;
+        
+        // Don't close if clicking inside the dropdown
+        if (dropdownRef.current.contains(target)) {
           return;
         }
-      }
-
-      if (openDropdown) {
-        const target = event.target as HTMLElement;
-        // Check if click is on the toggle button - if so, let it handle the toggle
+        
+        // Don't close if clicking on the dropdown toggle button
         const toggleButton = target.closest('button.dropdownToggle');
         if (toggleButton) {
-          return; // Let the toggle button handle it
+          return;
         }
-        // Check if click is inside the dropdown header (menu link area) - let it handle toggle
+        
+        // Don't close if clicking on the dropdown header
         const dropdownHeader = target.closest('.dropdownHeader');
         if (dropdownHeader) {
-          // It's inside the menu link area, let it handle the toggle
           return;
         }
-        // Check if click is inside the dropdown content area - don't close on click inside
-        if (dropdownRef.current && dropdownRef.current.contains(target)) {
-          // Inside dropdown content, only close if clicking a dropdown link
-          const dropdownLink = target.closest('a.dropdownLink');
-          if (dropdownLink) {
-            setOpenDropdown(null);
-            return; // Link's onClick will also handle it, but we close here too
-          }
-          // If clicking inside dropdown but not on a link, don't close
-          return;
-        }
-        // Close only if clicking outside the dropdown
+        
+        // Close if clicking outside
         setOpenDropdown(null);
       }
     };
 
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-
+    // Only add listener when dropdown is open
     if (openDropdown) {
-      // Use a small delay to allow touch events to process first
+      // Use setTimeout to avoid immediate closure
       const timeoutId = setTimeout(() => {
-        document.addEventListener('click', handleClickAnywhere, true);
-      }, 100);
+        document.addEventListener('mousedown', handleClickOutside as EventListener);
+        document.addEventListener('touchstart', handleClickOutside as EventListener, { passive: true });
+      }, 150);
 
       return () => {
         clearTimeout(timeoutId);
-        document.removeEventListener('click', handleClickAnywhere, true);
-        document.removeEventListener('touchstart', handleTouchStart);
+        document.removeEventListener('mousedown', handleClickOutside as EventListener);
+        document.removeEventListener('touchstart', handleClickOutside as EventListener);
       };
     }
-
-    return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-    };
   }, [openDropdown]);
 
   return (
@@ -142,11 +152,11 @@ export default function Header() {
           <Image
             src="/images/logo.png"
             alt="Pink Dot"
-            width={400}
-            height={115}
+            width={160}
+            height={56}
             className={styles.logoImage}
             priority
-            style={{ height: 'auto', width: '400px' }}
+            style={{ height: 'auto', width: '160px', maxWidth: '100%' }}
           />
         </Link>
 
@@ -210,12 +220,14 @@ export default function Header() {
                   onTouchStart={(e) => {
                     // Prevent touch from bubbling up and closing dropdown
                     e.stopPropagation();
-                    // Mark this touch so clicks don't close dropdown
-                    touchStartTimeRef.current = Date.now();
-                    lastTouchTargetRef.current = e.currentTarget as HTMLElement;
+                    e.preventDefault();
                   }}
                   onTouchEnd={(e) => {
                     // Prevent touch end from bubbling
+                    e.stopPropagation();
+                  }}
+                  onMouseDown={(e) => {
+                    // Prevent mousedown from bubbling and closing dropdown
                     e.stopPropagation();
                   }}
                   onClick={(e) => {
@@ -293,6 +305,10 @@ export default function Header() {
         </button>
       </div>
 
+      <div 
+        className={`${styles.mobileMenuBackdrop} ${isMobileMenuOpen ? styles.open : ''}`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
       <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
         {/* Shop Categories */}
         <div className={styles.mobileSection}>
@@ -341,7 +357,7 @@ export default function Header() {
 
         {/* Other Navigation Items */}
         <div className={styles.mobileSection}>
-          {navigation.slice(1).map((item) => (
+          {navigation.slice(2).map((item) => (
             <Link
               key={item.name}
               href={item.href}
