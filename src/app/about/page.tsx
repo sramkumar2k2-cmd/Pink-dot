@@ -7,5 +7,10 @@ export default function AboutPage() {
   )
 }
 
+
+
+
+
+
 // This enables Static Site Generation for this page
 export const dynamic = 'force-static'
