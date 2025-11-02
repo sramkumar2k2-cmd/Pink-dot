@@ -1,12 +1,31 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Palette
+     --background: page background (white)
+     --foreground: primary foreground / text (nav/header navy)
+     --text-primary: main text color
+     --text-secondary: secondary text color
+     --accent: rose-gold accents
+     --button-secondary-border: light grey borders
+     --button-primary-hover: darker navy for hover states
+  */
+  --background: #FFFFFF; /* white */
+  --foreground: #2D3047; /* navy blue (primary text/header) */
+  --text-primary: #2D3047;
+  --text-secondary: rgba(45,48,71,0.65);
+  --accent: #E8C4C4; /* rose gold equivalent */
+  --button-secondary-border: #F0F0F0; /* light grey borders */
+  --button-primary-hover: #1f2338; /* darker navy for hover */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --text-primary: #ededed;
+    --text-secondary: rgba(237,237,237,0.7);
+    --accent: #E8C4C4;
+    --button-secondary-border: #1a1a1a;
+    --button-primary-hover: #ccc;
   }
 }
 

@@ -1,0 +1,37 @@
+.page {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.collections {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.collection {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--button-secondary-border);
+}
+
+.collection:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+}
