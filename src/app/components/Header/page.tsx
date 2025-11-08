@@ -39,12 +39,13 @@ export default function Header() {
   };
 
   const navigation = [
+    { name: 'Home', href: '/' },
     { 
       name: 'Shop', 
       href: '/shop',
       hasDropdown: true 
     },
-  { name: 'Collections', href: '/collections', hasDropdown: true },
+    { name: 'Collections', href: '/collections', hasDropdown: true },
     { name: 'Our Story', href: '/our-story' },
     { name: 'Gift Guide', href: '/gift-guide' },
     { name: 'Contact', href: '/contact' },
@@ -312,6 +313,16 @@ export default function Header() {
       <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
         {/* Shop Categories */}
         <div className={styles.mobileSection}>
+        <Link
+          href="/"
+          className={`${styles.link} ${pathname === '/' ? styles.active : ''}`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          Home
+        </Link>
+      </div>
+
+      <div className={styles.mobileSection}>
           <div className={styles.mobileSectionHeader}>Shop</div>
           {shopMenu.categories.map((category) => (
             <Link
@@ -357,7 +368,9 @@ export default function Header() {
 
         {/* Other Navigation Items */}
         <div className={styles.mobileSection}>
-          {navigation.slice(2).map((item) => (
+        {navigation
+          .filter((item) => !item.hasDropdown && item.name !== 'Home')
+          .map((item) => (
             <Link
               key={item.name}
               href={item.href}
@@ -366,7 +379,7 @@ export default function Header() {
             >
               {item.name}
             </Link>
-          ))}
+        ))}
         </div>
       </div>
     </header>

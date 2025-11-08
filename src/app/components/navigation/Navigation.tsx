@@ -61,10 +61,24 @@ const Navigation = () => {
 
   // Close dropdown on route change
   useEffect(() => {
-    setIsShopOpen(false);
-    setIsCollectionsOpen(false);
-    setIsMobileMenuOpen(false);
-  }, [pathname]);
+    if (!isShopOpen && !isCollectionsOpen && !isMobileMenuOpen) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      if (isShopOpen) {
+        setIsShopOpen(false);
+      }
+      if (isCollectionsOpen) {
+        setIsCollectionsOpen(false);
+      }
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [pathname, isShopOpen, isCollectionsOpen, isMobileMenuOpen]);
 
   const handleDropdownClick = () => {
     if (window.innerWidth <= 968) {
@@ -88,6 +102,12 @@ const Navigation = () => {
         
         {/* Desktop Navigation */}
         <div className={styles.desktopMenu}>
+          <Link 
+            href="/" 
+            className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`}
+          >
+            Home
+          </Link>
           {/* Shop Section with Page Link AND Dropdown */}
           <div className={styles.servicesNavItem}>
             <Link 
@@ -218,6 +238,14 @@ const Navigation = () => {
           {/* Mobile Navigation Menu */}
           <div className={`${styles.mobileNavMenu} ${isMobileMenuOpen ? styles.active : ''}`}>
             {/* Shop Section */}
+            <Link 
+              href="/" 
+              className={styles.mobileNavLink} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            
             <Link 
               href="/shop" 
               className={styles.mobileNavLink} 
