@@ -96,7 +96,7 @@ const Navigation = () => {
   return (
     <nav className={styles.navigation}>
       <div className={styles.navContainer}>
-        <Link href="/" className={styles.navLogo}>
+        <Link href="/shop" className={styles.navLogo}>
           Pink Dot
         </Link>
         

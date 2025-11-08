@@ -1,3 +1,265 @@
+.allJewelleryHero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 4.5rem 3rem;
+  background:
+    linear-gradient(135deg, rgba(245, 239, 230, 0.95), rgba(249, 200, 227, 0.85)),
+    url("https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+  box-shadow: 0 28px 60px rgba(31, 38, 135, 0.18);
+  margin-bottom: 2.5rem;
+  color: #2d3047;
+}
+
+.allJewelleryHero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.55), transparent 55%),
+              radial-gradient(circle at 80% 35%, rgba(255, 192, 203, 0.35), transparent 60%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.allJewelleryHeroAura,
+.allJewelleryHeroDust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.allJewelleryHeroAura::before,
+.allJewelleryHeroAura::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent 70%);
+  animation: heroPulse 8s infinite alternate ease-in-out;
+}
+
+.allJewelleryHeroAura::before {
+  width: 420px;
+  height: 420px;
+  top: -120px;
+  left: -160px;
+}
+
+.allJewelleryHeroAura::after {
+  width: 360px;
+  height: 360px;
+  bottom: -160px;
+  right: -120px;
+  animation-delay: 2s;
+}
+
+.allJewelleryHeroDust::before,
+.allJewelleryHeroDust::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  animation: sparkleDrift 12s linear infinite;
+}
+
+.allJewelleryHeroDust::after {
+  animation-direction: reverse;
+  animation-duration: 16s;
+  opacity: 0.22;
+}
+
+.allJewelleryHeroInner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  gap: 3rem;
+  align-items: center;
+}
+
+.allJewelleryHeroContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 560px;
+}
+
+.allJewelleryKicker {
+  display: inline-block;
+  font-size: 0.85rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(45, 48, 71, 0.7);
+  background: rgba(255, 255, 255, 0.6);
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  position: relative;
+  z-index: 2;
+}
+
+.allJewelleryHeroTitle {
+  font-size: clamp(2.6rem, 4vw, 4rem);
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+  line-height: 1.1;
+  position: relative;
+  z-index: 2;
+  color: #2d3047;
+}
+
+.allJewelleryHeroCopy {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 760px;
+  margin: 0 0 2.5rem;
+  color: rgba(45, 48, 71, 0.78);
+}
+
+.allJewelleryHeroActions {
+  display: inline-flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.heroPrimaryCta,
+.heroSecondaryCta {
+  padding: 0.9rem 2.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heroPrimaryCta {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  box-shadow: 0 18px 42px rgba(194, 24, 91, 0.35);
+}
+
+.heroPrimaryCta:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 50px rgba(194, 24, 91, 0.45);
+}
+
+.heroSecondaryCta {
+  background: rgba(255, 255, 255, 0.88);
+  color: #2d3047;
+  border: 1px solid rgba(194, 24, 91, 0.25);
+  box-shadow: 0 14px 28px rgba(45, 48, 71, 0.1);
+}
+
+.heroSecondaryCta:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 18px 34px rgba(45, 48, 71, 0.15);
+}
+
+.heroVisual {
+  position: relative;
+  border-radius: 26px;
+  padding: 1.8rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(250, 231, 243, 0.55));
+  box-shadow:
+    inset 0 0 35px rgba(255, 255, 255, 0.32),
+    0 26px 60px rgba(31, 38, 135, 0.18);
+}
+
+.heroNecklaceFrame {
+  position: absolute;
+  inset: 1.2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  mix-blend-mode: screen;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.heroNecklaceImage {
+  position: relative;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+  box-shadow: 0 30px 70px rgba(31, 38, 135, 0.22);
+  object-fit: cover;
+  z-index: 2;
+}
+
+.heroSparkle {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.12) 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
+  animation: sparkleBlink 6s infinite ease-in-out;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.heroSparkleOne {
+  top: 14%;
+  left: 18%;
+  animation-delay: 0s;
+}
+
+.heroSparkleTwo {
+  bottom: 18%;
+  right: 16%;
+  animation-delay: 1.5s;
+}
+
+.heroSparkleThree {
+  bottom: 32%;
+  left: 30%;
+  animation-delay: 3s;
+}
+
+.heroSparkleFour {
+  top: 28%;
+  right: 24%;
+  animation-delay: 4.2s;
+}
+
+.collectionSpotlightSection {
+  margin: 4rem 0 3rem;
+}
+
+.collectionSectionHeading {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 2.5rem;
+}
+
+.collectionSectionTitle {
+  font-size: clamp(2rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  color: #2d3047;
+  margin-bottom: 1rem;
+}
+
+.collectionSectionSubtitle {
+  color: rgba(45, 48, 71, 0.7);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.allJewelleryHero::before {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border-radius: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  mix-blend-mode: screen;
+  z-index: 1;
+  pointer-events: none;
+}
 .page {
   padding: 2rem;
   max-width: 1200px;
@@ -17,6 +279,304 @@
   color: var(--text-secondary, #555555);
   margin-bottom: 2.5rem;
   line-height: 1.6;
+}
+
+.shopCategoryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.shopCategoryCard {
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 22px;
+  box-shadow: 0 18px 36px rgba(31, 38, 135, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.shopCategoryCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 28px 60px rgba(31, 38, 135, 0.18);
+}
+
+.shopCategoryImageWrapper {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+}
+
+.shopCategoryImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.shopCategoryCard:hover .shopCategoryImage {
+  transform: scale(1.05);
+}
+
+.shopCategoryBadge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: linear-gradient(135deg, rgba(194, 24, 91, 0.92), rgba(240, 98, 146, 0.88));
+  color: #ffffff;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  box-shadow: 0 10px 20px rgba(194, 24, 91, 0.28);
+}
+
+.shopCategoryContent {
+  padding: 1.75rem 1.75rem 1.65rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.shopCategoryPrice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(38, 35, 33, 0.08);
+  color: #2d3047;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  margin-bottom: 0.9rem;
+  font-size: 0.85rem;
+}
+
+.shopCategoryTitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d3047;
+  margin: 0 0 0.65rem;
+}
+
+.shopCategoryDescription {
+  color: rgba(45, 48, 71, 0.75);
+  line-height: 1.65;
+  font-size: 0.98rem;
+  margin-bottom: 1.4rem;
+}
+
+.shopCategoryActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.shopButtonPrimary,
+.shopButtonGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.shopButtonPrimary {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  box-shadow: 0 14px 32px rgba(194, 24, 91, 0.35);
+  border: none;
+}
+
+.shopButtonPrimary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(194, 24, 91, 0.42);
+}
+
+.shopButtonGhost {
+  background: rgba(255, 255, 255, 0.85);
+  color: #2d3047;
+  border: 1px solid rgba(194, 24, 91, 0.25);
+  box-shadow: 0 12px 22px rgba(45, 48, 71, 0.08);
+}
+
+.shopButtonGhost:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 14px 28px rgba(45, 48, 71, 0.1);
+}
+
+.allJewelleryFilterBar {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.filterPill {
+  padding: 0.55rem 1.4rem;
+  border-radius: 999px;
+  border: 1px solid rgba(194, 24, 91, 0.25);
+  background: rgba(255, 255, 255, 0.85);
+  color: #2d3047;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filterPill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(45, 48, 71, 0.12);
+}
+
+.filterPillActive {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 18px 32px rgba(194, 24, 91, 0.35);
+}
+
+.allJewelleryProductGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.allJewelleryProductCard {
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 22px;
+  padding: 1.65rem;
+  box-shadow: 0 20px 40px rgba(31, 38, 135, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.allJewelleryProductCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 28px 60px rgba(31, 38, 135, 0.2);
+}
+
+.allJewelleryProductImageWrapper {
+  position: relative;
+  display: block;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 1;
+  margin-bottom: 1.2rem;
+}
+
+.allJewelleryProductImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.allJewelleryProductCard:hover .allJewelleryProductImage {
+  transform: scale(1.05);
+}
+
+.allJewelleryBadge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #c2185b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  box-shadow: 0 10px 22px rgba(194, 24, 91, 0.22);
+}
+
+.allJewelleryProductInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.allJewelleryPriceTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  background: rgba(38, 35, 33, 0.08);
+  color: #2d3047;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.allJewelleryProductTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d3047;
+  margin: 0;
+}
+
+.allJewelleryProductDescription {
+  color: rgba(45, 48, 71, 0.7);
+  line-height: 1.6;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.allJewelleryActions {
+  margin-top: auto;
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.ghostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  box-shadow: 0 14px 32px rgba(194, 24, 91, 0.32);
+  border: none;
+}
+
+.primaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 38px rgba(194, 24, 91, 0.42);
+}
+
+.ghostButton {
+  background: rgba(255, 255, 255, 0.9);
+  color: #2d3047;
+  border: 1px solid rgba(194, 24, 91, 0.25);
+  box-shadow: 0 10px 20px rgba(45, 48, 71, 0.08);
+}
+
+.ghostButton:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 14px 28px rgba(45, 48, 71, 0.12);
 }
 
 .grid {
@@ -85,6 +645,38 @@
   .page {
     padding: 1rem;
   }
+
+  .allJewelleryHero {
+    padding: 3.5rem 1.5rem 3rem;
+  }
+  
+  .allJewelleryHeroInner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .allJewelleryHeroContent {
+    max-width: 100%;
+  }
+
+  .allJewelleryHeroActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .heroPrimaryCta,
+  .heroSecondaryCta {
+    width: 100%;
+  }
+
+  .heroVisual {
+    padding: 1rem;
+  }
+
+  .heroSparkleThree,
+  .heroSparkleFour {
+    display: none;
+  }
   
   .title {
     font-size: 2rem;
@@ -92,5 +684,36 @@
   
   .card {
     padding: 1.25rem;
+  }
+
+  .shopCategoryGrid {
+    margin-top: 2.5rem;
+  }
+
+  .shopCategoryContent {
+    padding: 1.5rem;
+  }
+
+  .shopCategoryActions {
+    flex-direction: column;
+  }
+
+  .allJewelleryFilterBar {
+    gap: 0.5rem;
+  }
+
+  .filterPill {
+    flex: 1 1 calc(50% - 0.5rem);
+    text-align: center;
+  }
+
+  .allJewelleryProductGrid {
+    gap: 1.5rem;
+  }
+
+  .primaryButton,
+  .ghostButton {
+    flex: 1 1 100%;
+    text-align: center;
   }
 }

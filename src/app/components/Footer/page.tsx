@@ -54,7 +54,7 @@ export default function Footer() {
       <div className={styles.container}>
         <div className={styles.footerTop}>
           <div className={styles.logoSection}>
-            <Link href="/" className={styles.footerLogo}>
+            <Link href="/shop" className={styles.footerLogo}>
               <Image
                 src="/images/footer-logo.png"
                 alt="Pink Dot"
