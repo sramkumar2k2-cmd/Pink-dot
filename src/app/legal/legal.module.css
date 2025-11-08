@@ -1,0 +1,48 @@
+.page {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 1.5rem;
+  }
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.updated {
+  font-size: 0.95rem;
+  color: var(--text-tertiary);
+  margin-bottom: 1.5rem;
+}
+
+.content {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  display: grid;
+  gap: 1.5rem;
+}
+
+.heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+}
+

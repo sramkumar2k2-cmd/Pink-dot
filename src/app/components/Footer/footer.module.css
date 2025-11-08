@@ -30,7 +30,7 @@
   display: block;
   text-decoration: none;
   margin-bottom: 0.5rem;
-  line-height: 0; /* Remove extra line height space */
+  line-height: 0;
   background: transparent;
 }
 
@@ -38,8 +38,8 @@
   height: auto;
   width: 160px;
   max-width: 100%;
-  display: block; /* Remove extra inline element space */
-  object-fit: contain; /* Ensure proper image fitting */
+  display: block;
+  object-fit: contain;
   background: transparent;
   mix-blend-mode: normal;
 }
@@ -54,20 +54,106 @@
 
 .socialLinks {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   margin-top: 0.4rem;
   padding: 0;
 }
 
-.socialLinks a {
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   color: #333333;
   text-decoration: none;
-  font-size: 0.85rem;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.socialLinks a:hover {
-  color: #000000;
+.socialLink::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transition: left 0.5s ease;
+}
+
+.socialLink:hover::before {
+  left: 100%;
+}
+
+.socialLink:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Instagram specific styles */
+.socialLink[aria-label="Instagram"]:hover {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: white;
+}
+
+/* Facebook specific styles */
+.socialLink[aria-label="Facebook"]:hover {
+  background-color: #1877f2;
+  color: white;
+}
+
+/* WhatsApp specific styles */
+.socialLink[aria-label="WhatsApp"]:hover {
+  background-color: #25d366;
+  color: white;
+}
+
+.socialIcon {
+  width: 20px;
+  height: 20px;
+  transition: all 0.3s ease;
+}
+
+.socialLink:hover .socialIcon {
+  transform: scale(1.2);
+}
+
+/* Specific hover effects for each platform */
+.socialLink[aria-label="Instagram"]:hover .socialIcon {
+  animation: instagramPulse 0.6s ease;
+}
+
+.socialLink[aria-label="Facebook"]:hover .socialIcon {
+  animation: facebookBounce 0.6s ease;
+}
+
+.socialLink[aria-label="WhatsApp"]:hover .socialIcon {
+  animation: whatsappShake 0.6s ease;
+}
+
+@keyframes instagramPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1.2); }
+}
+
+@keyframes facebookBounce {
+  0%, 20%, 60%, 100% { transform: translateY(0) scale(1); }
+  40% { transform: translateY(-4px) scale(1.2); }
+  80% { transform: translateY(-2px) scale(1.1); }
+}
+
+@keyframes whatsappShake {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(8deg) scale(1.1); }
+  50% { transform: rotate(-8deg) scale(1.3); }
+  75% { transform: rotate(8deg) scale(1.1); }
+  100% { transform: rotate(0deg) scale(1.2); }
 }
 
 .linksGrid {
@@ -161,6 +247,17 @@
   .socialLinks {
     margin-top: 0.5rem;
     justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .socialLink {
+    width: 40px;
+    height: 40px;
+  }
+
+  .socialIcon {
+    width: 18px;
+    height: 18px;
   }
 
   .linksGrid {
@@ -186,5 +283,19 @@
   
   .logoImage {
     width: 120px;
+  }
+
+  .socialLinks {
+    gap: 0.8rem;
+  }
+
+  .socialLink {
+    width: 38px;
+    height: 38px;
+  }
+
+  .socialIcon {
+    width: 16px;
+    height: 16px;
   }
 }
