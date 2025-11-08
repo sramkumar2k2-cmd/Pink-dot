@@ -16,7 +16,7 @@ const Navigation = () => {
 
   const shopMenu = {
     categories: [
-      { name: 'All Jewellery', path: '/shop' },
+      { name: 'All Jewellery', path: '/shop/all-jewellery' },
       { name: 'Necklaces', path: '/shop/necklaces' },
       { name: 'Earrings', path: '/shop/earrings' },
       { name: 'Bracelets', path: '/shop/bracelets' },
@@ -100,14 +100,7 @@ const Navigation = () => {
           Pink Dot
         </Link>
         
-        {/* Desktop Navigation */}
         <div className={styles.desktopMenu}>
-          <Link 
-            href="/" 
-            className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`}
-          >
-            Home
-          </Link>
           {/* Shop Section with Page Link AND Dropdown */}
           <div className={styles.servicesNavItem}>
             <Link 
@@ -237,15 +230,6 @@ const Navigation = () => {
 
           {/* Mobile Navigation Menu */}
           <div className={`${styles.mobileNavMenu} ${isMobileMenuOpen ? styles.active : ''}`}>
-            {/* Shop Section */}
-            <Link 
-              href="/" 
-              className={styles.mobileNavLink} 
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Home
-            </Link>
-            
             <Link 
               href="/shop" 
               className={styles.mobileNavLink} 

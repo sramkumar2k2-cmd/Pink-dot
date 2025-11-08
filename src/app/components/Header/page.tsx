@@ -16,7 +16,7 @@ export default function Header() {
 
   const shopMenu = {
     categories: [
-      { name: 'All Jewellery', href: '/shop' },
+      { name: 'All Jewellery', href: '/shop/all-jewellery' },
       { name: 'Necklaces', href: '/shop/necklaces' },
       { name: 'Earrings', href: '/shop/earrings' },
       { name: 'Bracelets', href: '/shop/bracelets' },
@@ -39,7 +39,6 @@ export default function Header() {
   };
 
   const navigation = [
-    { name: 'Home', href: '/' },
     { 
       name: 'Shop', 
       href: '/shop',
@@ -311,17 +310,6 @@ export default function Header() {
         onClick={() => setIsMobileMenuOpen(false)}
       />
       <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
-        {/* Shop Categories */}
-        <div className={styles.mobileSection}>
-        <Link
-          href="/"
-          className={`${styles.link} ${pathname === '/' ? styles.active : ''}`}
-          onClick={() => setIsMobileMenuOpen(false)}
-        >
-          Home
-        </Link>
-      </div>
-
       <div className={styles.mobileSection}>
           <div className={styles.mobileSectionHeader}>Shop</div>
           {shopMenu.categories.map((category) => (
@@ -369,7 +357,7 @@ export default function Header() {
         {/* Other Navigation Items */}
         <div className={styles.mobileSection}>
         {navigation
-          .filter((item) => !item.hasDropdown && item.name !== 'Home')
+          .filter((item) => !item.hasDropdown)
           .map((item) => (
             <Link
               key={item.name}
