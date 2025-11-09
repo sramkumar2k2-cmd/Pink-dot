@@ -16,7 +16,6 @@ const Navigation = () => {
 
   const shopMenu = {
     categories: [
-      { name: 'All Jewellery', path: '/shop/all-jewellery' },
       { name: 'Necklaces', path: '/shop/necklaces' },
       { name: 'Earrings', path: '/shop/earrings' },
       { name: 'Bracelets', path: '/shop/bracelets' },
@@ -96,11 +95,17 @@ const Navigation = () => {
   return (
     <nav className={styles.navigation}>
       <div className={styles.navContainer}>
-        <Link href="/shop" className={styles.navLogo}>
+        <Link href="/" className={styles.navLogo}>
           Pink Dot
         </Link>
         
         <div className={styles.desktopMenu}>
+          <Link 
+            href="/shop/all-jewellery" 
+            className={`${styles.navLink} ${pathname === '/shop/all-jewellery' ? styles.active : ''}`}
+          >
+            All Jewellery
+          </Link>
           {/* Shop Section with Page Link AND Dropdown */}
           <div className={styles.servicesNavItem}>
             <Link 
@@ -230,6 +235,13 @@ const Navigation = () => {
 
           {/* Mobile Navigation Menu */}
           <div className={`${styles.mobileNavMenu} ${isMobileMenuOpen ? styles.active : ''}`}>
+            <Link 
+              href="/shop/all-jewellery" 
+              className={styles.mobileNavLink} 
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              All Jewellery
+            </Link>
             <Link 
               href="/shop" 
               className={styles.mobileNavLink} 

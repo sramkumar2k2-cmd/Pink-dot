@@ -210,15 +210,15 @@ export default function RingsPage() {
               View limited release
             </Link>
           </div>
-        </div>
+      </div>
       </section>
 
       <section className={styles.collectionSection}>
         <div className={styles.sectionHeading}>
           <h2>Sculpted to stack & shine</h2>
           <p>Piece together an intentional stack, or let a single statement steal the spotlight.</p>
-        </div>
-        <div className={styles.productsGrid}>
+      </div>
+      <div className={styles.productsGrid}>
           {products.map((product) => (
             <article key={product.name} className={styles.productCard}>
               <div className={styles.productVisual} style={{ backgroundImage: product.gradient }}>
@@ -279,7 +279,7 @@ export default function RingsPage() {
           <Link href="/support/returns" className={styles.secondaryButton}>
             Explore our care promise
           </Link>
-        </div>
+      </div>
       </section>
     </main>
   );

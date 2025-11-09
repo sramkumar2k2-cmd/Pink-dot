@@ -205,15 +205,15 @@ export default function BraceletsPage() {
               Discover limited edit
             </Link>
           </div>
-        </div>
+      </div>
       </section>
 
       <section className={styles.collectionSection}>
         <div className={styles.sectionHeading}>
           <h2>Stacks that tell your story</h2>
           <p>Mix textures, metals, and motifs to compose a wrist narrative as unique as your pulse.</p>
-        </div>
-        <div className={styles.productsGrid}>
+      </div>
+      <div className={styles.productsGrid}>
           {products.map((product) => (
             <article key={product.name} className={styles.productCard}>
               <div className={styles.productVisual} style={{ backgroundImage: product.gradient }}>
@@ -272,7 +272,7 @@ export default function BraceletsPage() {
           <Link href="/support/returns" className={styles.secondaryButton}>
             View care tips
           </Link>
-        </div>
+      </div>
       </section>
     </main>
   );
