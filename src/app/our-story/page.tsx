@@ -47,28 +47,43 @@ const values = [
   },
 ];
 
-const atelierLocations = [
-  {
-    city: 'London, UK',
-    focus: 'Concept, prototypes, bespoke sketches',
-    image: '/images/neck1.jpeg',
-  },
-  {
-    city: 'Jaipur, India',
-    focus: 'Gemstone cutting, stone setting, enamel work',
-    image: '/images/ring4.jpeg',
-  },
-  {
-    city: 'Vicenza, Italy',
-    focus: 'Metal casting, polishing, chain weaving',
-    image: '/images/bracelets5.jpeg',
-  },
-];
-
 const craftsmanshipHighlights = [
   'Gemstones are cut, sorted, and matched by hand to ensure balanced light play.',
   'Each clasp is strength-tested to withstand years of dance-floor spins and daily wear.',
   'We apply three layers of plating and a final e-coat for glow that truly lasts.',
+];
+
+const craftRituals = [
+  {
+    title: 'Sketch to Storyboard',
+    summary:
+      'Every Pink Dot piece starts with an analogue sketch and a moodboard of fabrics, fragrances, and handwritten notes from our community.',
+    highlights: [
+      'Weekly open-studio sessions where clients vote on trims and textures.',
+      'Paper prototypes tested for balance before we ever cast in metal.',
+      'Colour palettes built around seasonal stories and everyday rituals.',
+    ],
+  },
+  {
+    title: 'Material Alchemy',
+    summary:
+      'We source recycled metals and traceable stones, then let our makers experiment with finishes that feel soft against the skin.',
+    highlights: [
+      'Triple-layer plating sealed with a hypoallergenic e-coat for lasting glow.',
+      'Pebble tumbling and hand-polishing for a satin finish that resists wear.',
+      'Collaborations with small-batch lapidarists who cut specifically for our silhouettes.',
+    ],
+  },
+  {
+    title: 'Wear-Tested Moments',
+    summary:
+      'Before a collection launches, each design is worn by our in-house team for everyday trials—school runs, studio days, dance floors.',
+    highlights: [
+      'Comfort tweaks captured in a shared “daybook” before final approval.',
+      'Hidden hinge tests to ensure clasps stay secure yet gentle.',
+      'Packaging designed to be reused as keepsake boxes for future treasures.',
+    ],
+  },
 ];
 
 export default function OurStoryPage() {
@@ -79,7 +94,7 @@ export default function OurStoryPage() {
           <span className={styles.heroTag}>The Pink Dot journey</span>
           <h1 className={styles.heroTitle}>Crafted for the moments you will retell forever</h1>
           <p className={styles.heroSubtitle}>
-            From a single London workbench to a global atelier family, we design jewellery that keeps your stories close.
+            From a single London workbench to a close circle of makers, we design jewellery that keeps your stories close.
             Every collection is a love letter to slow craft, modern nostalgia, and the people who wear our pieces daily.
           </p>
           <ul className={styles.heroHighlights}>
@@ -153,31 +168,24 @@ export default function OurStoryPage() {
         </div>
       </section>
 
-      <section className={styles.atelierSection}>
+      <section className={styles.craftSection}>
         <div className={styles.sectionHeading}>
-          <h2>Our ateliers around the world</h2>
-          <p>The Pink Dot signature is a collaboration of experts across three continents.</p>
+          <h2>How we bring each piece to life</h2>
+          <p>
+            Pink Dot is built on in-house rituals—design reviews over coffee, material experiments, and real-life wear
+            tests—that make every jewel feel like it was made just for you.
+          </p>
         </div>
-        <div className={styles.atelierGrid}>
-          {atelierLocations.map((atelier) => (
-            <article key={atelier.city} className={styles.atelierCard}>
-              <div className={styles.atelierImage}>
-                <Image
-                  src={atelier.image}
-                  alt={`${atelier.city} atelier`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 320px"
-                  className={styles.storyPhoto}
-                />
-              </div>
-              <div className={styles.atelierContent}>
-                <span>{atelier.city}</span>
-                <h3>{atelier.focus}</h3>
-                <p>
-                  Every piece includes a signature card detailing which atelier completed the final touches—so you always
-                  know who helped create your jewel.
-                </p>
-              </div>
+        <div className={styles.craftGrid}>
+          {craftRituals.map((ritual) => (
+            <article key={ritual.title} className={styles.craftCard}>
+              <h3>{ritual.title}</h3>
+              <p>{ritual.summary}</p>
+              <ul className={styles.craftHighlights}>
+                {ritual.highlights.map((highlight) => (
+                  <li key={highlight}>{highlight}</li>
+                ))}
+              </ul>
             </article>
           ))}
         </div>

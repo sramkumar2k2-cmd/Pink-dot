@@ -74,34 +74,46 @@ export default function SummerCollectionPage() {
         </div>
 
         <div className={styles.moodNote}>{collection.mood}</div>
+      </div>
 
-        <div>
-          <div className={styles.sectionTitle}>Featured Pieces</div>
-          <div className={styles.featuredProducts}>
-            {collection.featuredProducts.map((product) => (
-              <div className={styles.productCard} key={product.name}>
-                <Link href={product.href} className={styles.productImageWrapper}>
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={320}
-                    height={240}
-                    className={styles.productImage}
-                  />
-                  <span className={styles.productBadge}>{product.badge}</span>
-                </Link>
-                <div className={styles.productMeta}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <div className={styles.productPrice}>{product.price}</div>
-                  <Link href={product.href} className={styles.productLink}>
-                    View Details →
+      <section className={styles.featuredSection}>
+        <div className={styles.featuredHeader}>
+          <span className={styles.featuredEyebrow}>Featured Pieces</span>
+          <h2 className={styles.featuredTitle}>Complete your {collection.name} story</h2>
+          <p className={styles.featuredIntro}>
+            Curated accents chosen to layer with the hero looks from this edit.
+          </p>
+        </div>
+
+        <div className={styles.featuredProducts}>
+          {collection.featuredProducts.map((product) => (
+            <article className={styles.productCard} key={product.name}>
+              <Link href={product.href} className={styles.productImageWrapper}>
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={420}
+                  height={320}
+                  className={styles.productImage}
+                />
+                <span className={styles.productBadge}>{product.badge}</span>
+              </Link>
+              <div className={styles.productMeta}>
+                <h3 className={styles.productName}>{product.name}</h3>
+                <div className={styles.productPrice}>{product.price}</div>
+                <div className={styles.productActions}>
+                  <Link href={product.href} className={styles.primaryButton}>
+                    View Piece
+                  </Link>
+                  <Link href={product.href} className={styles.secondaryButton}>
+                    Add to Wishlist
                   </Link>
                 </div>
               </div>
-            ))}
-          </div>
+            </article>
+          ))}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
