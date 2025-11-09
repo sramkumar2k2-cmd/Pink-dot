@@ -9,10 +9,13 @@ import styles from './header.module.css';
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileOpenSections, setMobileOpenSections] = useState<Record<string, boolean>>({
+    Shop: true,
+    Collections: false,
+  });
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const touchStartTimeRef = useRef<number>(0);
-  const lastTouchTargetRef = useRef<HTMLElement | null>(null);
 
   const shopMenu = {
     categories: [
@@ -58,14 +61,25 @@ export default function Header() {
     setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
   };
 
+  const toggleMobileSection = (sectionName: string) => {
+    setMobileOpenSections((prev) => ({
+      ...prev,
+      [sectionName]: !prev[sectionName],
+    }));
+  };
+
   const closeDropdown = () => {
     setOpenDropdown(null);
   };
 
   // Close dropdown when route changes
   useEffect(() => {
-    setOpenDropdown(null);
-    setIsMobileMenuOpen(false); // Close mobile menu on route change
+    const timeoutId = window.setTimeout(() => {
+      setOpenDropdown(null);
+      setIsMobileMenuOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
   }, [pathname]);
 
   // Prevent body scroll when mobile menu is open, but allow menu to scroll
@@ -145,8 +159,19 @@ export default function Header() {
     }
   }, [openDropdown]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 8);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
         <Link href="/shop" className={styles.logo}>
           <Image
@@ -180,7 +205,7 @@ export default function Header() {
                   <Link 
                     href={item.href}
                     className={`${styles.link} ${pathname.startsWith(item.href) ? styles.active : ''}`}
-                    onClick={(e) => {
+                    onClick={() => {
                       // On click, navigate to page (don't prevent default)
                       // Close dropdown if it's open when clicking
                       if (openDropdown === item.name) {
@@ -295,13 +320,15 @@ export default function Header() {
         </nav>
 
         <button 
-          className={styles.mobileButton}
+          className={`${styles.mobileButton} ${isMobileMenuOpen ? styles.open : ''}`}
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="pinkdot-mobile-menu"
         >
-          <span></span>
-          <span></span>
-          <span></span>
+          <span />
+          <span />
+          <span />
         </button>
       </div>
 
@@ -309,65 +336,115 @@ export default function Header() {
         className={`${styles.mobileMenuBackdrop} ${isMobileMenuOpen ? styles.open : ''}`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
-      <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
-      <div className={styles.mobileSection}>
-          <div className={styles.mobileSectionHeader}>Shop</div>
-          {shopMenu.categories.map((category) => (
-            <Link
-              key={category.name}
-              href={category.href}
-              className={styles.link}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {category.name}
-            </Link>
-          ))}
-        </div>
-        
-        {/* Featured */}
-        <div className={styles.mobileSection}>
-          <div className={styles.mobileSectionHeader}>Featured</div>
-          {shopMenu.featured.map((featured) => (
-            <Link
-              key={featured.name}
-              href={featured.href}
-              className={styles.link}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {featured.name}
-            </Link>
-          ))}
-        </div>
-
-        {/* Collections (mobile) */}
-        <div className={styles.mobileSection}>
-          <div className={styles.mobileSectionHeader}>Collections</div>
-          {collectionsMenu.items.map((col) => (
-            <Link
-              key={col.name}
-              href={col.href}
-              className={styles.link}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {col.name}
-            </Link>
-          ))}
+      <div
+        id="pinkdot-mobile-menu"
+        className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation"
+      >
+        <div className={styles.mobileMenuHeader}>
+          <Link href="/shop" className={styles.mobileLogo} onClick={() => setIsMobileMenuOpen(false)}>
+            <Image
+              src="/images/logo.png"
+              alt="Pink Dot"
+              width={120}
+              height={42}
+              priority
+              className={styles.mobileLogoImage}
+            />
+          </Link>
+          <button
+            type="button"
+            className={styles.mobileCloseButton}
+            onClick={() => setIsMobileMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <span />
+            <span />
+          </button>
         </div>
 
-        {/* Other Navigation Items */}
-        <div className={styles.mobileSection}>
-        {navigation
-          .filter((item) => !item.hasDropdown)
-          .map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`${styles.link} ${pathname === item.href ? styles.active : ''}`}
-              onClick={() => setIsMobileMenuOpen(false)}
+        <div className={styles.mobileMenuContent}>
+          <div className={styles.mobileSection}>
+            <button
+              type="button"
+              className={`${styles.mobileSectionButton} ${mobileOpenSections.Shop ? styles.open : ''}`}
+              onClick={() => toggleMobileSection('Shop')}
+              aria-expanded={mobileOpenSections.Shop}
             >
-              {item.name}
-            </Link>
-        ))}
+              <span>Shop</span>
+              <svg className={styles.mobileSectionIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <div className={`${styles.mobileSectionContent} ${mobileOpenSections.Shop ? styles.open : ''}`}>
+              <div className={styles.mobileGroupHeading}>Categories</div>
+              {shopMenu.categories.map((category) => (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  className={styles.link}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              ))}
+              <div className={styles.mobileGroupHeading}>Featured</div>
+              {shopMenu.featured.map((featured) => (
+                <Link
+                  key={featured.name}
+                  href={featured.href}
+                  className={styles.link}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {featured.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.mobileSection}>
+            <button
+              type="button"
+              className={`${styles.mobileSectionButton} ${mobileOpenSections.Collections ? styles.open : ''}`}
+              onClick={() => toggleMobileSection('Collections')}
+              aria-expanded={mobileOpenSections.Collections}
+            >
+              <span>Collections</span>
+              <svg className={styles.mobileSectionIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+            <div className={`${styles.mobileSectionContent} ${mobileOpenSections.Collections ? styles.open : ''}`}>
+              {collectionsMenu.items.map((col) => (
+                <Link
+                  key={col.name}
+                  href={col.href}
+                  className={styles.link}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {col.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.mobileSection}>
+            <div className={styles.mobileGroupHeading}>Explore</div>
+            {navigation
+              .filter((item) => !item.hasDropdown)
+              .map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`${styles.link} ${pathname === item.href ? styles.active : ''}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+          </div>
         </div>
       </div>
     </header>

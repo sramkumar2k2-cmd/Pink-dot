@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
+import FadeReveal from './FadeReveal';
 
 const heroHighlights = [
   'New studio drops every Thursday evening',
@@ -101,8 +102,17 @@ const services = [
 export default function ShopPage() {
   return (
     <main className={styles.shopPage}>
-      <section className={styles.shopHero}>
-        <div className={styles.shopHeroContent}>
+      <FadeReveal />
+      <section
+        className={[styles.shopHero, styles.fadeInStart].join(' ')}
+        data-fade
+        style={{ transitionDelay: '0.05s' }}
+      >
+        <div
+          className={[styles.shopHeroContent, styles.fadeInStart].join(' ')}
+          data-fade
+          style={{ transitionDelay: '0.12s' }}
+        >
           <span className={styles.shopHeroTag}>The Pink Dot Atelier</span>
           <h1 className={styles.shopHeroTitle}>
             Jewellery designed to illuminate every chapter
@@ -112,8 +122,13 @@ export default function ShopPage() {
             to be layered, loved, and lived in.
           </p>
           <ul className={styles.shopHeroHighlights}>
-            {heroHighlights.map((highlight) => (
-              <li key={highlight}>
+            {heroHighlights.map((highlight, index) => (
+              <li
+                key={highlight}
+                className={styles.fadeInStart}
+                data-fade
+                style={{ transitionDelay: `${index * 0.08 + 0.2}s` }}
+              >
                 <span className={styles.shopHighlightDot} />
                 {highlight}
               </li>
@@ -128,7 +143,11 @@ export default function ShopPage() {
             </Link>
           </div>
         </div>
-        <div className={styles.shopHeroMosaic}>
+        <div
+          className={[styles.shopHeroMosaic, styles.fadeInStart].join(' ')}
+          data-fade
+          style={{ transitionDelay: '0.18s' }}
+        >
           <div className={styles.shopHeroPrimary}>
             <Image
               src="/images/neck4.jpeg"
@@ -162,8 +181,12 @@ export default function ShopPage() {
         </div>
       </section>
 
-      <section className={styles.shopHighlightsSection}>
-        <div>
+      <section
+        className={[styles.shopHighlightsSection, styles.fadeInStart].join(' ')}
+        data-fade
+        style={{ transitionDelay: '0.18s' }}
+      >
+        <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.22s' }}>
           <h2>What’s glowing right now</h2>
           <p>
             Curated edits to find your perfect match—browse by category or dive straight into the pieces our collectors
@@ -171,29 +194,38 @@ export default function ShopPage() {
           </p>
         </div>
         <div className={styles.shopStats}>
-          <div>
+          <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.26s' }}>
             <span>250+</span>
             <p>Jewellery designs available online</p>
           </div>
-          <div>
+          <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.32s' }}>
             <span>72 hrs</span>
             <p>Average delivery on in-stock pieces</p>
           </div>
-          <div>
+          <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.38s' }}>
             <span>Lifetime</span>
             <p>Complimentary replating & sizing</p>
           </div>
         </div>
       </section>
 
-      <section className={styles.shopCategorySection}>
-        <div className={styles.sectionHeading}>
+      <section
+        className={[styles.shopCategorySection, styles.fadeInStart].join(' ')}
+        data-fade
+        style={{ transitionDelay: '0.24s' }}
+      >
+        <div className={[styles.sectionHeading, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.28s' }}>
           <h2>Shop by mood or moment</h2>
           <p>Choose your starting point and build your story from there.</p>
         </div>
         <div className={styles.shopCategoryGrid}>
-          {categoryCards.map((category) => (
-            <article key={category.name} className={styles.shopCategoryCard}>
+          {categoryCards.map((category, index) => (
+            <article
+              key={category.name}
+              className={[styles.shopCategoryCard, styles.fadeInStart].join(' ')}
+              data-fade
+              style={{ transitionDelay: `${index * 0.08 + 0.18}s` }}
+            >
               <Link href={category.href} className={styles.shopCategoryImageWrapper} aria-label={category.name}>
                 <Image
                   src={category.image}
@@ -221,14 +253,23 @@ export default function ShopPage() {
         </div>
       </section>
 
-      <section className={styles.shopCuratedSection}>
-        <div className={styles.sectionHeading}>
+      <section
+        className={[styles.shopCuratedSection, styles.fadeInStart].join(' ')}
+        data-fade
+        style={{ transitionDelay: '0.28s' }}
+      >
+        <div className={[styles.sectionHeading, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.32s' }}>
           <h2>Curated sets from the studio</h2>
           <p>Ready-to-wear combinations designed by our stylists for instant polish.</p>
         </div>
         <div className={styles.shopCuratedGrid}>
-          {curatedSets.map((set) => (
-            <article key={set.name} className={styles.shopCuratedCard}>
+          {curatedSets.map((set, index) => (
+            <article
+              key={set.name}
+              className={[styles.shopCuratedCard, styles.fadeInStart].join(' ')}
+              data-fade
+              style={{ transitionDelay: `${index * 0.1 + 0.22}s` }}
+            >
               <div className={styles.shopCuratedImage}>
                 <Image
                   src={set.image}
@@ -249,14 +290,23 @@ export default function ShopPage() {
         </div>
       </section>
 
-      <section className={styles.shopServicesSection}>
-        <div className={styles.sectionHeading}>
+      <section
+        className={[styles.shopServicesSection, styles.fadeInStart].join(' ')}
+        data-fade
+        style={{ transitionDelay: '0.32s' }}
+      >
+        <div className={[styles.sectionHeading, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.36s' }}>
           <h2>Design with us</h2>
           <p>Our concierge team is here to help you find, personalise, and care for your jewels.</p>
         </div>
         <div className={styles.shopServicesGrid}>
-          {services.map((service) => (
-            <article key={service.title} className={styles.shopServiceCard}>
+          {services.map((service, index) => (
+            <article
+              key={service.title}
+              className={[styles.shopServiceCard, styles.fadeInStart].join(' ')}
+              data-fade
+              style={{ transitionDelay: `${index * 0.1 + 0.22}s` }}
+            >
               <h3>{service.title}</h3>
               <p>{service.blurb}</p>
               <Link href={service.href}>{service.linkLabel}</Link>
@@ -265,12 +315,16 @@ export default function ShopPage() {
         </div>
       </section>
 
-      <section className={styles.shopCtaBanner}>
-        <div>
+      <section
+        className={[styles.shopCtaBanner, styles.fadeInStart].join(' ')}
+        data-fade
+        style={{ transitionDelay: '0.36s' }}
+      >
+        <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.4s' }}>
           <h2>Join the Pink Dot circle</h2>
           <p>Subscribe for launch previews, styling notes, and members-only events direct from the studio.</p>
         </div>
-        <div className={styles.shopCtaActions}>
+        <div className={[styles.shopCtaActions, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.44s' }}>
           <Link href="/contact" className={styles.shopPrimaryButton}>
             Join the list
           </Link>
