@@ -1,45 +1,449 @@
 .page {
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 5rem);
+  padding: clamp(2.6rem, 5vw, 4rem) clamp(1.6rem, 4vw, 4rem) clamp(3.4rem, 7vw, 5.5rem);
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: var(--text-primary);
-}
-
-.guides {
+.hero {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: center;
+  background: linear-gradient(125deg, rgba(255, 244, 247, 0.92), rgba(255, 223, 231, 0.88));
+  padding: clamp(2.4rem, 4.5vw, 3.4rem);
+  border-radius: 32px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 32px 60px rgba(240, 98, 146, 0.12);
 }
 
-.guide {
-  background: var(--foreground);
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.58), transparent 60%);
+  pointer-events: none;
 }
 
-.guide h2 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  color: var(--text-primary);
+.heroContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.heroTag {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.9);
+  color: #8b2354;
+  font-weight: 600;
+}
+
+.heroTitle {
+  font-size: clamp(2.5rem, 4.6vw, 3.7rem);
+  line-height: 1.1;
+  color: #2d0f22;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.heroSubtitle {
+  font-size: 1.1rem;
+  line-height: 1.75;
+  color: rgba(45, 15, 34, 0.75);
+  max-width: 36rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.primaryButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.9rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.98rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primaryButton {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(194, 24, 91, 0.28);
+}
+
+.primaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 32px rgba(194, 24, 91, 0.38);
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.88);
+  color: #2d0f22;
+  border: 1px solid rgba(194, 24, 91, 0.3);
+  box-shadow: 0 8px 18px rgba(45, 15, 34, 0.1);
+}
+
+.secondaryButton:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 12px 26px rgba(45, 15, 34, 0.16);
+}
+
+.heroHighlights {
+  display: grid;
+  gap: 0.6rem;
+  color: rgba(45, 15, 34, 0.7);
+  font-size: 0.95rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.heroVisual {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+}
+
+.heroPrimary,
+.heroSecondary {
+  position: relative;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 26px 48px rgba(45, 15, 34, 0.16);
+}
+
+.heroPrimary {
+  aspect-ratio: 3 / 4;
+}
+
+.heroSecondary {
+  width: clamp(160px, 40vw, 210px);
+  aspect-ratio: 1;
+  justify-self: end;
+}
+
+.heroImage,
+.cardImage {
+  object-fit: cover;
+}
+
+.sectionHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  max-width: 620px;
+}
+
+.sectionHeading h2 {
+  font-size: clamp(1.9rem, 3.2vw, 2.4rem);
+  color: #2d0f22;
+  font-weight: 600;
+}
+
+.sectionHeading p {
+  color: rgba(45, 15, 34, 0.7);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.recipientSection,
+.priceSection,
+.setsSection,
+.experienceSection {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.recipientGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.recipientCard {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 22px 40px rgba(45, 15, 34, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.recipientImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+.recipientContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.6rem 1.8rem 1.8rem;
+}
+
+.recipientContent h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #2d0f22;
+  font-weight: 600;
+}
+
+.recipientContent p {
+  margin: 0;
+  color: rgba(45, 15, 34, 0.72);
+  line-height: 1.6;
+}
+
+.recipientContent a {
+  align-self: flex-start;
+  color: #c2185b;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(194, 24, 91, 0.35);
+  padding-bottom: 0.15rem;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.recipientContent a:hover {
+  color: #f06292;
+  border-color: rgba(240, 98, 146, 0.6);
+}
+
+.priceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+.priceCard {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 20px 36px rgba(45, 15, 34, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.priceImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+.priceContent {
+  padding: 1.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.priceContent span {
+  font-weight: 600;
+  color: #c2185b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+.priceContent ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+  color: rgba(45, 15, 34, 0.72);
+}
+
+.priceContent li::before {
+  content: "✶";
+  margin-right: 0.5rem;
+  color: #f06292;
+}
+
+.setsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
+}
+
+.setCard {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 22px 40px rgba(45, 15, 34, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.setImage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+}
+
+.setContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.8rem;
+}
+
+.setContent h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #2d0f22;
+}
+
+.setContent p {
+  margin: 0;
+  color: rgba(45, 15, 34, 0.72);
+  line-height: 1.6;
+}
+
+.setContent span {
+  font-weight: 600;
+  color: #c2185b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+}
+
+.setContent a {
+  align-self: flex-start;
+  color: #c2185b;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(194, 24, 91, 0.35);
+  padding-bottom: 0.15rem;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.setContent a:hover {
+  color: #f06292;
+  border-color: rgba(240, 98, 146, 0.6);
+}
+
+.experienceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(1.3rem, 3vw, 1.8rem);
+}
+
+.experienceCard {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 20px;
+  padding: 1.8rem;
+  box-shadow: 0 20px 36px rgba(45, 15, 34, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.experienceCard h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #2d0f22;
+  font-weight: 600;
+}
+
+.experienceCard p {
+  margin: 0;
+  color: rgba(45, 15, 34, 0.7);
+  line-height: 1.6;
+}
+
+.experienceCard a {
+  align-self: flex-start;
+  color: #c2185b;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(194, 24, 91, 0.35);
+  padding-bottom: 0.15rem;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.experienceCard a:hover {
+  color: #f06292;
+  border-color: rgba(240, 98, 146, 0.6);
+}
+
+.ctaBanner {
+  display: flex;
+  justify-content: space-between;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: center;
+  flex-wrap: wrap;
+  background: linear-gradient(120deg, #f06292 0%, #ffc1d5 100%);
+  padding: clamp(1.9rem, 3.5vw, 2.6rem);
+  border-radius: 26px;
+  color: #2d0f22;
+  box-shadow: 0 28px 55px rgba(240, 98, 146, 0.28);
+}
+
+.ctaBanner h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  margin-bottom: 0.4rem;
+}
+
+.ctaBanner p {
+  margin: 0;
+  color: rgba(45, 15, 34, 0.75);
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+.ctaActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .heroSecondary {
+    justify-self: start;
+  }
 }
 
 @media (max-width: 768px) {
   .page {
-    padding: 1rem;
+    padding: 2.2rem 1.2rem 2.6rem;
   }
-  
-  .title {
-    font-size: 2rem;
+
+  .heroActions,
+  .ctaActions {
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  .guides {
-    grid-template-columns: 1fr;
+
+  .heroHighlights {
+    font-size: 0.9rem;
   }
 }
