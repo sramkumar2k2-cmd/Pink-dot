@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './page.module.css';
-import FadeReveal from './FadeReveal';
+import FadeReveal from '@/app/components/FadeReveal/FadeReveal';
+import fadeStyles from '@/app/components/FadeReveal/FadeReveal.module.css';
 
 const heroHighlights = [
   'New studio drops every Thursday evening',
@@ -104,12 +105,12 @@ export default function ShopPage() {
     <main className={styles.shopPage}>
       <FadeReveal />
       <section
-        className={[styles.shopHero, styles.fadeInStart].join(' ')}
+        className={[styles.shopHero, fadeStyles.fadeInStart].join(' ')}
         data-fade
         style={{ transitionDelay: '0.05s' }}
       >
         <div
-          className={[styles.shopHeroContent, styles.fadeInStart].join(' ')}
+          className={[styles.shopHeroContent, fadeStyles.fadeInStart].join(' ')}
           data-fade
           style={{ transitionDelay: '0.12s' }}
         >
@@ -125,7 +126,7 @@ export default function ShopPage() {
             {heroHighlights.map((highlight, index) => (
               <li
                 key={highlight}
-                className={styles.fadeInStart}
+                className={fadeStyles.fadeInStart}
                 data-fade
                 style={{ transitionDelay: `${index * 0.08 + 0.2}s` }}
               >
@@ -144,7 +145,7 @@ export default function ShopPage() {
           </div>
         </div>
         <div
-          className={[styles.shopHeroMosaic, styles.fadeInStart].join(' ')}
+          className={[styles.shopHeroMosaic, fadeStyles.fadeInStart].join(' ')}
           data-fade
           style={{ transitionDelay: '0.18s' }}
         >
@@ -182,11 +183,11 @@ export default function ShopPage() {
       </section>
 
       <section
-        className={[styles.shopHighlightsSection, styles.fadeInStart].join(' ')}
+        className={[styles.shopHighlightsSection, fadeStyles.fadeInStart].join(' ')}
         data-fade
         style={{ transitionDelay: '0.18s' }}
       >
-        <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.22s' }}>
+        <div className={fadeStyles.fadeInStart} data-fade style={{ transitionDelay: '0.22s' }}>
           <h2>What’s glowing right now</h2>
           <p>
             Curated edits to find your perfect match—browse by category or dive straight into the pieces our collectors
@@ -194,15 +195,15 @@ export default function ShopPage() {
           </p>
         </div>
         <div className={styles.shopStats}>
-          <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.26s' }}>
+          <div className={fadeStyles.fadeInStart} data-fade style={{ transitionDelay: '0.26s' }}>
             <span>250+</span>
             <p>Jewellery designs available online</p>
           </div>
-          <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.32s' }}>
+          <div className={fadeStyles.fadeInStart} data-fade style={{ transitionDelay: '0.32s' }}>
             <span>72 hrs</span>
             <p>Average delivery on in-stock pieces</p>
           </div>
-          <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.38s' }}>
+          <div className={fadeStyles.fadeInStart} data-fade style={{ transitionDelay: '0.38s' }}>
             <span>Lifetime</span>
             <p>Complimentary replating & sizing</p>
           </div>
@@ -210,11 +211,11 @@ export default function ShopPage() {
       </section>
 
       <section
-        className={[styles.shopCategorySection, styles.fadeInStart].join(' ')}
+        className={[styles.shopCategorySection, fadeStyles.fadeInStart].join(' ')}
         data-fade
         style={{ transitionDelay: '0.24s' }}
       >
-        <div className={[styles.sectionHeading, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.28s' }}>
+        <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.28s' }}>
           <h2>Shop by mood or moment</h2>
           <p>Choose your starting point and build your story from there.</p>
         </div>
@@ -222,7 +223,7 @@ export default function ShopPage() {
           {categoryCards.map((category, index) => (
             <article
               key={category.name}
-              className={[styles.shopCategoryCard, styles.fadeInStart].join(' ')}
+              className={[styles.shopCategoryCard, fadeStyles.fadeInStart].join(' ')}
               data-fade
               style={{ transitionDelay: `${index * 0.08 + 0.18}s` }}
             >
@@ -254,11 +255,11 @@ export default function ShopPage() {
       </section>
 
       <section
-        className={[styles.shopCuratedSection, styles.fadeInStart].join(' ')}
+        className={[styles.shopCuratedSection, fadeStyles.fadeInStart].join(' ')}
         data-fade
         style={{ transitionDelay: '0.28s' }}
       >
-        <div className={[styles.sectionHeading, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.32s' }}>
+        <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.32s' }}>
           <h2>Curated sets from the studio</h2>
           <p>Ready-to-wear combinations designed by our stylists for instant polish.</p>
         </div>
@@ -266,7 +267,7 @@ export default function ShopPage() {
           {curatedSets.map((set, index) => (
             <article
               key={set.name}
-              className={[styles.shopCuratedCard, styles.fadeInStart].join(' ')}
+              className={[styles.shopCuratedCard, fadeStyles.fadeInStart].join(' ')}
               data-fade
               style={{ transitionDelay: `${index * 0.1 + 0.22}s` }}
             >
@@ -291,11 +292,11 @@ export default function ShopPage() {
       </section>
 
       <section
-        className={[styles.shopServicesSection, styles.fadeInStart].join(' ')}
+        className={[styles.shopServicesSection, fadeStyles.fadeInStart].join(' ')}
         data-fade
         style={{ transitionDelay: '0.32s' }}
       >
-        <div className={[styles.sectionHeading, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.36s' }}>
+        <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.36s' }}>
           <h2>Design with us</h2>
           <p>Our concierge team is here to help you find, personalise, and care for your jewels.</p>
         </div>
@@ -303,7 +304,7 @@ export default function ShopPage() {
           {services.map((service, index) => (
             <article
               key={service.title}
-              className={[styles.shopServiceCard, styles.fadeInStart].join(' ')}
+              className={[styles.shopServiceCard, fadeStyles.fadeInStart].join(' ')}
               data-fade
               style={{ transitionDelay: `${index * 0.1 + 0.22}s` }}
             >
@@ -316,15 +317,15 @@ export default function ShopPage() {
       </section>
 
       <section
-        className={[styles.shopCtaBanner, styles.fadeInStart].join(' ')}
+        className={[styles.shopCtaBanner, fadeStyles.fadeInStart].join(' ')}
         data-fade
         style={{ transitionDelay: '0.36s' }}
       >
-        <div className={styles.fadeInStart} data-fade style={{ transitionDelay: '0.4s' }}>
+        <div className={fadeStyles.fadeInStart} data-fade style={{ transitionDelay: '0.4s' }}>
           <h2>Join the Pink Dot circle</h2>
           <p>Subscribe for launch previews, styling notes, and members-only events direct from the studio.</p>
         </div>
-        <div className={[styles.shopCtaActions, styles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.44s' }}>
+        <div className={[styles.shopCtaActions, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.44s' }}>
           <Link href="/contact" className={styles.shopPrimaryButton}>
             Join the list
           </Link>

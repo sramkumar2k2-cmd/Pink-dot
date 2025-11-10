@@ -168,6 +168,7 @@
   height: 100%;
   display: flex;
   align-items: center;
+  padding-bottom: 0.5rem;
 }
 
 .dropdownHeader {
@@ -180,7 +181,7 @@
 .dropdownContent {
   display: none;
   position: absolute;
-  top: 100%;
+  top: calc(100% + 0.5rem);
   left: -1rem;
   background-color: #F5EFE6;
   min-width: 220px;
@@ -188,7 +189,6 @@
   border: 1px solid var(--button-secondary-border);
   border-radius: 8px;
   padding: 0.5rem 0;
-  margin-top: 0.5rem;
   opacity: 0;
   transform: translateY(-10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -214,15 +214,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.dropdown:hover .dropdownContent {
-  display: block !important;
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  pointer-events: auto !important;
-  visibility: visible !important;
-  animation: fadeInDown 0.3s ease-out;
 }
 
 .dropdownLink {
@@ -464,11 +455,17 @@
     letter-spacing: 0.18em;
   }
 
-  .mobileSectionButton {
+  .mobileSectionHeaderRow {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    width: 100%;
+    gap: 0.65rem;
+  }
+
+  .mobileSectionLink {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
     padding: 0.85rem 0.9rem;
     border-radius: 14px;
     border: 1px solid rgba(194, 24, 91, 0.18);
@@ -478,31 +475,58 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    cursor: pointer;
+    text-decoration: none;
     transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
   }
 
-  .mobileSectionButton:hover {
+  .mobileSectionLink:hover {
     transform: translateY(-2px);
     border-color: rgba(194, 24, 91, 0.32);
     box-shadow: 0 14px 32px rgba(194, 24, 91, 0.18);
     background: rgba(255, 255, 255, 0.62);
   }
 
-  .mobileSectionButton.open {
+  .mobileSectionLink.active {
+    border-color: rgba(194, 24, 91, 0.45);
+    box-shadow: 0 12px 26px rgba(194, 24, 91, 0.22);
+    background: rgba(255, 255, 255, 0.72);
+  }
+
+  .mobileSectionToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: 1px solid rgba(194, 24, 91, 0.18);
+    background: rgba(255, 255, 255, 0.52);
+    color: #2d0f22;
+    cursor: pointer;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  }
+
+  .mobileSectionToggle:hover {
+    transform: translateY(-2px);
+    border-color: rgba(194, 24, 91, 0.32);
+    box-shadow: 0 14px 32px rgba(194, 24, 91, 0.18);
+    background: rgba(255, 255, 255, 0.62);
+  }
+
+  .mobileSectionToggle.open {
     border-color: rgba(194, 24, 91, 0.42);
     box-shadow: 0 16px 34px rgba(194, 24, 91, 0.22);
     background: rgba(255, 255, 255, 0.7);
+  }
+
+  .mobileSectionToggle.open .mobileSectionIcon {
+    transform: rotate(-180deg);
   }
 
   .mobileSectionIcon {
     width: 16px;
     height: 16px;
     transition: transform 0.25s ease;
-  }
-
-  .mobileSectionButton.open .mobileSectionIcon {
-    transform: rotate(-180deg);
   }
 
   .mobileSectionContent {

@@ -90,7 +90,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://wa.me/1234567890"
+                href="https://wa.me/918105555337"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
@@ -126,6 +126,16 @@ export default function Footer() {
         </div>
 
         <div className={styles.copyrightContainer}>
+          <p className={styles.credits}>
+            Designed & developed by{' '}
+            <a
+              href="https://primepath-next.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Primepath
+            </a>
+          </p>
           <p className={styles.copyright}>
             © {currentYear} Pink Dot. All rights reserved.
           </p>

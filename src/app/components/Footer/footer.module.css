@@ -195,11 +195,31 @@
 
 .copyrightContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.6rem;
   padding: 1.25rem 0 0;
   width: 100%;
   margin-top: 0.75rem;
+}
+
+.credits {
+  margin: 0;
+  color: rgba(38, 35, 33, 0.82);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.credits a {
+  color: #c2185b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.credits a:hover {
+  color: #8b2354;
 }
 
 .copyright {

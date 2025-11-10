@@ -55,6 +55,14 @@ export default function CollectionsPage() {
   return (
     <main className={styles.page}>
       <section className={styles.hero}>
+        <div className={styles.heroDecorations}>
+          <span className={`${styles.heroOrb} ${styles.heroOrbOne}`} />
+          <span className={`${styles.heroOrb} ${styles.heroOrbTwo}`} />
+          <span className={`${styles.heroBeam} ${styles.heroBeamOne}`} />
+          <span className={`${styles.heroBeam} ${styles.heroBeamTwo}`} />
+          <span className={`${styles.heroSpark} ${styles.heroSparkOne}`} />
+          <span className={`${styles.heroSpark} ${styles.heroSparkTwo}`} />
+        </div>
         <div className={styles.heroContent}>
           <span className={styles.heroTag}>Pink Dot Collections</span>
           <h1 className={styles.heroTitle}>Curated worlds of shimmer, tailored to every chapter</h1>

@@ -9,6 +9,7 @@ import styles from './header.module.css';
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const closeTimeoutRef = useRef<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpenSections, setMobileOpenSections] = useState<Record<string, boolean>>({
     Shop: true,
@@ -55,10 +56,6 @@ export default function Header() {
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const toggleDropdown = (dropdownName: string) => {
-    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
   };
 
   const toggleMobileSection = (sectionName: string) => {
@@ -114,52 +111,6 @@ export default function Header() {
 
   // Close dropdown when clicking outside, but not when interacting with dropdown
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (openDropdown && dropdownRef.current) {
-        const target = (event.target as HTMLElement) || 
-                      (event instanceof TouchEvent && event.touches?.[0]?.target as HTMLElement);
-        
-        if (!target) return;
-        
-        // Don't close if clicking inside the dropdown
-        if (dropdownRef.current.contains(target)) {
-          return;
-        }
-        
-        // Don't close if clicking on the dropdown toggle button
-        const toggleButton = target.closest('button.dropdownToggle');
-        if (toggleButton) {
-          return;
-        }
-        
-        // Don't close if clicking on the dropdown header
-        const dropdownHeader = target.closest('.dropdownHeader');
-        if (dropdownHeader) {
-          return;
-        }
-        
-        // Close if clicking outside
-        setOpenDropdown(null);
-      }
-    };
-
-    // Only add listener when dropdown is open
-    if (openDropdown) {
-      // Use setTimeout to avoid immediate closure
-      const timeoutId = setTimeout(() => {
-        document.addEventListener('mousedown', handleClickOutside as EventListener);
-        document.addEventListener('touchstart', handleClickOutside as EventListener, { passive: true });
-      }, 150);
-
-      return () => {
-        clearTimeout(timeoutId);
-        document.removeEventListener('mousedown', handleClickOutside as EventListener);
-        document.removeEventListener('touchstart', handleClickOutside as EventListener);
-      };
-    }
-  }, [openDropdown]);
-
-  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 8);
     };
@@ -173,7 +124,7 @@ export default function Header() {
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
       <div className={styles.container}>
-        <Link href="/shop" className={styles.logo}>
+        <Link href="/" className={styles.logo}>
           <Image
             src="/images/logo.png"
             alt="Pink Dot"
@@ -192,53 +143,65 @@ export default function Header() {
                 key={item.name}
                 ref={openDropdown === item.name ? dropdownRef : null}
                 className={styles.dropdown}
-                onMouseEnter={() => setOpenDropdown(item.name)}
-                onMouseLeave={(e) => {
-                  // Don't close if moving to dropdown content
-                  const relatedTarget = e.relatedTarget as HTMLElement;
-                  if (!relatedTarget || !dropdownRef.current?.contains(relatedTarget)) {
-                    setOpenDropdown(null);
+                onMouseEnter={() => {
+                  if (closeTimeoutRef.current !== null) {
+                    window.clearTimeout(closeTimeoutRef.current);
+                    closeTimeoutRef.current = null;
                   }
+                  setOpenDropdown(item.name);
+                }}
+                onMouseLeave={() => {
+                  closeTimeoutRef.current = window.setTimeout(() => {
+                    setOpenDropdown((current) => (current === item.name ? null : current));
+                  }, 120);
                 }}
               >
                 <div className={`${styles.dropdownHeader} dropdownHeader`}>
                   <Link 
                     href={item.href}
-                    className={`${styles.link} ${pathname.startsWith(item.href) ? styles.active : ''}`}
-                    onClick={() => {
-                      // On click, navigate to page (don't prevent default)
-                      // Close dropdown if it's open when clicking
-                      if (openDropdown === item.name) {
-                        closeDropdown();
+                    className={`${styles.link} ${(pathname.startsWith(item.href) || openDropdown === item.name) ? styles.active : ''}`}
+                    aria-expanded={openDropdown === item.name}
+                    onClick={(event) => {
+                      if (
+                        event.metaKey ||
+                        event.ctrlKey ||
+                        event.shiftKey ||
+                        event.button !== 0
+                      ) {
+                        return;
+                      }
+
+                      if (openDropdown !== item.name) {
+                        event.preventDefault();
+                        setOpenDropdown(item.name);
+                        return;
+                      }
+
+                      closeDropdown();
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+
+                        if (openDropdown !== item.name) {
+                          setOpenDropdown(item.name);
+                        } else {
+                          closeDropdown();
+                        }
                       }
                     }}
                     onTouchStart={(e) => {
-                      // On touch, open dropdown without navigating
                       e.preventDefault();
                       e.stopPropagation();
-                      toggleDropdown(item.name);
+                      if (openDropdown !== item.name) {
+                        setOpenDropdown(item.name);
+                      } else {
+                        closeDropdown();
+                      }
                     }}
                   >
                     {item.name}
                   </Link>
-                  <button
-                    className={`${styles.dropdownToggle} dropdownToggle`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleDropdown(item.name);
-                    }}
-                    aria-label="Toggle dropdown"
-                    onTouchStart={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleDropdown(item.name);
-                    }}
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </button>
                 </div>
                 <div 
                   className={`${styles.dropdownContent} ${openDropdown === item.name ? styles.dropdownOpen : ''}`}
@@ -271,7 +234,10 @@ export default function Header() {
                           key={category.name}
                           href={category.href}
                           className={`${styles.dropdownLink} dropdownLink`}
-                          onClick={closeDropdown}
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            closeDropdown();
+                          }}
                         >
                           {category.name}
                         </Link>
@@ -282,7 +248,10 @@ export default function Header() {
                           key={featured.name}
                           href={featured.href}
                           className={`${styles.dropdownLink} dropdownLink`}
-                          onClick={closeDropdown}
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            closeDropdown();
+                          }}
                         >
                           {featured.name}
                         </Link>
@@ -298,7 +267,10 @@ export default function Header() {
                           key={col.name}
                           href={col.href}
                           className={`${styles.dropdownLink} dropdownLink`}
-                          onClick={closeDropdown}
+                          onClick={() => {
+                            setIsMobileMenuOpen(false);
+                            closeDropdown();
+                          }}
                         >
                           {col.name}
                         </Link>
@@ -344,7 +316,7 @@ export default function Header() {
         aria-label="Mobile navigation"
       >
         <div className={styles.mobileMenuHeader}>
-          <Link href="/shop" className={styles.mobileLogo} onClick={() => setIsMobileMenuOpen(false)}>
+          <Link href="/" className={styles.mobileLogo} onClick={() => setIsMobileMenuOpen(false)}>
             <Image
               src="/images/logo.png"
               alt="Pink Dot"
@@ -367,18 +339,33 @@ export default function Header() {
 
         <div className={styles.mobileMenuContent}>
           <div className={styles.mobileSection}>
-            <button
-              type="button"
-              className={`${styles.mobileSectionButton} ${mobileOpenSections.Shop ? styles.open : ''}`}
-              onClick={() => toggleMobileSection('Shop')}
-              aria-expanded={mobileOpenSections.Shop}
+            <div className={styles.mobileSectionHeaderRow}>
+              <Link
+                href="/shop"
+                className={`${styles.mobileSectionLink} ${pathname.startsWith('/shop') ? styles.active : ''}`}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setOpenDropdown(null);
+                }}
+              >
+                Shop
+              </Link>
+              <button
+                type="button"
+                className={`${styles.mobileSectionToggle} ${mobileOpenSections.Shop ? styles.open : ''}`}
+                onClick={() => toggleMobileSection('Shop')}
+                aria-expanded={mobileOpenSections.Shop}
+                aria-controls="mobile-section-shop"
+              >
+                <svg className={styles.mobileSectionIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+            <div
+              id="mobile-section-shop"
+              className={`${styles.mobileSectionContent} ${mobileOpenSections.Shop ? styles.open : ''}`}
             >
-              <span>Shop</span>
-              <svg className={styles.mobileSectionIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <div className={`${styles.mobileSectionContent} ${mobileOpenSections.Shop ? styles.open : ''}`}>
               <div className={styles.mobileGroupHeading}>Categories</div>
               {shopMenu.categories.map((category) => (
                 <Link
@@ -405,18 +392,33 @@ export default function Header() {
           </div>
 
           <div className={styles.mobileSection}>
-            <button
-              type="button"
-              className={`${styles.mobileSectionButton} ${mobileOpenSections.Collections ? styles.open : ''}`}
-              onClick={() => toggleMobileSection('Collections')}
-              aria-expanded={mobileOpenSections.Collections}
+            <div className={styles.mobileSectionHeaderRow}>
+              <Link
+                href="/collections"
+                className={`${styles.mobileSectionLink} ${pathname.startsWith('/collections') ? styles.active : ''}`}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setOpenDropdown(null);
+                }}
+              >
+                Collections
+              </Link>
+              <button
+                type="button"
+                className={`${styles.mobileSectionToggle} ${mobileOpenSections.Collections ? styles.open : ''}`}
+                onClick={() => toggleMobileSection('Collections')}
+                aria-expanded={mobileOpenSections.Collections}
+                aria-controls="mobile-section-collections"
+              >
+                <svg className={styles.mobileSectionIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </div>
+            <div
+              id="mobile-section-collections"
+              className={`${styles.mobileSectionContent} ${mobileOpenSections.Collections ? styles.open : ''}`}
             >
-              <span>Collections</span>
-              <svg className={styles.mobileSectionIcon} width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
-            <div className={`${styles.mobileSectionContent} ${mobileOpenSections.Collections ? styles.open : ''}`}>
               {collectionsMenu.items.map((col) => (
                 <Link
                   key={col.name}
