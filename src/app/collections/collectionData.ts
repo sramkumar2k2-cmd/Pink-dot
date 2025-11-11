@@ -65,7 +65,7 @@ export const collections: Collection[] = [
     heroImage: "/images/neck2.jpeg",
     gallery: ["/images/neck2.jpeg", "/images/neck3.jpeg", "/images/neck4.jpeg", "/images/neck5.jpeg"],
     description:
-      "Bold lines, mirrored symmetry, and a touch of jazz-age drama define the Art Deco Revival collection. Inspired by the golden age of cocktail parties, each piece pairs architectural silhouettes with luxurious finishes.",
+      "Bold lines, mirrored symmetry, and a touch of jazz-age drama define the Art Deco Revival collection. Inspired by the glittering age of cocktail parties, each piece pairs architectural silhouettes with luxurious finishes.",
     story:
       "We dug through archives of 1920s invitation cards, skyscraper blueprints, and flapper embellishments to create a collection rich in history yet unmistakably contemporary. Sleek enamel, mixed metals, and sharp profiles bring vintage nostalgia into the present.",
     highlights: [
@@ -141,7 +141,7 @@ export const collections: Collection[] = [
   {
     slug: "summer-collection",
     name: "Summer Collection",
-    tagline: "Colour-drenched gems made for golden hours and getaway adventures.",
+  tagline: "Colour-drenched gems made for sunset hours and getaway adventures.",
     heroImage: "/images/neck5.jpeg",
     gallery: ["/images/neck5.jpeg", "/images/neck2.jpeg", "/images/neck6.jpeg", "/images/neck3.jpeg"],
     description:

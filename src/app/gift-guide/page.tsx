@@ -31,17 +31,17 @@ const recipientGuides = [
 
 const priceEdits = [
   {
-    priceRange: 'Under £150',
+    priceRange: 'Under ₹15,000',
     pieces: ['Luna Glow Studs', 'Seren Wrap Anklet', 'Stella Orbit Charm'],
     image: '/images/earrings1.jpeg',
   },
   {
-    priceRange: 'Under £300',
+    priceRange: 'Under ₹30,000',
     pieces: ['Muse Charm Chain', 'Nova Ear Climbers', 'Celestine Ear Thread'],
     image: '/images/bracelets4.jpeg',
   },
   {
-    priceRange: 'Under £500',
+    priceRange: 'Under ₹50,000',
     pieces: ['Aurora Tidal Bangle', 'Solstice Hoops', 'Elysian Collar'],
     image: '/images/neck4.jpeg',
   },
@@ -69,13 +69,13 @@ const curatedSets = [
   {
     name: 'Morning Muse Trio',
     description: 'Solstice Hoops, Muse Charm Chain, and Nova Crown Band for the everyday glow-getter.',
-    price: '£520 bundle',
+    price: '₹52,000 bundle',
     image: '/images/bracelets2.jpeg',
   },
   {
     name: 'Moonlit Soirée Set',
     description: 'Opaline Chandeliers, Celestial Halo Ring, and Aurora Lariat for an evening to remember.',
-    price: '£895 bundle',
+    price: '₹89,500 bundle',
     image: '/images/ring5.jpeg',
   },
 ];
@@ -88,7 +88,7 @@ export default function GiftGuidePage() {
           <span className={styles.heroTag}>Pink Dot Gift Guide</span>
           <h1 className={styles.heroTitle}>Gifts that sparkle with their story</h1>
           <p className={styles.heroSubtitle}>
-            Discover jewellery chosen to celebrate every moment—from first milestones to golden anniversaries. Curated
+            Discover jewellery chosen to celebrate every moment—from first milestones to milestone anniversaries. Curated
             edits, bespoke services, and thoughtful finishing touches make gifting effortless.
           </p>
           <div className={styles.heroActions}>

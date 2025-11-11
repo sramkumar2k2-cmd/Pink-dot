@@ -1,291 +1,107 @@
-.allJewelleryHero {
-  position: relative;
-  overflow: hidden;
-  border-radius: 28px;
-  padding: 4.5rem 3rem;
-  background:
-    linear-gradient(135deg, rgba(245, 239, 230, 0.92), rgba(249, 200, 227, 0.82)),
-    url("/images/neck6.jpeg") center/cover no-repeat;
-  box-shadow: 0 28px 60px rgba(31, 38, 135, 0.18);
-  margin-bottom: 2.5rem;
-  color: #2d3047;
-}
-
-.allJewelleryHero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 25% 20%, rgba(255, 255, 255, 0.55), transparent 55%),
-              radial-gradient(circle at 80% 35%, rgba(255, 192, 203, 0.35), transparent 60%);
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-.allJewelleryHeroAura,
-.allJewelleryHeroDust {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.allJewelleryHeroAura::before,
-.allJewelleryHeroAura::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent 70%);
-  animation: heroPulse 8s infinite alternate ease-in-out;
-}
-
-.allJewelleryHeroAura::before {
-  width: 420px;
-  height: 420px;
-  top: -120px;
-  left: -160px;
-}
-
-.allJewelleryHeroAura::after {
-  width: 360px;
-  height: 360px;
-  bottom: -160px;
-  right: -120px;
-  animation-delay: 2s;
-}
-
-.allJewelleryHeroDust::before,
-.allJewelleryHeroDust::after {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
-  background-size: 18px 18px;
-  opacity: 0.35;
-  mix-blend-mode: screen;
-  animation: sparkleDrift 12s linear infinite;
-}
-
-.allJewelleryHeroDust::after {
-  animation-direction: reverse;
-  animation-duration: 16s;
-  opacity: 0.22;
-}
-
-.allJewelleryHeroInner {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-  gap: 3rem;
-  align-items: center;
-}
-
-.allJewelleryHeroContent {
+.shopPage {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 4rem) clamp(3.5rem, 7vw, 5.5rem);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  max-width: 560px;
+  gap: clamp(2.5rem, 5vw, 3.5rem);
 }
 
-.allJewelleryKicker {
-  display: inline-block;
-  font-size: 0.85rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(45, 48, 71, 0.7);
-  background: rgba(255, 255, 255, 0.6);
-  padding: 0.45rem 0.9rem;
-  border-radius: 999px;
-  position: relative;
-  z-index: 2;
+.shopSections {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 5rem);
 }
 
-.allJewelleryHeroTitle {
-  font-size: clamp(2.6rem, 4vw, 4rem);
-  font-weight: 700;
-  margin: 1.5rem 0 1rem;
-  line-height: 1.1;
-  position: relative;
-  z-index: 2;
-  color: #2d3047;
+.highlight {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 50%, #ffb6c1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.allJewelleryHeroCopy {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  max-width: 760px;
-  margin: 0 0 2.5rem;
-  color: rgba(45, 48, 71, 0.78);
-}
-
-.allJewelleryHeroActions {
-  display: inline-flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.heroPrimaryCta,
-.heroSecondaryCta {
-  padding: 0.9rem 2.4rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.heroPrimaryCta {
-  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
-  color: #ffffff;
-  box-shadow: 0 18px 42px rgba(194, 24, 91, 0.35);
-}
-
-.heroPrimaryCta:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 22px 50px rgba(194, 24, 91, 0.45);
-}
-
-.heroSecondaryCta {
-  background: rgba(255, 255, 255, 0.88);
-  color: #2d3047;
-  border: 1px solid rgba(194, 24, 91, 0.25);
-  box-shadow: 0 14px 28px rgba(45, 48, 71, 0.1);
-}
-
-.heroSecondaryCta:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 18px 34px rgba(45, 48, 71, 0.15);
-}
-
-.heroVisual {
-  position: relative;
-  border-radius: 26px;
-  padding: 1.8rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(250, 231, 243, 0.55));
-  box-shadow:
-    inset 0 0 35px rgba(255, 255, 255, 0.32),
-    0 26px 60px rgba(31, 38, 135, 0.18);
-}
-
-.heroNecklaceFrame {
-  position: absolute;
-  inset: 1.2rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  mix-blend-mode: screen;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.heroNecklaceImage {
-  position: relative;
-  width: 100%;
-  height: auto;
-  border-radius: 18px;
-  box-shadow: 0 30px 70px rgba(31, 38, 135, 0.22);
-  object-fit: cover;
-  z-index: 2;
-}
-
-.heroSparkle {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.12) 70%);
-  border-radius: 50%;
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.6);
-  animation: sparkleBlink 6s infinite ease-in-out;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.heroSparkleOne {
-  top: 14%;
-  left: 18%;
-  animation-delay: 0s;
-}
-
-.heroSparkleTwo {
-  bottom: 18%;
-  right: 16%;
-  animation-delay: 1.5s;
-}
-
-.heroSparkleThree {
-  bottom: 32%;
-  left: 30%;
-  animation-delay: 3s;
-}
-
-.heroSparkleFour {
-  top: 28%;
-  right: 24%;
-  animation-delay: 4.2s;
-}
-
-.collectionSpotlightSection {
-  margin: 4rem 0 3rem;
-}
-
+.sectionHeading,
 .collectionSectionHeading {
   text-align: center;
   max-width: 720px;
   margin: 0 auto 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
 }
 
+.sectionHeading h2,
 .collectionSectionTitle {
   font-size: clamp(2rem, 3.2vw, 2.6rem);
   font-weight: 700;
   color: #2d3047;
-  margin-bottom: 1rem;
 }
 
+.sectionHeading p,
 .collectionSectionSubtitle {
   color: rgba(45, 48, 71, 0.7);
   line-height: 1.7;
   font-size: 1.05rem;
 }
 
-.allJewelleryHero::before {
-  content: "";
-  position: absolute;
-  inset: 12%;
-  border-radius: 26px;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  mix-blend-mode: screen;
-  z-index: 1;
-  pointer-events: none;
-}
-.page {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
+.collectionSpotlightSection {
+  margin-top: 1.5rem;
 }
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  color: var(--text-primary);
+.shopHighlightsSection {
+  background: linear-gradient(135deg, rgba(255, 244, 247, 0.95), rgba(255, 228, 237, 0.9));
+  border-radius: 28px;
+  padding: clamp(2rem, 4vw, 3rem);
+  box-shadow: 0 28px 55px rgba(194, 24, 91, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.2rem);
 }
 
-.subtitle {
-  font-size: 1.1rem;
+.shopHighlightsSection h2 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.9rem, 3vw, 2.3rem);
+  color: #2d3047;
+}
+
+.shopHighlightsSection p {
+  color: rgba(45, 48, 71, 0.72);
+  line-height: 1.7;
   max-width: 640px;
-  color: var(--text-secondary, #555555);
-  margin-bottom: 2.5rem;
-  line-height: 1.6;
 }
+
+.shopStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: clamp(1rem, 2.5vw, 1.6rem);
+}
+
+.shopStats div {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  box-shadow: 0 18px 35px rgba(45, 48, 71, 0.12);
+}
+
+.shopStats span {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #c2185b;
+  margin-bottom: 0.35rem;
+}
+
+.shopStats p {
+  margin: 0;
+  color: rgba(45, 48, 71, 0.68);
+}
+
+.shopCategorySection {}
 
 .shopCategoryGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 2rem;
-  margin-top: 3rem;
 }
 
 .shopCategoryCard {
@@ -343,27 +159,14 @@
   height: 100%;
 }
 
-.shopCategoryPrice {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgba(38, 35, 33, 0.08);
-  color: #2d3047;
-  font-weight: 600;
-  padding: 0.35rem 0.9rem;
-  border-radius: 999px;
-  margin-bottom: 0.9rem;
-  font-size: 0.85rem;
-}
-
-.shopCategoryTitle {
+.shopCategoryContent h3 {
   font-size: 1.4rem;
   font-weight: 700;
   color: #2d3047;
   margin: 0 0 0.65rem;
 }
 
-.shopCategoryDescription {
+.shopCategoryContent p {
   color: rgba(45, 48, 71, 0.75);
   line-height: 1.65;
   font-size: 0.98rem;
@@ -399,506 +202,56 @@
 
 .shopButtonPrimary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 18px 38px rgba(194, 24, 91, 0.42);
+  box-shadow: 0 18px 36px rgba(194, 24, 91, 0.4);
 }
 
 .shopButtonGhost {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   color: #2d3047;
   border: 1px solid rgba(194, 24, 91, 0.25);
-  box-shadow: 0 12px 22px rgba(45, 48, 71, 0.08);
+  box-shadow: 0 8px 18px rgba(45, 48, 71, 0.1);
 }
 
 .shopButtonGhost:hover {
   transform: translateY(-3px);
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 14px 28px rgba(45, 48, 71, 0.1);
-}
-
-.allJewelleryFilterBar {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 2.5rem;
-}
-
-.filterPill {
-  padding: 0.55rem 1.4rem;
-  border-radius: 999px;
-  border: 1px solid rgba(194, 24, 91, 0.25);
-  background: rgba(255, 255, 255, 0.85);
-  color: #2d3047;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.filterPill:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 22px rgba(45, 48, 71, 0.12);
-}
-
-.filterPillActive {
-  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 18px 32px rgba(194, 24, 91, 0.35);
-}
-
-.allJewelleryProductGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 2rem;
-}
-
-.allJewelleryProductCard {
-  background: rgba(255, 255, 255, 0.78);
-  border-radius: 22px;
-  padding: 1.65rem;
-  box-shadow: 0 20px 40px rgba(31, 38, 135, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.35s ease, box-shadow 0.35s ease;
-}
-
-.allJewelleryProductCard:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 28px 60px rgba(31, 38, 135, 0.2);
-}
-
-.allJewelleryProductImageWrapper {
-  position: relative;
-  display: block;
-  border-radius: 18px;
-  overflow: hidden;
-  aspect-ratio: 1;
-  margin-bottom: 1.2rem;
-}
-
-.allJewelleryProductImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.allJewelleryProductCard:hover .allJewelleryProductImage {
-  transform: scale(1.05);
-}
-
-.allJewelleryBadge {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #c2185b;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  box-shadow: 0 10px 22px rgba(194, 24, 91, 0.22);
-}
-
-.allJewelleryProductInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.allJewelleryPriceTag {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  background: rgba(38, 35, 33, 0.08);
-  color: #2d3047;
-  font-weight: 600;
-  font-size: 0.92rem;
-}
-
-.allJewelleryProductTitle {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #2d3047;
-  margin: 0;
-}
-
-.allJewelleryProductDescription {
-  color: rgba(45, 48, 71, 0.7);
-  line-height: 1.6;
-  font-size: 0.95rem;
-  margin: 0;
-}
-
-.allJewelleryActions {
-  margin-top: auto;
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.primaryButton,
-.ghostButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.6rem 1.4rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  text-decoration: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-}
-
-.primaryButton {
-  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
-  color: #ffffff;
-  box-shadow: 0 14px 32px rgba(194, 24, 91, 0.32);
-  border: none;
-}
-
-.primaryButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 38px rgba(194, 24, 91, 0.42);
-}
-
-.ghostButton {
-  background: rgba(255, 255, 255, 0.9);
-  color: #2d3047;
-  border: 1px solid rgba(194, 24, 91, 0.25);
-  box-shadow: 0 10px 20px rgba(45, 48, 71, 0.08);
-}
-
-.ghostButton:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 14px 28px rgba(45, 48, 71, 0.12);
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 1rem 0;
-}
-
-.card {
-  background: rgba(255, 255, 255, 0.65);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 15px 35px rgba(31, 38, 135, 0.1);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 45px rgba(31, 38, 135, 0.18);
-}
-
-.card h2 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  color: var(--text-primary);
-}
-
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 0.75rem;
-}
-
-.list li a {
-  color: var(--text-primary);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease, transform 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.list li a::after {
-  content: "→";
-  font-size: 0.85rem;
-  transform: translateX(0);
-  transition: transform 0.2s ease;
-}
-
-.list li a:hover {
-  color: var(--accent-color, #d2649a);
-  transform: translateX(4px);
-}
-
-.list li a:hover::after {
-  transform: translateX(4px);
-}
-
-.shopPage {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(3rem, 6vw, 5rem);
-  padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 4rem) clamp(3.5rem, 7vw, 5.5rem);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.shopHero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-  gap: clamp(2.5rem, 5vw, 4rem);
-  background: linear-gradient(125deg, rgba(255, 244, 247, 0.9), rgba(255, 226, 236, 0.92));
-  border-radius: 32px;
-  padding: clamp(2.4rem, 4.5vw, 3.4rem);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 32px 60px rgba(194, 24, 91, 0.12);
-}
-
-.shopHero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.6), transparent 60%);
-  pointer-events: none;
-}
-
-.shopHeroContent {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.shopHeroTag {
-  display: inline-flex;
-  align-self: flex-start;
-  padding: 0.45rem 1rem;
-  border-radius: 999px;
-  font-size: 0.82rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.9);
-  color: #8b2354;
-  font-weight: 600;
-}
-
-.shopHeroTitle {
-  font-size: clamp(2.6rem, 4.6vw, 3.8rem);
-  line-height: 1.1;
-  color: #2d0f22;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.shopHeroSubtitle {
-  font-size: 1.1rem;
-  line-height: 1.75;
-  color: rgba(45, 15, 34, 0.75);
-  max-width: 36rem;
-}
-
-.shopHeroHighlights {
-  display: grid;
-  gap: 0.75rem;
-  color: rgba(45, 15, 34, 0.7);
-  font-size: 0.96rem;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.shopHeroHighlights li {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.shopHighlightDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
-  box-shadow: 0 0 12px rgba(240, 98, 146, 0.45);
-}
-
-.shopHeroActions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.shopPrimaryButton,
-.shopSecondaryButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1.9rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 0.98rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  border: none;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.shopPrimaryButton {
-  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
-  color: #ffffff;
-  box-shadow: 0 12px 26px rgba(194, 24, 91, 0.28);
-}
-
-.shopPrimaryButton:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 32px rgba(194, 24, 91, 0.38);
-}
-
-.shopSecondaryButton {
-  background: rgba(255, 255, 255, 0.88);
-  color: #2d0f22;
-  border: 1px solid rgba(194, 24, 91, 0.3);
-  box-shadow: 0 8px 18px rgba(45, 15, 34, 0.1);
-}
-
-.shopSecondaryButton:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 1);
-  box-shadow: 0 12px 26px rgba(45, 15, 34, 0.16);
-}
-
-.shopHeroMosaic {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.2rem;
-}
-
-.shopHeroPrimary {
-  position: relative;
-  border-radius: 26px;
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  box-shadow: 0 26px 48px rgba(45, 15, 34, 0.16);
-}
-
-.shopHeroSecondary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.2rem;
-}
-
-.shopHeroTile {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  aspect-ratio: 1;
-  box-shadow: 0 18px 36px rgba(45, 15, 34, 0.14);
-}
-
-.shopHeroImage {
-  object-fit: cover;
-}
-
-.shopHighlightsSection {
-  display: flex;
-  justify-content: space-between;
-  gap: clamp(1.5rem, 3vw, 2.5rem);
-  align-items: center;
-  flex-wrap: wrap;
-  background: linear-gradient(120deg, rgba(194, 24, 91, 0.08), rgba(240, 98, 146, 0.12));
-  padding: clamp(1.8rem, 3.5vw, 2.5rem);
-  border-radius: 26px;
-  color: #2d0f22;
-  box-shadow: 0 24px 48px rgba(194, 24, 91, 0.12);
-}
-
-.shopHighlightsSection h2 {
-  margin-bottom: 0.6rem;
-  font-size: clamp(1.9rem, 3.2vw, 2.3rem);
-}
-
-.shopHighlightsSection p {
-  margin: 0;
-  color: rgba(45, 15, 34, 0.7);
-  max-width: 360px;
-  line-height: 1.6;
-}
-
-.shopStats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-}
-
-.shopStats div {
-  min-width: 160px;
-  display: grid;
-  gap: 0.4rem;
-}
-
-.shopStats span {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #c2185b;
-}
-
-.shopStats p {
-  margin: 0;
-  color: rgba(45, 15, 34, 0.7);
-}
-
-.shopCategorySection {
-  display: grid;
-  gap: 2.4rem;
-}
-
-.shopCategoryCard h3 {
-  margin: 0 0 0.6rem;
-  font-size: 1.2rem;
-  color: #2d3047;
-  font-weight: 600;
-}
-
-.shopCategoryCard p {
-  margin: 0;
-  color: rgba(45, 48, 71, 0.72);
-  line-height: 1.6;
+  box-shadow: 0 12px 24px rgba(45, 48, 71, 0.14);
 }
 
 .shopCuratedSection {
-  display: grid;
-  gap: 2.4rem;
+  background: linear-gradient(130deg, rgba(255, 255, 255, 0.92), rgba(255, 233, 242, 0.86));
+  border-radius: 28px;
+  padding: clamp(2rem, 4vw, 3rem);
+  box-shadow: 0 30px 58px rgba(194, 24, 91, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.8rem, 3vw, 2.4rem);
 }
 
 .shopCuratedGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: clamp(1.4rem, 3vw, 2rem);
+  gap: clamp(1.6rem, 3vw, 2rem);
 }
 
 .shopCuratedCard {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 22px 40px rgba(45, 15, 34, 0.12);
+  box-shadow: 0 20px 45px rgba(194, 24, 91, 0.12);
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.shopCuratedCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 55px rgba(194, 24, 91, 0.18);
 }
 
 .shopCuratedImage {
   position: relative;
-  width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 4 / 3;
 }
 
 .shopCuratedPhoto {
@@ -906,94 +259,79 @@
 }
 
 .shopCuratedContent {
+  padding: 1.8rem;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  padding: 1.8rem;
+  color: #2d3047;
 }
 
 .shopCuratedContent span {
   font-weight: 600;
   color: #c2185b;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 0.78rem;
 }
 
 .shopCuratedContent h3 {
   margin: 0;
-  font-size: 1.25rem;
-  color: #2d0f22;
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .shopCuratedContent p {
   margin: 0;
-  color: rgba(45, 15, 34, 0.72);
+  color: rgba(45, 48, 71, 0.7);
   line-height: 1.6;
 }
 
 .shopCuratedContent a {
-  align-self: flex-start;
   color: #c2185b;
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid rgba(194, 24, 91, 0.35);
-  padding-bottom: 0.15rem;
-  transition: color 0.25s ease, border-color 0.25s ease;
 }
 
 .shopCuratedContent a:hover {
-  color: #f06292;
-  border-color: rgba(240, 98, 146, 0.6);
+  text-decoration: underline;
 }
 
-.shopServicesSection {
-  display: grid;
-  gap: 2.4rem;
-}
+.shopServicesSection {}
 
 .shopServicesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: clamp(1.3rem, 3vw, 1.8rem);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(1.5rem, 3vw, 2rem);
 }
 
 .shopServiceCard {
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.88);
   border-radius: 20px;
   padding: 1.8rem;
-  box-shadow: 0 20px 36px rgba(45, 15, 34, 0.1);
+  box-shadow: 0 18px 38px rgba(31, 38, 135, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.6rem;
+  color: #2d3047;
 }
 
 .shopServiceCard h3 {
   margin: 0;
-  font-size: 1.2rem;
-  color: #2d0f22;
+  font-size: 1.25rem;
   font-weight: 600;
 }
 
 .shopServiceCard p {
   margin: 0;
-  color: rgba(45, 15, 34, 0.7);
+  color: rgba(45, 48, 71, 0.7);
   line-height: 1.6;
 }
 
 .shopServiceCard a {
-  align-self: flex-start;
   color: #c2185b;
   font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px solid rgba(194, 24, 91, 0.35);
-  padding-bottom: 0.15rem;
-  transition: color 0.25s ease, border-color 0.25s ease;
 }
 
 .shopServiceCard a:hover {
-  color: #f06292;
-  border-color: rgba(240, 98, 146, 0.6);
+  text-decoration: underline;
 }
 
 .shopCtaBanner {
@@ -1002,11 +340,11 @@
   gap: clamp(1.5rem, 3vw, 2.5rem);
   align-items: center;
   flex-wrap: wrap;
-  background: linear-gradient(120deg, #f06292 0%, #ffc1d5 100%);
-  padding: clamp(1.9rem, 3.5vw, 2.6rem);
+  background: linear-gradient(120deg, #b08aff 0%, #e0d3ff 100%);
+  padding: clamp(1.8rem, 3.5vw, 2.5rem);
   border-radius: 26px;
-  color: #2d0f22;
-  box-shadow: 0 28px 55px rgba(240, 98, 146, 0.28);
+  color: #2c1f46;
+  box-shadow: 0 28px 55px rgba(176, 138, 255, 0.28);
 }
 
 .shopCtaBanner h2 {
@@ -1016,7 +354,7 @@
 
 .shopCtaBanner p {
   margin: 0;
-  color: rgba(45, 15, 34, 0.75);
+  color: rgba(44, 31, 70, 0.75);
   max-width: 420px;
   line-height: 1.6;
 }
@@ -1027,103 +365,78 @@
   gap: 1rem;
 }
 
+.shopPrimaryButton,
+.shopSecondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.8rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.shopPrimaryButton {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  box-shadow: 0 16px 36px rgba(194, 24, 91, 0.35);
+}
+
+.shopPrimaryButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 42px rgba(194, 24, 91, 0.4);
+}
+
+.shopSecondaryButton {
+  background: rgba(255, 255, 255, 0.9);
+  color: #2d3047;
+  border: 1px solid rgba(194, 24, 91, 0.25);
+  box-shadow: 0 8px 18px rgba(45, 48, 71, 0.1);
+}
+
+.shopSecondaryButton:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 12px 26px rgba(45, 48, 71, 0.16);
+}
+
+@media (max-width: 1024px) {
+  .shopCuratedGrid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .shopServicesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
 @media (max-width: 768px) {
-  .page {
-    padding: 1rem;
+  .shopPage {
+    padding: 2.2rem 1.25rem 2.8rem;
   }
 
-  .allJewelleryHero {
-    padding: 3.5rem 1.5rem 3rem;
+  .shopCategoryGrid,
+  .shopCuratedGrid,
+  .shopServicesGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
-  
-  .allJewelleryHeroInner {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .allJewelleryHeroContent {
-    max-width: 100%;
-  }
+}
 
-  .allJewelleryHeroActions {
+@media (max-width: 540px) {
+  .shopButtonPrimary,
+  .shopButtonGhost,
+  .shopPrimaryButton,
+  .shopSecondaryButton,
+  .shopCtaActions {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .heroPrimaryCta,
-  .heroSecondaryCta {
-    width: 100%;
-  }
-
-  .heroVisual {
-    padding: 1rem;
-  }
-
-  .heroSparkleThree,
-  .heroSparkleFour {
-    display: none;
-  }
-  
-  .title {
-    font-size: 2rem;
-  }
-  
-  .card {
-    padding: 1.25rem;
-  }
-
-  .shopCategoryGrid {
-    margin-top: 2.5rem;
-  }
-
-  .shopCategoryContent {
-    padding: 1.5rem;
-  }
-
-  .shopCategoryActions {
-    flex-direction: column;
-  }
-
-  .allJewelleryFilterBar {
-    gap: 0.5rem;
-  }
-
-  .filterPill {
-    flex: 1 1 calc(50% - 0.5rem);
-    text-align: center;
-  }
-
-  .allJewelleryProductGrid {
-    gap: 1.5rem;
-  }
-
-  .primaryButton,
-  .ghostButton {
-    flex: 1 1 100%;
-    text-align: center;
-  }
-
-  .shopHero {
+  .shopCategoryGrid,
+  .shopCuratedGrid,
+  .shopServicesGrid {
     grid-template-columns: 1fr;
-  }
-
-  .shopHeroMosaic {
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  }
-
-  .shopHighlightsSection {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .shopCtaBanner {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .shopCtaActions,
-  .shopHeroActions {
-    flex-direction: column;
-    align-items: stretch;
   }
 }

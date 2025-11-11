@@ -4,7 +4,7 @@
      --foreground: primary foreground / text (nav/header navy)
      --text-primary: main text color
      --text-secondary: secondary text color
-     --accent: rose-gold accents
+    --accent: blush-toned accents
      --button-secondary-border: light grey borders
      --button-primary-hover: darker navy for hover states
   */
@@ -12,7 +12,7 @@
   --foreground: #2D3047; /* navy blue (primary text/header) */
   --text-primary: #2D3047;
   --text-secondary: rgba(45,48,71,0.65);
-  --accent: #E8C4C4; /* rose gold equivalent */
+  --accent: #E8C4C4; /* blush metal equivalent */
   --button-secondary-border: #F0F0F0; /* light grey borders */
   --button-primary-hover: #1f2338; /* darker navy for hover */
 }
