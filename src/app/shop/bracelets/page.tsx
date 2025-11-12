@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const heroHighlights = [
@@ -29,62 +32,18 @@ const spotlight = {
   image: '/images/bracelets3.jpeg',
 };
 
-const products = [
-  {
-    name: 'Muse Charm Chain',
-    description: 'Petite talismans layered along a rolo chain for sound and sparkle.',
-    price: '₹18,500',
-    detail: '18k blush vermeil',
-    tag: 'New',
-    gradient: 'linear-gradient(135deg, #ffe9f1 0%, #ffdbe9 45%, #ffeef5 100%)',
-    image: '/images/bracelets1.jpeg',
-  },
-  {
-    name: 'Aster Cuff',
-    description: 'Sculpted cuff with starlight engraving and a satin interior finish.',
-    price: '₹21,000',
-    detail: 'Recycled Sterling Silver',
-    tag: 'Back in stock',
-    gradient: 'linear-gradient(135deg, #edf3ff 0%, #dfe9ff 50%, #eef4ff 100%)',
-    image: '/images/bracelets2.jpeg',
-  },
-  {
-    name: 'Luna Pearl Duo',
-    description: 'Freshwater pearls paired with silk cord for effortless layering.',
-    price: '₹16,800',
-    detail: 'Freshwater Pearl',
-    tag: 'Set of 2',
-    gradient: 'linear-gradient(135deg, #fdf3d7 0%, #ffe9bf 50%, #fff3de 100%)',
-    image: '/images/bracelets4.jpeg',
-  },
-  {
-    name: 'Aurora Tidal Bangle',
-    description: 'Wave-shaped bangle with hand-cut mother-of-pearl inlay.',
-    price: '₹24,800',
-    detail: 'Mother-of-Pearl',
-    tag: 'Limited',
-    gradient: 'linear-gradient(135deg, #eafaf6 0%, #d4f3ec 45%, #eefcf8 100%)',
-    image: '/images/bracelets5.jpeg',
-  },
-  {
-    name: 'Seraphine Wrap',
-    description: 'Double wrap leather bracelet with gleaming magnetic clasp.',
-    price: '₹14,200',
-    detail: 'Italian Nappa Leather',
-    tag: 'Editor’s pick',
-    gradient: 'linear-gradient(135deg, #fff1ea 0%, #ffd9cb 50%, #ffe8dc 100%)',
-    image: '/images/bracelets2.jpeg',
-  },
-  {
-    name: 'Celestia Link Set',
-    description: 'Two stacking link bracelets with removable moonlit charms.',
-    price: '₹27,500',
-    detail: 'Mixed Metal',
-    tag: 'Bundle',
-    gradient: 'linear-gradient(135deg, #f3f6ff 0%, #e7edff 50%, #f5f8ff 100%)',
-    image: '/images/bracelets1.jpeg',
-  },
+const braceletSlugs = [
+  'muse-charm-chain',
+  'aster-cuff',
+  'luna-pearl-duo',
+  'aurora-tidal-bangle',
+  'seraphine-wrap',
+  'celestia-link-set',
 ];
+
+const products = braceletSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const craftsmanshipHighlights = [
   'Each clasp is strength-tested to 5x daily wear to avoid mid-day slippage.',
@@ -149,32 +108,7 @@ export default function BraceletsPage() {
           </div>
           <div className={styles.productsGrid}>
             {products.map((product) => (
-              <article key={product.name} className={styles.productCard}>
-                <div className={styles.productVisual} style={{ backgroundImage: product.gradient }}>
-                  <span className={styles.productTag}>{product.tag}</span>
-                  <div className={styles.productAccent}>{product.detail}</div>
-                  <div className={styles.productImageWrapper}>
-                    <Image
-                      src={product.image}
-                      alt={`${product.name} bracelet`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 280px"
-                      className={styles.productImage}
-                    />
-                  </div>
-                </div>
-                <div className={styles.productContent}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productDescription}>{product.description}</p>
-                  <div className={styles.productDetails}>
-                    <span>{product.detail}</span>
-                    <span>{product.price}</span>
-                  </div>
-                  <button type="button" className={styles.productButton}>
-                    Add to cart
-                  </button>
-                </div>
-              </article>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

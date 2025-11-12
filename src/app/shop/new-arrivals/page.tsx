@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const spotlight = {
@@ -22,56 +25,18 @@ const heroSpotlight = {
   swatches: spotlight.features,
 };
 
-const arrivals = [
-  {
-    name: 'Aurora Tidal Bangle',
-    category: 'Bracelet',
-    description: 'Wave-shaped bangle with glistening abalone inlay.',
-    price: '₹24,800',
-    image: '/images/bracelets5.jpeg',
-    badge: 'Fresh drop',
-  },
-  {
-    name: 'Celestine Ear Thread',
-    category: 'Earrings',
-    description: 'Thread-through earrings with crystal dew drops.',
-    price: '₹13,500',
-    image: '/images/earrings4.jpeg',
-    badge: 'Online exclusive',
-  },
-  {
-    name: 'Nova Crown Band',
-    category: 'Ring',
-    description: 'New champagne sheen variation with baguette brilliance.',
-    price: '₹47,200',
-    image: '/images/ring2.jpeg',
-    badge: 'New finish',
-  },
-  {
-    name: 'Elysian Collar',
-    category: 'Necklace',
-    description: 'Hand-strung pearls anchored by a sculptural clasp.',
-    price: '₹22,000',
-    image: '/images/neck2.jpeg',
-    badge: 'Limited',
-  },
-  {
-    name: 'Muse Stacking Trio',
-    category: 'Ring',
-    description: 'Three satin-finish bands made for stacking stories.',
-    price: '₹28,500',
-    image: '/images/ring4.jpeg',
-    badge: 'Bundle',
-  },
-  {
-    name: 'Luna Glow Anklet',
-    category: 'Bracelet',
-    description: 'Delicate anklet with moonlit charms for summer shimmer.',
-    price: '₹11,800',
-    image: '/images/bracelets4.jpeg',
-    badge: 'Seasonal',
-  },
+const arrivalSlugs = [
+  'aurora-tidal-bangle',
+  'celestine-ear-thread',
+  'nova-crown-band',
+  'elysian-collar',
+  'muse-stacking-trio',
+  'luna-glow-anklet',
 ];
+
+const arrivals = arrivalSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const launchHighlights = [
   'Weekly studio drops every Thursday at 7pm BST',
@@ -128,28 +93,8 @@ export default function NewArrivalsPage() {
             <p>These pieces were crafted in limited runs. Add them to your collection before the next drop arrives.</p>
           </div>
           <div className={styles.arrivalsGrid}>
-            {arrivals.map((item) => (
-              <article key={item.name} className={styles.arrivalCard}>
-                <div className={styles.arrivalImageWrapper}>
-                  <Image
-                    src={item.image}
-                    alt={item.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 280px"
-                    className={styles.arrivalImage}
-                  />
-                  <span className={styles.arrivalBadge}>{item.badge}</span>
-                </div>
-                <div className={styles.arrivalContent}>
-                  <span className={styles.arrivalCategory}>{item.category}</span>
-                  <h3>{item.name}</h3>
-                  <p>{item.description}</p>
-                  <div className={styles.arrivalFooter}>
-                    <span>{item.price}</span>
-                    <button type="button">Add to bag</button>
-                  </div>
-                </div>
-              </article>
+            {arrivals.map((product) => (
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const heroHighlights = [
@@ -29,68 +32,18 @@ const bestSeller = {
   image: '/images/ring3.jpeg',
 };
 
-const products = [
-  {
-    name: 'Nova Crown Band',
-    description: 'Alternating baguette and brilliant diamonds for a crown of light.',
-    price: '₹46,500',
-    stone: 'FG/VS diamonds',
-    metal: 'Warm blush alloy',
-    tag: 'New',
-    gradient: 'linear-gradient(135deg, #fdf3d2 0%, #ffe7bb 50%, #fef1d9 100%)',
-    image: '/images/ring1.jpeg',
-  },
-  {
-    name: 'Solstice Signet',
-    description: 'Satin-finished oval signet with hand-applied starburst engraving.',
-    price: '₹39,800',
-    stone: 'Champagne diamond',
-    metal: 'Blush-tone vermeil',
-    tag: 'Back in stock',
-    gradient: 'linear-gradient(135deg, #ffe9dc 0%, #ffd6c7 50%, #ffe4d4 100%)',
-    image: '/images/ring2.jpeg',
-  },
-  {
-    name: 'Luna Stacking Trio',
-    description: 'Three delicate bands designed to layer and flex with your mood.',
-    price: '₹28,500',
-    stone: 'Moonstone cabochon',
-    metal: 'Vermeil & Platinum',
-    tag: 'Stack of 3',
-    gradient: 'linear-gradient(135deg, #eaf5ff 0%, #dfefff 50%, #f2f8ff 100%)',
-    image: '/images/ring4.jpeg',
-  },
-  {
-    name: 'Orion Toi et Moi',
-    description: 'Twin pear-cut sapphires meeting in a sculpted bypass shank.',
-    price: '₹61,200',
-    stone: 'Blue sapphire',
-    metal: 'Platinum',
-    tag: 'Limited',
-    gradient: 'linear-gradient(135deg, #e9f6ff 0%, #d7ebff 50%, #eef6ff 100%)',
-    image: '/images/ring5.jpeg',
-  },
-  {
-    name: 'Radiant Pavé Band',
-    description: 'Fifteen hand-set stones with invisible setting for seamless shine.',
-    price: '₹52,800',
-    stone: 'Lab-grown diamond',
-    metal: 'Bright palladium finish',
-    tag: 'Editor’s pick',
-    gradient: 'linear-gradient(135deg, #f3f7fb 0%, #e6edf6 50%, #f6f9fd 100%)',
-    image: '/images/ring3.jpeg',
-  },
-  {
-    name: 'Aurora Heirloom',
-    description: 'Vintage-inspired basket with milgrain halo and hidden diamond collar.',
-    price: '₹84,000',
-    stone: 'Morganite',
-    metal: 'Blush alloy',
-    tag: 'Heritage',
-    gradient: 'linear-gradient(135deg, #ffeef5 0%, #ffdbe9 45%, #fff3f8 100%)',
-    image: '/images/ring2.jpeg',
-  },
+const ringSlugs = [
+  'nova-crown-band',
+  'solstice-signet',
+  'luna-stacking-trio',
+  'orion-toi-et-moi',
+  'radiant-pave-band',
+  'aurora-heirloom',
 ];
+
+const products = ringSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const craftsmanshipHighlights = [
   'Every prong is polished by hand to a mirror-finish for a comfortable fit.',
@@ -155,32 +108,7 @@ export default function RingsPage() {
           </div>
           <div className={styles.productsGrid}>
             {products.map((product) => (
-              <article key={product.name} className={styles.productCard}>
-                <div className={styles.productVisual} style={{ backgroundImage: product.gradient }}>
-                  <span className={styles.productTag}>{product.tag}</span>
-                  <div className={styles.productMetal}>{product.metal}</div>
-                  <div className={styles.productImageWrapper}>
-                    <Image
-                      src={product.image}
-                      alt={`${product.name} ring`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 280px"
-                      className={styles.productImage}
-                    />
-                  </div>
-                </div>
-                <div className={styles.productContent}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productDescription}>{product.description}</p>
-                  <div className={styles.productDetails}>
-                    <span>{product.stone}</span>
-                    <span>{product.price}</span>
-                  </div>
-                  <button type="button" className={styles.productButton}>
-                    Reserve now
-                  </button>
-                </div>
-              </article>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

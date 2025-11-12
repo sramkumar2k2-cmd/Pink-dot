@@ -1,6 +1,8 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const heroHighlights = [
@@ -20,65 +22,18 @@ const heroSpotlight = {
   swatches: ['4.9 ★ (1,280 reviews)', 'Ships today', 'Lifetime replating'],
 };
 
-const topSeller = {
-  name: 'Luna Cascade Collar',
-  description:
-    'Our most-requested layering piece, with luminous moonstones anchored by a satin-finished collar.',
-  price: '₹18,500',
-  image: '/images/neck3.jpeg',
-  stats: ['4.9 ★ (1,280 reviews)', 'Ships today', 'Lifetime replating'],
-};
-
-const bestSellers = [
-  {
-    name: 'Nova Crown Band',
-    category: 'Ring',
-    price: '₹46,500',
-    description: 'Alternating baguette brilliance for a crown of light.',
-    image: '/images/ring1.jpeg',
-    badge: 'Most loved',
-  },
-  {
-    name: 'Solstice Hoops',
-    category: 'Earrings',
-    price: '₹17,800',
-    description: 'Convertible hoops with removable gemstone charms.',
-    image: '/images/earrings2.jpeg',
-    badge: 'Staff pick',
-  },
-  {
-    name: 'Muse Charm Chain',
-    category: 'Bracelet',
-    price: '₹18,500',
-    description: 'Vintage-inspired charms strung along a rolo chain.',
-    image: '/images/bracelets1.jpeg',
-    badge: 'Back in stock',
-  },
-  {
-    name: 'Celestial Halo Ring',
-    category: 'Ring',
-    price: '₹72,000',
-    description: 'Mirror-cut centre stone framed with micro pavé halo.',
-    image: '/images/ring3.jpeg',
-    badge: 'Limited',
-  },
-  {
-    name: 'Aurora Lariat',
-    category: 'Necklace',
-    price: '₹16,800',
-    description: 'Hand-polished quartz anchored to a duo-length lariat.',
-    image: '/images/neck1.jpeg',
-    badge: 'Bestseller',
-  },
-  {
-    name: 'Opaline Chandeliers',
-    category: 'Earrings',
-    price: '₹24,000',
-    description: 'Iridescent fringe with every step—crafted for soirées.',
-    image: '/images/earrings5.jpeg',
-    badge: 'Evening favourite',
-  },
+const bestSellerSlugs = [
+  'nova-crown-band',
+  'solstice-hoops',
+  'muse-charm-chain',
+  'celestial-halo-ring',
+  'aurora-lariat',
+  'opaline-chandeliers',
 ];
+
+const bestSellers = bestSellerSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const testimonials = [
   {
@@ -126,29 +81,7 @@ export default function BestSellersPage() {
           </div>
           <div className={styles.productsGrid}>
             {bestSellers.map((product) => (
-              <article key={product.name} className={styles.productCard}>
-                <div className={styles.productImageWrapper}>
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 280px"
-                    className={styles.productImage}
-                  />
-                  <span className={styles.productBadge}>{product.badge}</span>
-                </div>
-                <div className={styles.productContent}>
-                  <span className={styles.productCategory}>{product.category}</span>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productDescription}>{product.description}</p>
-                  <div className={styles.productFooter}>
-                    <span>{product.price}</span>
-                    <button type="button" className={styles.productButton}>
-                      Quick add
-                    </button>
-                  </div>
-                </div>
-              </article>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

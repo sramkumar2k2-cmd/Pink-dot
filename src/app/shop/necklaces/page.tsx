@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const heroHighlights = [
@@ -28,68 +31,18 @@ const bestSeller = {
   image: '/images/neck3.jpeg',
 };
 
-const products = [
-  {
-    name: 'Aurora Lariat',
-    description: 'Hand-polished teardrop quartz with micro pavé clasp detail.',
-    price: '₹16,800',
-    gemstone: 'Rose Quartz',
-    metal: '18k blush vermeil',
-    tag: 'New',
-    gradient: 'linear-gradient(135deg, #ffe3ec 0%, #f9d4ff 45%, #ffe0f2 100%)',
-    image: '/images/neck1.jpeg',
-  },
-  {
-    name: 'Solstice Choker',
-    description: 'Layer-friendly satin-finished links with removable charm.',
-    price: '₹14,200',
-    gemstone: 'Citrine',
-    metal: 'Mixed Metal',
-    tag: 'Back in stock',
-    gradient: 'linear-gradient(135deg, #fff4d7 0%, #ffddaf 50%, #ffe8c6 100%)',
-    image: '/images/neck2.jpeg',
-  },
-  {
-    name: 'Elysian Pendant',
-    description: 'Hand-cut mother-of-pearl framed with bead-set topaz halo.',
-    price: '₹15,600',
-    gemstone: 'Mother-of-Pearl',
-    metal: 'Sterling Silver',
-    tag: 'Limited',
-    gradient: 'linear-gradient(135deg, #e8f4ff 0%, #d9e9ff 45%, #eef6ff 100%)',
-    image: '/images/neck4.jpeg',
-  },
-  {
-    name: 'Serein Station',
-    description: 'Floating freshwater pearls spaced along a whisper chain.',
-    price: '₹13,200',
-    gemstone: 'Freshwater Pearl',
-    metal: '18k blush vermeil',
-    tag: 'Editor’s pick',
-    gradient: 'linear-gradient(135deg, #f1f5ff 0%, #ebe6ff 45%, #f7f1ff 100%)',
-    image: '/images/neck5.jpeg',
-  },
-  {
-    name: 'Nova Charm Set',
-    description: 'Interchangeable charms for custom layering stories.',
-    price: '₹19,800',
-    gemstone: 'Mixed Gemstones',
-    metal: 'Mixed Metal',
-    tag: 'Bundle',
-    gradient: 'linear-gradient(135deg, #ffe9f3 0%, #fce3ff 45%, #fdf0ff 100%)',
-    image: '/images/neck6.jpeg',
-  },
-  {
-    name: 'Atelier Bar Necklace',
-    description: 'Hand-engraved bar with complimentary monogramming.',
-    price: '₹11,800',
-    gemstone: 'Polished Granite',
-    metal: 'Sterling Silver',
-    tag: 'Personalise',
-    gradient: 'linear-gradient(135deg, #edf7ff 0%, #dff0ff 45%, #f2f9ff 100%)',
-    image: '/images/neck3.jpeg',
-  },
+const necklaceSlugs = [
+  'aurora-lariat',
+  'solstice-choker',
+  'elysian-pendant',
+  'serein-station',
+  'nova-charm-set',
+  'atelier-bar-necklace',
 ];
+
+const products = necklaceSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const storyHighlights = [
   'Every clasp is inspected by hand to ensure whisper-smooth movement.',
@@ -154,32 +107,7 @@ export default function NecklacesPage() {
           </div>
           <div className={styles.productsGrid}>
             {products.map((product) => (
-              <article key={product.name} className={styles.productCard}>
-                <div className={styles.productVisual} style={{ backgroundImage: product.gradient }}>
-                  <span className={styles.productTag}>{product.tag}</span>
-                  <div className={styles.productMetal}>{product.metal}</div>
-                  <div className={styles.productImageWrapper}>
-                    <Image
-                      src={product.image}
-                      alt={`${product.name} necklace`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 280px"
-                      className={styles.productImage}
-                    />
-                  </div>
-                </div>
-                <div className={styles.productContent}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productDescription}>{product.description}</p>
-                  <div className={styles.productDetails}>
-                    <span>{product.gemstone}</span>
-                    <span>{product.price}</span>
-                  </div>
-                  <button type="button" className={styles.productButton}>
-                    Quick add
-                  </button>
-                </div>
-              </article>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

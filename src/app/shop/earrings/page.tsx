@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const heroHighlights = [
@@ -29,62 +32,18 @@ const spotlight = {
   image: '/images/earrings3.jpeg',
 };
 
-const products = [
-  {
-    name: 'Luna Glow Studs',
-    description: 'Gradient pavé studs inspired by moonlit horizons.',
-    price: '₹12,800',
-    detail: 'Moonstone',
-    tag: 'New',
-    gradient: 'linear-gradient(135deg, #f1f5ff 0%, #e1e8ff 50%, #f3f7ff 100%)',
-    image: '/images/earrings1.jpeg',
-  },
-  {
-    name: 'Solstice Hoops',
-    description: 'Hand-polished hoops with removable gemstone charms.',
-    price: '₹17,800',
-    detail: 'Citrine',
-    tag: 'Back in stock',
-    gradient: 'linear-gradient(135deg, #fff4d9 0%, #ffe7b5 50%, #fff2d6 100%)',
-    image: '/images/earrings2.jpeg',
-  },
-  {
-    name: 'Nova Ear Climbers',
-    description: 'Celestial ear climbers with starlit pavé constellations.',
-    price: '₹16,200',
-    detail: 'Lab Diamond',
-    tag: 'Limited',
-    gradient: 'linear-gradient(135deg, #edfaff 0%, #daf1ff 45%, #eef9ff 100%)',
-    image: '/images/earrings4.jpeg',
-  },
-  {
-    name: 'Opaline Chandeliers',
-    description: 'Ornate chandelier earrings with playful fringe movement.',
-    price: '₹24,000',
-    detail: 'Opal',
-    tag: 'Statement',
-    gradient: 'linear-gradient(135deg, #ffeef5 0%, #ffd7ea 45%, #ffe9f2 100%)',
-    image: '/images/earrings5.jpeg',
-  },
-  {
-    name: 'Muse Ear Cuff Duo',
-    description: 'Two sculpted cuffs with satin finish for effortless stacking.',
-    price: '₹9,800',
-    detail: '18k blush vermeil',
-    tag: 'Set of 2',
-    gradient: 'linear-gradient(135deg, #fff5ec 0%, #ffe1cc 50%, #ffefe0 100%)',
-    image: '/images/earrings2.jpeg',
-  },
-  {
-    name: 'Seraph Wing Studs',
-    description: 'Wing-shaped studs with luminous pearl centres.',
-    price: '₹15,200',
-    detail: 'Freshwater Pearl',
-    tag: 'Editor’s pick',
-    gradient: 'linear-gradient(135deg, #f3f8ff 0%, #e7f1ff 50%, #f5f9ff 100%)',
-    image: '/images/earrings1.jpeg',
-  },
+const earringSlugs = [
+  'luna-glow-studs',
+  'solstice-hoops',
+  'nova-ear-climbers',
+  'opaline-chandeliers',
+  'muse-ear-cuff-duo',
+  'seraph-wing-studs',
 ];
+
+const products = earringSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const craftsmanshipHighlights = [
   'Every hinge is tested 500 cycles to ensure secure closures that never pinch.',
@@ -149,32 +108,7 @@ export default function EarringsPage() {
           </div>
           <div className={styles.productsGrid}>
             {products.map((product) => (
-              <article key={product.name} className={styles.productCard}>
-                <div className={styles.productVisual} style={{ backgroundImage: product.gradient }}>
-                  <span className={styles.productTag}>{product.tag}</span>
-                  <div className={styles.productAccent}>{product.detail}</div>
-                  <div className={styles.productImageWrapper}>
-                    <Image
-                      src={product.image}
-                      alt={`${product.name} earrings`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 280px"
-                      className={styles.productImage}
-                    />
-                  </div>
-                </div>
-                <div className={styles.productContent}>
-                  <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productDescription}>{product.description}</p>
-                  <div className={styles.productDetails}>
-                    <span>{product.detail}</span>
-                    <span>{product.price}</span>
-                  </div>
-                  <button type="button" className={styles.productButton}>
-                    Add to cart
-                  </button>
-                </div>
-              </article>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

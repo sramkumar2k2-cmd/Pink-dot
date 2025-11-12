@@ -8,7 +8,7 @@ export default function ContactPage() {
       <div className={styles.header}>
         <h1 className={styles.title}>Get in Touch</h1>
         <p className={styles.subtitle}>
-          We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+          We&rsquo;d love to hear from you. Send us a message and we&rsquo;ll respond as soon as possible.
         </p>
       </div>
 
@@ -17,7 +17,7 @@ export default function ContactPage() {
           <div className={styles.infoSection}>
             <h2 className={styles.infoTitle}>Contact Information</h2>
             <p className={styles.infoDescription}>
-              Reach out to us through any of these channels. We're here to help!
+              Reach out to us through any of these channels. We&rsquo;re here to help!
             </p>
 
             <div className={styles.infoItem}>

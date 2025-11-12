@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import type { Product } from '@/app/shop/productData';
+import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
 
 const saleHighlights = [
@@ -28,56 +31,18 @@ const heroSpotlight = {
   swatches: heroDeal.perks,
 };
 
-const saleProducts = [
-  {
-    name: 'Luna Cascade Collar',
-    category: 'Necklace',
-    was: '₹18,500',
-    now: '₹14,800',
-    image: '/images/neck3.jpeg',
-    badge: 'Top pick',
-  },
-  {
-    name: 'Muse Charm Chain',
-    category: 'Bracelet',
-    was: '₹18,500',
-    now: '₹13,900',
-    image: '/images/bracelets1.jpeg',
-    badge: 'Extra 20%',
-  },
-  {
-    name: 'Solstice Hoops',
-    category: 'Earrings',
-    was: '₹17,800',
-    now: '₹13,400',
-    image: '/images/earrings2.jpeg',
-    badge: 'Just added',
-  },
-  {
-    name: 'Aurora Heirloom',
-    category: 'Ring',
-    was: '₹84,000',
-    now: '₹63,000',
-    image: '/images/ring2.jpeg',
-    badge: 'Limited',
-  },
-  {
-    name: 'Nova Ear Climbers',
-    category: 'Earrings',
-    was: '₹16,200',
-    now: '₹12,200',
-    image: '/images/earrings4.jpeg',
-    badge: '40% off',
-  },
-  {
-    name: 'Serenade Tennis Bracelet',
-    category: 'Bracelet',
-    was: '₹32,000',
-    now: '₹25,600',
-    image: '/images/bracelets3.jpeg',
-    badge: 'Last 12',
-  },
+const saleSlugs = [
+  'luna-cascade-collar',
+  'muse-charm-chain',
+  'solstice-hoops',
+  'aurora-heirloom',
+  'nova-ear-climbers',
+  'serenade-tennis-bracelet',
 ];
+
+const saleProducts = saleSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item));
 
 const bundles = [
   {
@@ -125,27 +90,7 @@ export default function SalePage() {
           </div>
           <div className={styles.productsGrid}>
             {saleProducts.map((product) => (
-              <article key={product.name} className={styles.productCard}>
-                <div className={styles.productImageWrapper}>
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 280px"
-                    className={styles.productImage}
-                  />
-                  <span className={styles.productBadge}>{product.badge}</span>
-                </div>
-                <div className={styles.productContent}>
-                  <span className={styles.productCategory}>{product.category}</span>
-                  <h3>{product.name}</h3>
-                  <div className={styles.productPricing}>
-                    <span className={styles.wasPrice}>{product.was}</span>
-                    <span className={styles.nowPrice}>{product.now}</span>
-                  </div>
-                  <button type="button">Add to basket</button>
-                </div>
-              </article>
+              <ProductCard key={product.slug} product={product} />
             ))}
           </div>
         </section>

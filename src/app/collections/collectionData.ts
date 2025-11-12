@@ -7,13 +7,7 @@ export type Collection = {
   description: string;
   story: string;
   highlights: string[];
-  featuredProducts: Array<{
-    name: string;
-    href: string;
-    price: string;
-    image: string;
-    badge: string;
-  }>;
+  featuredProducts: string[];
   mood: string;
 };
 
@@ -34,27 +28,12 @@ export const collections: Collection[] = [
       "Modular elements that layer effortlessly for celestial storytelling",
     ],
     featuredProducts: [
-      {
-        name: "Celestial Pearl Necklace",
-        href: "/shop/necklaces",
-        price: "₹4,499",
-        image: "/images/neck1.jpeg",
-        badge: "New Arrival",
-      },
-      {
-        name: "Luna Drop Earrings",
-        href: "/shop/earrings",
-        price: "₹3,499",
-        image: "/images/neck2.jpeg",
-        badge: "Back in Stock",
-      },
-      {
-        name: "Opaline Pendant",
-        href: "/shop/necklaces",
-        price: "₹2,999",
-        image: "/images/neck6.jpeg",
-        badge: "Gift Favorite",
-      },
+      "luna-cascade-collar",
+      "opaline-chandeliers",
+      "celestial-halo-ring",
+      "solstice-hoops",
+      "seraphine-wrap",
+      "nova-crown-band",
     ],
     mood: "Think: moonlit rooftops, whispered wishes, midnight celebrations.",
   },
@@ -74,27 +53,12 @@ export const collections: Collection[] = [
       "Convertible designs that transition from desk to dance floor",
     ],
     featuredProducts: [
-      {
-        name: "Aurora Hoop Earrings",
-        href: "/shop/earrings",
-        price: "₹3,299",
-        image: "/images/neck3.jpeg",
-        badge: "Bestseller",
-      },
-      {
-        name: "Muse Stacking Rings",
-        href: "/shop/rings",
-        price: "₹2,799",
-        image: "/images/neck4.jpeg",
-        badge: "Limited",
-      },
-      {
-        name: "Serenade Charm Bracelet",
-        href: "/shop/bracelets",
-        price: "₹3,099",
-        image: "/images/neck5.jpeg",
-        badge: "Editor’s Pick",
-      },
+      "radiant-pave-band",
+      "orion-toi-et-moi",
+      "aurora-heirloom",
+      "solstice-signet",
+      "nova-crown-band",
+      "muse-charm-chain",
     ],
     mood: "Think: glittering marquees, clinking coupes, late-night jazz.",
   },
@@ -114,27 +78,12 @@ export const collections: Collection[] = [
       "Soft satin finishes that complement every skin tone",
     ],
     featuredProducts: [
-      {
-        name: "Muse Stacking Rings",
-        href: "/shop/rings",
-        price: "₹2,799",
-        image: "/images/neck4.jpeg",
-        badge: "Limited",
-      },
-      {
-        name: "Opaline Pendant",
-        href: "/shop/necklaces",
-        price: "₹2,999",
-        image: "/images/neck6.jpeg",
-        badge: "Gift Favorite",
-      },
-      {
-        name: "Celestial Pearl Necklace",
-        href: "/shop/necklaces",
-        price: "₹4,499",
-        image: "/images/neck1.jpeg",
-        badge: "New Arrival",
-      },
+      "luna-stacking-trio",
+      "atelier-bar-necklace",
+      "muse-ear-cuff-duo",
+      "elysian-pendant",
+      "serein-station",
+      "solstice-choker",
     ],
     mood: "Think: airy studios, sunlit commutes, effortless layering.",
   },
@@ -154,27 +103,12 @@ export const collections: Collection[] = [
       "Vacation-ready pieces packaged in travel-safe pouches",
     ],
     featuredProducts: [
-      {
-        name: "Serenade Charm Bracelet",
-        href: "/shop/bracelets",
-        price: "₹3,099",
-        image: "/images/neck5.jpeg",
-        badge: "Editor’s Pick",
-      },
-      {
-        name: "Aurora Hoop Earrings",
-        href: "/shop/earrings",
-        price: "₹3,299",
-        image: "/images/neck3.jpeg",
-        badge: "Bestseller",
-      },
-      {
-        name: "Luna Drop Earrings",
-        href: "/shop/earrings",
-        price: "₹3,499",
-        image: "/images/neck2.jpeg",
-        badge: "Back in Stock",
-      },
+      "aurora-tidal-bangle",
+      "celestine-ear-thread",
+      "luna-glow-anklet",
+      "solstice-hoops",
+      "muse-charm-chain",
+      "elysian-collar",
     ],
     mood: "Think: barefoot balconies, citrus spritzers, sunset soundtrack.",
   },
@@ -194,27 +128,12 @@ export const collections: Collection[] = [
       "Keepsake packaging with handwritten note from our studio",
     ],
     featuredProducts: [
-      {
-        name: "Celestial Pearl Necklace",
-        href: "/shop/necklaces",
-        price: "₹4,499",
-        image: "/images/neck1.jpeg",
-        badge: "New Arrival",
-      },
-      {
-        name: "Muse Stacking Rings",
-        href: "/shop/rings",
-        price: "₹2,799",
-        image: "/images/neck4.jpeg",
-        badge: "Limited",
-      },
-      {
-        name: "Opaline Pendant",
-        href: "/shop/necklaces",
-        price: "₹2,999",
-        image: "/images/neck6.jpeg",
-        badge: "Gift Favorite",
-      },
+      "aurora-heirloom",
+      "serenade-tennis-bracelet",
+      "nova-ear-climbers",
+      "celestial-halo-ring",
+      "aurora-tidal-bangle",
+      "solstice-signet",
     ],
     mood: "Think: private viewings, heirloom hopes, future keepsakes.",
   },
