@@ -923,10 +923,16 @@ export function getRelatedProducts(slug: string, limit = 4): Product[] {
     return [];
   }
 
-  const relatedCategories = product.categories.filter((cat) => cat !== 'all');
+  const relatedCategories = product.categories.filter(
+    (cat): cat is Exclude<ProductCategory, 'all'> => cat !== 'all',
+  );
 
   const related = products
-    .filter((item) => item.slug !== slug && item.categories.some((cat) => relatedCategories.includes(cat)))
+    .filter(
+      (item) =>
+        item.slug !== slug &&
+        item.categories.some((cat) => cat !== 'all' && relatedCategories.includes(cat)),
+    )
     .slice(0, limit);
 
   if (related.length >= limit) {
