@@ -930,17 +930,14 @@ export function getRelatedProducts(slug: string, limit = 4): Product[] {
 
   const related = products
     .filter(
-      (item) =>
+      (item): boolean =>
         item.slug !== slug &&
-        item.categories.some((cat) => {
-          if (!isRelevantCategory(cat)) {
-            return false;
-          }
+        item.categories.some((cat) => 
+          isRelevantCategory(cat) && relatedCategories.includes(cat)
+        )
 
-          return relatedCategories.includes(cat);
-        }),
-    )
-    .slice(0, limit);
+  )
+  .slice(0, limit);
 
   if (related.length >= limit) {
     return related;
