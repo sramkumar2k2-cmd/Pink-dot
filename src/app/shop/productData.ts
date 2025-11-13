@@ -932,7 +932,13 @@ export function getRelatedProducts(slug: string, limit = 4): Product[] {
     .filter(
       (item) =>
         item.slug !== slug &&
-        item.categories.some((cat) => isRelevantCategory(cat) && relatedCategories.includes(cat)),
+        item.categories.some((cat) => {
+          if (!isRelevantCategory(cat)) {
+            return false;
+          }
+
+          return relatedCategories.includes(cat);
+        }),
     )
     .slice(0, limit);
 
