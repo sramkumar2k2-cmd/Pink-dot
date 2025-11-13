@@ -9,6 +9,9 @@ import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import styles from './page.module.css';
 
 
+
+
+
 type Breadcrumb = {
   label: string;
   href: string;
