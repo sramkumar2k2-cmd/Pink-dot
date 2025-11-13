@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
+import { HeartIcon } from '@/app/components/HeartIcon';
+import { useFavoriteSlugs } from '@/app/lib/useFavoriteProduct';
 import styles from './header.module.css';
 
 export default function Header() {
@@ -17,6 +19,9 @@ export default function Header() {
   });
   const pathname = usePathname();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const favoriteSlugs = useFavoriteSlugs();
+  const favoritesCount = favoriteSlugs.length;
+  const hasFavoritesActive = favoritesCount > 0 || pathname === '/favorites';
 
   const shopMenu = {
     categories: [
@@ -136,160 +141,186 @@ export default function Header() {
           />
         </Link>
 
-        <nav className={styles.nav}>
-          {navigation.map((item) => (
-            item.hasDropdown ? (
-              <div 
-                key={item.name}
-                ref={openDropdown === item.name ? dropdownRef : null}
-                className={styles.dropdown}
-                onMouseEnter={() => {
-                  if (closeTimeoutRef.current !== null) {
-                    window.clearTimeout(closeTimeoutRef.current);
-                    closeTimeoutRef.current = null;
-                  }
-                  setOpenDropdown(item.name);
-                }}
-                onMouseLeave={() => {
-                  closeTimeoutRef.current = window.setTimeout(() => {
-                    setOpenDropdown((current) => (current === item.name ? null : current));
-                  }, 120);
-                }}
-              >
-                <div className={`${styles.dropdownHeader} dropdownHeader`}>
-                  <Link 
-                    href={item.href}
-                    className={`${styles.link} ${(pathname.startsWith(item.href) || openDropdown === item.name) ? styles.active : ''}`}
-                    aria-expanded={openDropdown === item.name}
-                    onClick={(event) => {
-                      if (
-                        event.metaKey ||
-                        event.ctrlKey ||
-                        event.shiftKey ||
-                        event.button !== 0
-                      ) {
-                        return;
-                      }
+        <div className={styles.desktopNavGroup}>
+          <nav className={styles.nav}>
+            {navigation.map((item) =>
+              item.hasDropdown ? (
+                <div
+                  key={item.name}
+                  ref={openDropdown === item.name ? dropdownRef : null}
+                  className={styles.dropdown}
+                  onMouseEnter={() => {
+                    if (closeTimeoutRef.current !== null) {
+                      window.clearTimeout(closeTimeoutRef.current);
+                      closeTimeoutRef.current = null;
+                    }
+                    setOpenDropdown(item.name);
+                  }}
+                  onMouseLeave={() => {
+                    closeTimeoutRef.current = window.setTimeout(() => {
+                      setOpenDropdown((current) => (current === item.name ? null : current));
+                    }, 120);
+                  }}
+                >
+                  <div className={`${styles.dropdownHeader} dropdownHeader`}>
+                    <Link
+                      href={item.href}
+                      className={`${styles.link} ${
+                        pathname.startsWith(item.href) || openDropdown === item.name
+                          ? styles.active
+                          : ''
+                      }`}
+                      aria-expanded={openDropdown === item.name}
+                      onClick={(event) => {
+                        if (
+                          event.metaKey ||
+                          event.ctrlKey ||
+                          event.shiftKey ||
+                          event.button !== 0
+                        ) {
+                          return;
+                        }
 
-                      if (openDropdown !== item.name) {
-                        event.preventDefault();
-                        setOpenDropdown(item.name);
-                        return;
-                      }
+                        if (openDropdown !== item.name) {
+                          event.preventDefault();
+                          setOpenDropdown(item.name);
+                          return;
+                        }
 
-                      closeDropdown();
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
+                        closeDropdown();
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
 
+                          if (openDropdown !== item.name) {
+                            setOpenDropdown(item.name);
+                          } else {
+                            closeDropdown();
+                          }
+                        }
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         if (openDropdown !== item.name) {
                           setOpenDropdown(item.name);
                         } else {
                           closeDropdown();
                         }
-                      }
-                    }}
+                      }}
+                    >
+                      {item.name}
+                    </Link>
+                  </div>
+                  <div
+                    className={`${styles.dropdownContent} ${
+                      openDropdown === item.name ? styles.dropdownOpen : ''
+                    }`}
                     onTouchStart={(e) => {
-                      e.preventDefault();
+                      // Prevent touch from bubbling up and closing dropdown
                       e.stopPropagation();
-                      if (openDropdown !== item.name) {
-                        setOpenDropdown(item.name);
-                      } else {
-                        closeDropdown();
+                      e.preventDefault();
+                    }}
+                    onTouchEnd={(e) => {
+                      // Prevent touch end from bubbling
+                      e.stopPropagation();
+                    }}
+                    onMouseDown={(e) => {
+                      // Prevent mousedown from bubbling and closing dropdown
+                      e.stopPropagation();
+                    }}
+                    onClick={(e) => {
+                      // Prevent click from bubbling up and closing dropdown unless it's a link
+                      const link = (e.target as HTMLElement).closest('a.dropdownLink');
+                      if (!link) {
+                        e.stopPropagation();
                       }
                     }}
                   >
-                    {item.name}
-                  </Link>
-                </div>
-                <div 
-                  className={`${styles.dropdownContent} ${openDropdown === item.name ? styles.dropdownOpen : ''}`}
-                  onTouchStart={(e) => {
-                    // Prevent touch from bubbling up and closing dropdown
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  onTouchEnd={(e) => {
-                    // Prevent touch end from bubbling
-                    e.stopPropagation();
-                  }}
-                  onMouseDown={(e) => {
-                    // Prevent mousedown from bubbling and closing dropdown
-                    e.stopPropagation();
-                  }}
-                  onClick={(e) => {
-                    // Prevent click from bubbling up and closing dropdown unless it's a link
-                    const link = (e.target as HTMLElement).closest('a.dropdownLink');
-                    if (!link) {
-                      e.stopPropagation();
-                    }
-                  }}
-                >
-                  {item.name === 'Shop' && (
-                    <>
-                      <div className={styles.categoryHeader}>Categories</div>
-                      {shopMenu.categories.map((category) => (
-                        <Link
-                          key={category.name}
-                          href={category.href}
-                          className={`${styles.dropdownLink} dropdownLink`}
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            closeDropdown();
-                          }}
-                        >
-                          {category.name}
-                        </Link>
-                      ))}
-                      <div className={styles.dropdownDivider} />
-                      {shopMenu.featured.map((featured) => (
-                        <Link
-                          key={featured.name}
-                          href={featured.href}
-                          className={`${styles.dropdownLink} dropdownLink`}
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            closeDropdown();
-                          }}
-                        >
-                          {featured.name}
-                        </Link>
-                      ))}
-                    </>
-                  )}
+                    {item.name === 'Shop' && (
+                      <>
+                        <div className={styles.categoryHeader}>Categories</div>
+                        {shopMenu.categories.map((category) => (
+                          <Link
+                            key={category.name}
+                            href={category.href}
+                            className={`${styles.dropdownLink} dropdownLink`}
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              closeDropdown();
+                            }}
+                          >
+                            {category.name}
+                          </Link>
+                        ))}
+                        <div className={styles.dropdownDivider} />
+                        {shopMenu.featured.map((featured) => (
+                          <Link
+                            key={featured.name}
+                            href={featured.href}
+                            className={`${styles.dropdownLink} dropdownLink`}
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              closeDropdown();
+                            }}
+                          >
+                            {featured.name}
+                          </Link>
+                        ))}
+                      </>
+                    )}
 
-                  {item.name === 'Collections' && (
-                    <>
-                      <div className={styles.categoryHeader}>Collections</div>
-                      {collectionsMenu.items.map((col) => (
-                        <Link
-                          key={col.name}
-                          href={col.href}
-                          className={`${styles.dropdownLink} dropdownLink`}
-                          onClick={() => {
-                            setIsMobileMenuOpen(false);
-                            closeDropdown();
-                          }}
-                        >
-                          {col.name}
-                        </Link>
-                      ))}
-                    </>
-                  )}
+                    {item.name === 'Collections' && (
+                      <>
+                        <div className={styles.categoryHeader}>Collections</div>
+                        {collectionsMenu.items.map((col) => (
+                          <Link
+                            key={col.name}
+                            href={col.href}
+                            className={`${styles.dropdownLink} dropdownLink`}
+                            onClick={() => {
+                              setIsMobileMenuOpen(false);
+                              closeDropdown();
+                            }}
+                          >
+                            {col.name}
+                          </Link>
+                        ))}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`${styles.link} ${pathname === item.href ? styles.active : ''}`}
-              >
-                {item.name}
-              </Link>
-            )
-          ))}
-        </nav>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`${styles.link} ${pathname === item.href ? styles.active : ''}`}
+                >
+                  {item.name}
+                </Link>
+              ),
+            )}
+          </nav>
+
+          <div className={styles.actions}>
+            <Link
+              href="/favorites"
+              className={styles.favoritesLink}
+              aria-label={
+                favoritesCount
+                  ? `View ${favoritesCount} favourite product${favoritesCount === 1 ? '' : 's'}`
+                  : 'View favourite products'
+              }
+              data-active={pathname === '/favorites'}
+            >
+              <HeartIcon filled={hasFavoritesActive} className={styles.favoritesIcon} />
+              {favoritesCount > 0 ? (
+                <span className={styles.favoritesBadge}>{favoritesCount}</span>
+              ) : null}
+            </Link>
+          </div>
+        </div>
 
         <button 
           className={`${styles.mobileButton} ${isMobileMenuOpen ? styles.open : ''}`}
@@ -446,6 +477,13 @@ export default function Header() {
                   {item.name}
                 </Link>
               ))}
+            <Link
+              href="/favorites"
+              className={`${styles.link} ${pathname === '/favorites' ? styles.active : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Favourites
+            </Link>
           </div>
         </div>
       </div>

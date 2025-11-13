@@ -57,6 +57,7 @@
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  z-index: 2;
 }
 
 .badge {
@@ -71,6 +72,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   box-shadow: 0 4px 12px rgba(34, 25, 64, 0.12);
+  z-index: 2;
 }
 
 .accent {
@@ -98,19 +100,30 @@
   backdrop-filter: blur(6px);
   display: grid;
   place-items: center;
-  font-size: 1rem;
   cursor: pointer;
   color: #c0265b;
-  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+  z-index: 3;
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease, box-shadow 180ms ease;
 }
 
 .favoriteButton[data-active='true'] {
   background: linear-gradient(135deg, #ffebf4 0%, #ffd6ea 100%);
-  color: #a5124a;
+  color: #d7266b;
+  box-shadow: 0 12px 24px rgba(207, 42, 94, 0.28);
 }
 
 .favoriteButton:hover {
   transform: scale(1.05);
+}
+
+.favoriteIcon {
+  width: 18px;
+  height: 18px;
+  transition: transform 180ms ease;
+}
+
+.favoriteButton[data-active='true'] .favoriteIcon {
+  transform: scale(1.08);
 }
 
 .content {

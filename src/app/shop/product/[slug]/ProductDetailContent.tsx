@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
+import { HeartIcon } from '@/app/components/HeartIcon';
+import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import styles from './page.module.css';
 
 type Breadcrumb = {
@@ -17,7 +19,7 @@ type ProductDetailContentProps = {
 };
 
 export function ProductDetailContent({ product, breadcrumb }: ProductDetailContentProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const primaryImage = product.images[selectedIndex] ?? product.images[0];
@@ -56,9 +58,11 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
             aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
             className={styles.favoriteButton}
             data-active={isFavorite}
-            onClick={() => setIsFavorite((prev) => !prev)}
+            onClick={() => {
+              toggleFavorite();
+            }}
           >
-            {isFavorite ? '♥' : '♡'}
+            <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
           </button>
           <Image
             src={primaryImage.src}

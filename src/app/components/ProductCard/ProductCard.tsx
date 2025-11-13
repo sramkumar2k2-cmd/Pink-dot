@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, type CSSProperties } from 'react';
+import { type CSSProperties } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
+import { HeartIcon } from '@/app/components/HeartIcon';
+import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import styles from './ProductCard.module.css';
 
 type ProductCardProps = {
@@ -15,7 +17,7 @@ type CardStyle = CSSProperties & {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
 
   const cardStyle: CardStyle = {};
 
@@ -50,9 +52,13 @@ export function ProductCard({ product }: ProductCardProps) {
           data-active={isFavorite}
           aria-pressed={isFavorite}
           aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
-          onClick={() => setIsFavorite((prev) => !prev)}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            toggleFavorite();
+          }}
         >
-          {isFavorite ? '♥' : '♡'}
+          <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
         </button>
 
         <Link
