@@ -10,7 +10,6 @@ import styles from './page.module.css';
 
 
 type Breadcrumb = {
-  
   label: string;
   href: string;
 } | null;
