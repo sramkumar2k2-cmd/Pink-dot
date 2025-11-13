@@ -1,166 +1,157 @@
-'use client';
+// src/app/shop/productData.ts
 
-import { useMemo, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import type { Product } from '@/app/shop/productData';
-import { HeartIcon } from '@/app/components/HeartIcon';
-import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
-import styles from './page.module.css';
+// 🧩 Define all valid product categories — added "all" here to fix the build error
+export type ProductCategory =
+  | 'all'
+  | 'necklaces'
+  | 'earrings'
+  | 'bracelets'
+  | 'rings'
+  | 'best-sellers'
+  | 'new-arrivals'
+  | 'sale';
 
-
-
-
-
-type Breadcrumb = {
-  label: string;
-  href: string;
-} | null;
-
-type ProductDetailContentProps = {
-  product: Product;
-  breadcrumb: Breadcrumb;
+// 🛍️ Define the Product type
+export type Product = {
+  slug: string;
+  name: string;
+  description: string;
+  price: string;
+  salePrice?: string;
+  originalPrice?: string;
+  images: { src: string; alt: string }[];
+  categories: ProductCategory[];
+  highlights?: string[];
+  specs?: { label: string; value: string }[];
+  secondaryAccent?: string;
+  story?: string;
 };
 
-export function ProductDetailContent({ product, breadcrumb }: ProductDetailContentProps) {
-  const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+// 💎 Product Data — You can extend this list with your own products
+export const products: Product[] = [
+  {
+    slug: 'gold-necklace',
+    name: 'Elegant Gold Necklace',
+    description: 'A timeless 18K gold necklace for any occasion.',
+    price: '$299',
+    salePrice: '$249',
+    originalPrice: '$299',
+    categories: ['necklaces', 'best-sellers'],
+    images: [
+      { src: '/images/products/gold-necklace-1.jpg', alt: 'Elegant Gold Necklace' },
+      { src: '/images/products/gold-necklace-2.jpg', alt: 'Gold Necklace side view' },
+    ],
+    highlights: ['18K Gold', 'Handcrafted', 'Premium Finish'],
+    specs: [
+      { label: 'Material', value: '18K Gold' },
+      { label: 'Length', value: '18 inches' },
+    ],
+    secondaryAccent: 'Yellow Gold',
+    story:
+      'This handcrafted necklace brings together timeless design and contemporary craftsmanship.',
+  },
+  {
+    slug: 'diamond-earrings',
+    name: 'Diamond Drop Earrings',
+    description: 'Sparkling diamond earrings with a sleek modern silhouette.',
+    price: '$499',
+    categories: ['earrings', 'new-arrivals'],
+    images: [
+      { src: '/images/products/diamond-earrings-1.jpg', alt: 'Diamond Drop Earrings' },
+      { src: '/images/products/diamond-earrings-2.jpg', alt: 'Diamond Earrings alternate view' },
+    ],
+    highlights: ['Certified Diamonds', 'Sterling Silver Base', 'Elegant Design'],
+    specs: [
+      { label: 'Material', value: 'Silver & Diamond' },
+      { label: 'Length', value: '2 inches' },
+    ],
+    story:
+      'Expertly crafted with precision-set diamonds, these earrings radiate elegance and light.',
+  },
+  {
+    slug: 'silver-bracelet',
+    name: 'Classic Silver Bracelet',
+    description: 'A versatile bracelet crafted in sterling silver.',
+    price: '$149',
+    categories: ['bracelets', 'sale'],
+    images: [
+      { src: '/images/products/silver-bracelet-1.jpg', alt: 'Classic Silver Bracelet' },
+      { src: '/images/products/silver-bracelet-2.jpg', alt: 'Silver Bracelet alternate view' },
+    ],
+    highlights: ['Sterling Silver', 'Adjustable Size', 'Minimalist Design'],
+    specs: [
+      { label: 'Material', value: 'Sterling Silver' },
+      { label: 'Weight', value: '20 grams' },
+    ],
+    secondaryAccent: 'Polished Silver',
+    story:
+      'This bracelet combines minimalist design with fine silver craftsmanship, perfect for daily wear.',
+  },
+  {
+    slug: 'pearl-ring',
+    name: 'Elegant Pearl Ring',
+    description: 'A modern twist on a timeless pearl ring design.',
+    price: '$199',
+    categories: ['rings', 'all'],
+    images: [
+      { src: '/images/products/pearl-ring-1.jpg', alt: 'Elegant Pearl Ring' },
+      { src: '/images/products/pearl-ring-2.jpg', alt: 'Pearl Ring alternate view' },
+    ],
+    highlights: ['Freshwater Pearl', 'Adjustable Band', 'Elegant Look'],
+    specs: [
+      { label: 'Material', value: 'Pearl & Gold Plating' },
+      { label: 'Size', value: 'Adjustable' },
+    ],
+    secondaryAccent: 'White Pearl',
+    story:
+      'This adjustable pearl ring embodies sophistication and grace, blending tradition with modern style.',
+  },
+  {
+    slug: 'rose-gold-bangle',
+    name: 'Rose Gold Bangle',
+    description: 'A chic bangle plated in beautiful rose gold.',
+    price: '$179',
+    categories: ['bracelets', 'new-arrivals'],
+    images: [
+      { src: '/images/products/rose-gold-bangle-1.jpg', alt: 'Rose Gold Bangle' },
+      { src: '/images/products/rose-gold-bangle-2.jpg', alt: 'Rose Gold Bangle side view' },
+    ],
+    highlights: ['Rose Gold Plating', 'Lightweight', 'Comfort Fit'],
+    specs: [
+      { label: 'Material', value: 'Rose Gold Plating on Brass' },
+      { label: 'Diameter', value: '6.5 cm' },
+    ],
+    secondaryAccent: 'Rose Gold',
+    story:
+      'Inspired by modern femininity, this bangle adds a touch of glamour and warmth to any ensemble.',
+  },
+];
 
-  const primaryImage = product.images[selectedIndex] ?? product.images[0];
-
-  const specs = useMemo(() => {
-    if (!product.specs?.length) {
-      return product.secondaryAccent ? [product.secondaryAccent] : [];
-    }
-
-    return product.specs.map((spec) => spec.value);
-  }, [product]);
-
-  const highlights = product.highlights ?? [];
-  const story = product.story ?? product.description;
-
-  const displayedPrice =
-    product.salePrice && product.originalPrice ? product.salePrice : product.price;
-
-  return (
-    <section className={styles.detail}>
-      <div className={styles.gallery}>
-        {breadcrumb ? (
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link href="/shop/all-jewellery">Shop</Link>
-            <span aria-hidden="true">/</span>
-            <Link href={breadcrumb.href}>{breadcrumb.label}</Link>
-            <span aria-hidden="true">/</span>
-            <span>{product.name}</span>
-          </nav>
-        ) : null}
-
-        <div className={styles.mainImage}>
-          <button
-            type="button"
-            aria-pressed={isFavorite}
-            aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
-            className={styles.favoriteButton}
-            data-active={isFavorite}
-            onClick={() => {
-              toggleFavorite();
-            }}
-          >
-            <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
-          </button>
-          <Image
-            src={primaryImage.src}
-            alt={primaryImage.alt}
-            fill
-            className={styles.mainPhoto}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 480px"
-            priority
-          />
-        </div>
-
-        {product.images.length > 1 ? (
-          <div className={styles.thumbnails}>
-            {product.images.map((image, index) => (
-              <button
-                key={image.src}
-                type="button"
-                className={styles.thumbnailButton}
-                data-active={index === selectedIndex}
-                onClick={() => setSelectedIndex(index)}
-                aria-label={`Show alternate view ${index + 1} for ${product.name}`}
-              >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className={styles.thumbnailImage}
-                  sizes="(max-width: 768px) 16vw, 120px"
-                />
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
-
-      <div className={styles.info}>
-        <div className={styles.header}>
-          <h1 className={styles.name}>{product.name}</h1>
-          <p className={styles.subtitle}>{product.description}</p>
-          <div className={styles.priceRow}>
-            {product.salePrice && product.originalPrice ? (
-              <>
-                <span className={styles.originalPrice}>{product.originalPrice}</span>
-                <span className={styles.price}>{product.salePrice}</span>
-              </>
-            ) : (
-              <span className={styles.price}>{displayedPrice}</span>
-            )}
-          </div>
-        </div>
-
-        {specs.length ? (
-          <div className={styles.specs}>
-            {specs.map((spec) => (
-              <span key={spec} className={styles.spec}>
-                {spec}
-              </span>
-            ))}
-          </div>
-        ) : null}
-
-        <p className={styles.story}>{story}</p>
-
-        {highlights.length ? (
-          <ul className={styles.highlights}>
-            {highlights.map((highlight) => (
-              <li key={highlight}>{highlight}</li>
-            ))}
-          </ul>
-        ) : null}
-
-        <div className={styles.actions}>
-          <button
-            type="button"
-            className={`${styles.actionButton} ${styles.addToCart}`}
-            onClick={() => {
-              console.info(`Added ${product.slug} to cart from detail page`);
-            }}
-          >
-            Add to cart
-          </button>
-          <button
-            type="button"
-            className={`${styles.actionButton} ${styles.buyNow}`}
-            onClick={() => {
-              console.info(`Initiated buy now for ${product.slug}`);
-            }}
-          >
-            Buy now
-          </button>
-        </div>
-      </div>
-    </section>
-  );
+// 🔍 Utility Function: Get product by slug
+export function getProductBySlug(slug: string): Product | undefined {
+  return products.find((product) => product.slug === slug);
 }
 
+// 🤝 Utility Function: Get related products
+export function getRelatedProducts(
+  slug: string,
+  relatedCategories: ProductCategory[],
+  limit = 4
+): Product[] {
+  const related = products
+    .filter(
+      (item) =>
+        item.slug !== slug &&
+        item.categories.some((cat) => relatedCategories.includes(cat))
+    )
+    .slice(0, limit);
 
+  if (related.length >= limit) {
+    return related;
+  }
+
+  // Fallback — fill with other products if not enough related
+  const others = products.filter((p) => p.slug !== slug);
+  const additional = others.slice(0, limit - related.length);
+  return [...related, ...additional];
+}
