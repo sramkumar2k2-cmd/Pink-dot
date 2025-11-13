@@ -22,7 +22,26 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
   const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const primaryImage = product.images[selectedIndex] ?? product.images[0];
+  const galleryImages = useMemo(() => {
+    const baseImages = (product.images ?? []).filter(
+      (image): image is { src: string; alt: string } => Boolean(image?.src),
+    );
+
+    const required = Math.max(3, baseImages.length);
+    const placeholders =
+      baseImages.length >= required
+        ? []
+        : Array.from({ length: required - baseImages.length }, (_, index) => ({
+            src: `https://images.unsplash.com/seed/${encodeURIComponent(
+              `${product.slug}-${index}`,
+            )}/900x1200?auto=format&fit=crop&w=900&q=80`,
+            alt: `${product.name} alternate view ${baseImages.length + index + 1}`,
+          }));
+
+    return [...baseImages, ...placeholders];
+  }, [product]);
+
+  const primaryImage = galleryImages[selectedIndex] ?? galleryImages[0];
 
   const specs = useMemo(() => {
     if (!product.specs?.length) {
@@ -71,12 +90,13 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
             className={styles.mainPhoto}
             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 480px"
             priority
+            unoptimized={primaryImage.src.startsWith('http')}
           />
         </div>
 
-        {product.images.length > 1 ? (
+        {galleryImages.length > 1 ? (
           <div className={styles.thumbnails}>
-            {product.images.map((image, index) => (
+            {galleryImages.map((image, index) => (
               <button
                 key={image.src}
                 type="button"
@@ -85,13 +105,14 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
                 onClick={() => setSelectedIndex(index)}
                 aria-label={`Show alternate view ${index + 1} for ${product.name}`}
               >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className={styles.thumbnailImage}
-                  sizes="(max-width: 768px) 16vw, 120px"
-                />
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    className={styles.thumbnailImage}
+                    sizes="(max-width: 768px) 16vw, 120px"
+                    unoptimized={image.src.startsWith('http')}
+                  />
               </button>
             ))}
           </div>

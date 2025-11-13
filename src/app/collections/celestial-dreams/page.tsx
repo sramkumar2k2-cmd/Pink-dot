@@ -40,7 +40,9 @@ export default function CelestialDreamsPage() {
         actions={[
           {
             label: "Shop featured pieces",
-            href: primaryProduct ? `/shop/product/${primaryProduct.slug}` : "/shop/all-jewellery",
+            href: primaryProduct
+              ? `/shop/product/${encodeURIComponent(primaryProduct.slug.toLowerCase())}`
+              : "/shop/all-jewellery",
           },
           { label: "View all collections", href: "/collections", variant: "ghost" },
         ]}

@@ -38,7 +38,16 @@ export function ProductCard({ product }: ProductCardProps) {
   const primaryPrice =
     product.salePrice && product.originalPrice ? product.salePrice : product.price;
 
-  const heroImage = product.images[0];
+  const heroImage =
+    product.images?.[0] ??
+    (product.image
+      ? { src: product.image, alt: product.name }
+      : {
+          src: `https://images.unsplash.com/seed/${encodeURIComponent(
+            `${product.slug}-card`,
+          )}/900x1200?auto=format&fit=crop&w=900&q=80`,
+          alt: product.name,
+        });
 
   return (
     <article className={styles.card} style={cardStyle}>
@@ -62,7 +71,7 @@ export function ProductCard({ product }: ProductCardProps) {
         </button>
 
         <Link
-          href={`/shop/product/${product.slug}`}
+          href={`/shop/product/${encodeURIComponent(product.slug.toLowerCase())}`}
           className={styles.imageLink}
           aria-label={`View details for ${product.name}`}
         >
@@ -73,6 +82,7 @@ export function ProductCard({ product }: ProductCardProps) {
             sizes="(max-width: 768px) 100vw, 320px"
             className={styles.productImage}
             priority={false}
+            unoptimized={heroImage.src.startsWith('http')}
           />
         </Link>
 
@@ -80,7 +90,10 @@ export function ProductCard({ product }: ProductCardProps) {
       </div>
 
       <div className={styles.content}>
-        <Link href={`/shop/product/${product.slug}`} className={styles.titleLink}>
+        <Link
+          href={`/shop/product/${encodeURIComponent(product.slug.toLowerCase())}`}
+          className={styles.titleLink}
+        >
           <h3 className={styles.name}>{product.name}</h3>
         </Link>
         <p className={styles.description}>{product.description}</p>

@@ -37,6 +37,7 @@ export default function RootLayout({
         suppressHydrationWarning={true}
       >
         <Header />
+
         <main className="app-main">
           {children}
         </main>

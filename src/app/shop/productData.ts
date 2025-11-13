@@ -898,14 +898,32 @@ const products: Product[] = [
   },
 ];
 
-const productMap = new Map(products.map((product) => [product.slug, product]));
+const productMap = new Map(products.map((product) => [product.slug.toLowerCase(), product]));
+
+const candidateSlugs = (raw: string) => {
+  const base = raw.toLowerCase().trim();
+  const variants = new Set<string>([base]);
+
+  variants.add(base.replace(/\s+/g, '-'));
+  variants.add(base.replace(/-+/g, ' '));
+  variants.add(base.replace(/[_]+/g, '-'));
+
+  return Array.from(variants).filter(Boolean);
+};
 
 export function getProducts(): Product[] {
   return products;
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
-  return productMap.get(slug);
+  for (const candidate of candidateSlugs(slug)) {
+    const match = productMap.get(candidate);
+    if (match) {
+      return match;
+    }
+  }
+
+  return undefined;
 }
 
 export function getProductsByCategory(category: ProductCategory): Product[] {
@@ -932,12 +950,9 @@ export function getRelatedProducts(slug: string, limit = 4): Product[] {
     .filter(
       (item): boolean =>
         item.slug !== slug &&
-        item.categories.some((cat) => 
-          isRelevantCategory(cat) && relatedCategories.includes(cat)
-        )
-
-  )
-  .slice(0, limit);
+        item.categories.some((cat) => isRelevantCategory(cat) && relatedCategories.includes(cat)),
+    )
+    .slice(0, limit);
 
   if (related.length >= limit) {
     return related;

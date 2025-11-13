@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ProductCard } from '@/app/components/ProductCard';
-import type { Product, ProductCategory } from '@/app/shop/productData';
 import {
+  type Product,
+  type ProductCategory,
   getProductBySlug,
   getProducts,
   getRelatedProducts,
@@ -40,26 +41,34 @@ const categoryPreference: ProductCategory[] = [
 
 function getBreadcrumb(product: Product) {
   const category = categoryPreference.find((cat) => product.categories.includes(cat));
-
-  if (!category) {
-    return null;
-  }
-
-  return categoryLabels[category] ?? null;
+  return category ? categoryLabels[category] ?? null : null;
 }
+
+const normalizeSlug = (slug: string) =>
+  decodeURIComponent(slug)
+    .replace(/\u200B/g, '')
+    .trim()
+    .toLowerCase();
+
+export const dynamicParams = true;
 
 export function generateStaticParams() {
   return getProducts().map((product) => ({
-    slug: product.slug,
+    slug: product.slug.toLowerCase(),
   }));
 }
 
 export function generateMetadata({ params }: ProductPageProps): Metadata {
-  const product = getProductBySlug(params.slug);
+  const slug = normalizeSlug(params.slug);
+  const product = getProductBySlug(slug);
 
   if (!product) {
     return {
       title: 'Product not found | Pink Dot',
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
@@ -75,10 +84,20 @@ export function generateMetadata({ params }: ProductPageProps): Metadata {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
-  const product = getProductBySlug(params.slug);
+  const rawSlug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
+
+  if (!rawSlug) {
+    notFound();
+    return null;
+  }
+
+  const slug = normalizeSlug(rawSlug);
+  const product = getProductBySlug(slug);
 
   if (!product) {
+    console.error(`[ProductPage] Missing product for slug "${slug}"`);
     notFound();
+    return null;
   }
 
   const breadcrumb = getBreadcrumb(product);
@@ -104,5 +123,3 @@ export default function ProductPage({ params }: ProductPageProps) {
     </div>
   );
 }
-
-
