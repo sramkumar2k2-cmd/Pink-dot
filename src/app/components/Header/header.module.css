@@ -260,6 +260,7 @@
 .actions {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
 }
 
 .favoritesLink {
@@ -313,6 +314,59 @@
   justify-content: center;
   letter-spacing: 0.01em;
   box-shadow: 0 6px 14px rgba(215, 38, 107, 0.35);
+}
+
+.cartLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(38, 64, 106, 0.16);
+  background: rgba(255, 255, 255, 0.6);
+  color: #26406a;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  box-shadow: 0 12px 22px rgba(38, 64, 106, 0.15);
+}
+
+.cartLink:hover {
+  transform: translateY(-2px);
+  border-color: rgba(38, 64, 106, 0.32);
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 16px 28px rgba(38, 64, 106, 0.2);
+}
+
+.cartLink[data-active='true'] {
+  background: linear-gradient(135deg, #e9f1ff 0%, #d7e8ff 100%);
+  border-color: rgba(38, 64, 106, 0.38);
+  box-shadow: 0 18px 34px rgba(38, 64, 106, 0.24);
+  color: #1f2f52;
+}
+
+.cartIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.cartBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #1f2f52;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 14px rgba(31, 47, 82, 0.35);
 }
 
 .mobileMenu {

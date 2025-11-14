@@ -6,7 +6,9 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { HeartIcon } from '@/app/components/HeartIcon';
 import { useFavoriteSlugs } from '@/app/lib/useFavoriteProduct';
+import { useCartSlugs } from '@/app/lib/useCartProduct';
 import styles from './header.module.css';
+import { CartIcon } from '@/app/components/CartIcon';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -22,6 +24,9 @@ export default function Header() {
   const favoriteSlugs = useFavoriteSlugs();
   const favoritesCount = favoriteSlugs.length;
   const hasFavoritesActive = favoritesCount > 0 || pathname === '/favorites';
+  const cartSlugs = useCartSlugs();
+  const cartCount = cartSlugs.length;
+  const hasCartActive = cartCount > 0 || pathname === '/cart';
 
   const shopMenu = {
     categories: [
@@ -319,6 +324,19 @@ export default function Header() {
                 <span className={styles.favoritesBadge}>{favoritesCount}</span>
               ) : null}
             </Link>
+            <Link
+              href="/cart"
+              className={styles.cartLink}
+              aria-label={
+                cartCount
+                  ? `View ${cartCount} item${cartCount === 1 ? '' : 's'} in cart`
+                  : 'View cart'
+              }
+              data-active={pathname === '/cart'}
+            >
+              <CartIcon filled={hasCartActive} className={styles.cartIcon} />
+              {cartCount > 0 ? <span className={styles.cartBadge}>{cartCount}</span> : null}
+            </Link>
           </div>
         </div>
 
@@ -483,6 +501,13 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Favourites
+            </Link>
+            <Link
+              href="/cart"
+              className={`${styles.link} ${pathname === '/cart' ? styles.active : ''}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Cart
             </Link>
           </div>
         </div>

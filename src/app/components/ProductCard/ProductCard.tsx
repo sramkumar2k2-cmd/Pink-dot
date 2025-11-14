@@ -5,7 +5,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
 import { HeartIcon } from '@/app/components/HeartIcon';
+import { CartIcon } from '@/app/components/CartIcon';
 import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
+import { useCartProduct } from '@/app/lib/useCartProduct';
 import styles from './ProductCard.module.css';
 
 type ProductCardProps = {
@@ -18,8 +20,10 @@ type CardStyle = CSSProperties & {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
+  const { isInCart, addToCart, toggleCart } = useCartProduct(product.slug);
 
   const cardStyle: CardStyle = {};
+  const hasBadge = Boolean(product.badge);
 
   if (product.gradient) {
     cardStyle['--card-gradient'] = product.gradient;
@@ -53,22 +57,38 @@ export function ProductCard({ product }: ProductCardProps) {
     <article className={styles.card} style={cardStyle}>
       <div className={styles.visual}>
         {product.tag ? <span className={styles.tag}>{product.tag}</span> : null}
-        {product.badge ? <span className={styles.badge}>{product.badge}</span> : null}
+        {hasBadge ? <span className={styles.badge}>{product.badge}</span> : null}
 
-        <button
-          type="button"
-          className={styles.favoriteButton}
-          data-active={isFavorite}
-          aria-pressed={isFavorite}
-          aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            toggleFavorite();
-          }}
-        >
-          <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
-        </button>
+        <div className={styles.topActions}>
+          <button
+            type="button"
+            className={styles.favoriteButton}
+            data-active={isFavorite}
+            aria-pressed={isFavorite}
+            aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              toggleFavorite();
+            }}
+          >
+            <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
+          </button>
+          <button
+            type="button"
+            className={styles.cartButton}
+            data-active={isInCart}
+            aria-pressed={isInCart}
+            aria-label={isInCart ? 'Remove from cart' : 'Add to cart'}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              toggleCart();
+            }}
+          >
+            <CartIcon filled={isInCart} />
+          </button>
+        </div>
 
         <Link
           href={`/shop/product/${encodeURIComponent(product.slug.toLowerCase())}`}
@@ -85,8 +105,13 @@ export function ProductCard({ product }: ProductCardProps) {
             unoptimized={heroImage.src.startsWith('http')}
           />
         </Link>
-
-        {product.accent ? <span className={styles.accent}>{product.accent}</span> : null}
+        {product.accent ? (
+          <span
+            className={`${styles.accent} ${hasBadge ? styles.accentWithBadge : ''}`.trim()}
+          >
+            {product.accent}
+          </span>
+        ) : null}
       </div>
 
       <div className={styles.content}>
@@ -124,6 +149,7 @@ export function ProductCard({ product }: ProductCardProps) {
             type="button"
             className={`${styles.actionButton} ${styles.addToCart}`}
             onClick={() => {
+              addToCart();
               console.info(`Added ${product.slug} to cart`);
             }}
           >
