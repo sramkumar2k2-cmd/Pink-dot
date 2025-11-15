@@ -12,9 +12,9 @@ import styles from './page.module.css';
 import { ProductDetailContent } from './ProductDetailContent';
 
 type ProductPageProps = {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 };
 
 const categoryLabels: Record<ProductCategory, { label: string; href: string }> = {
@@ -58,8 +58,9 @@ export function generateStaticParams() {
   }));
 }
 
-export function generateMetadata({ params }: ProductPageProps): Metadata {
-  const slug = normalizeSlug(params.slug);
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug: rawSlug } = await params;
+  const slug = normalizeSlug(rawSlug);
   const product = getProductBySlug(slug);
 
   if (!product) {
@@ -83,8 +84,8 @@ export function generateMetadata({ params }: ProductPageProps): Metadata {
   };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-  const rawSlug = Array.isArray(params?.slug) ? params?.slug[0] : params?.slug;
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { slug: rawSlug } = await params;
 
   if (!rawSlug) {
     notFound();
