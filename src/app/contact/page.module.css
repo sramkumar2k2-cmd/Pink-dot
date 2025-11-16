@@ -271,6 +271,124 @@
   border: 1px solid rgba(255, 182, 193, 0.2);
 }
 
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.formTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  background: linear-gradient(135deg, #2D3047 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.actionIcons {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.iconButton {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 0;
+}
+
+.iconButton svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+  z-index: 2;
+  position: relative;
+}
+
+.buttonText {
+  white-space: nowrap;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin-left: 0;
+}
+
+.emailIconButton {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+}
+
+.emailIconButton:hover,
+.emailIconButton:focus {
+  width: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  border-radius: 22px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.emailIconButton:hover .buttonText,
+.emailIconButton:focus .buttonText {
+  opacity: 1;
+  width: auto;
+  margin-left: 8px;
+}
+
+.emailIconButton:hover svg,
+.emailIconButton:focus svg {
+  transform: scale(1.1);
+}
+
+.whatsappIconButton {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+}
+
+.whatsappIconButton:hover,
+.whatsappIconButton:focus {
+  width: auto;
+  padding-right: 16px;
+  padding-left: 16px;
+  border-radius: 22px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+}
+
+.whatsappIconButton:hover .buttonText,
+.whatsappIconButton:focus .buttonText {
+  opacity: 1;
+  width: auto;
+  margin-left: 8px;
+}
+
+.whatsappIconButton:hover svg,
+.whatsappIconButton:focus svg {
+  transform: scale(1.1);
+}
+
+.iconButton:active {
+  transform: translateY(0);
+}
+
 .form {
   display: flex;
   flex-direction: column;
@@ -325,41 +443,6 @@
   font-family: inherit;
 }
 
-.button {
-  background: linear-gradient(135deg, #FF69B4 0%, #FF1493 100%);
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
-}
-
-.button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
-  background: linear-gradient(135deg, #FF1493 0%, #C2185B 100%);
-}
-
-.button:active {
-  transform: translateY(0);
-}
-
-.button svg {
-  transition: transform 0.3s ease;
-}
-
-.button:hover svg {
-  transform: translateX(4px);
-}
 
 @media (max-width: 968px) {
   .content {
@@ -391,6 +474,32 @@
 
   .formSection {
     padding: 1.5rem;
+  }
+
+  .formHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .actionIcons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .iconButton {
+    width: 48px;
+    height: 48px;
+  }
+
+  .iconButton:hover,
+  .iconButton:focus {
+    width: auto;
+    min-width: 48px;
   }
 
   .infoSection {
