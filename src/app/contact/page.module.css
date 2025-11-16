@@ -433,6 +433,37 @@
   gap: 0.75rem;
 }
 
+.successMessage {
+  background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+  border: 2px solid #10B981;
+  color: #065F46;
+}
+
+.errorMessage {
+  background: linear-gradient(135deg, #FFF3CD 0%, #FFE4E6 100%);
+  border: 2px solid #F59E0B;
+  color: #92400E;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
