@@ -6,7 +6,7 @@ import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
 import { HeartIcon } from '@/app/components/HeartIcon';
 import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
-import { getWhatsAppUrl } from '@/app/lib/whatsappUtils';
+import { handleBuyNow } from '@/app/lib/whatsappUtils';
 import styles from './page.module.css';
 
 type Breadcrumb = {
@@ -170,8 +170,7 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
             type="button"
             className={`${styles.actionButton} ${styles.buyNow}`}
             onClick={() => {
-              const whatsappUrl = getWhatsAppUrl([product]);
-              window.location.href = whatsappUrl;
+              handleBuyNow([product]);
             }}
           >
             Buy now

@@ -32,11 +32,11 @@ export default function Footer() {
       title: 'Customer Service',
       links: [
         { name: 'Contact Us', href: '/contact' },
+        { name: 'Delivery Address', href: '/delivery-address' },
         { name: 'Shipping Information', href: '/support/shipping' },
         { name: 'Returns & Exchanges', href: '/support/returns' },
         { name: 'FAQ', href: '/support/faq' },
         { name: 'Size Guide', href: '/support/size-guide' },
-        { name: 'Care Instructions', href: '/support/care-guide' },
       ],
     },
     {
@@ -79,7 +79,7 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="https://wa.me/918105555337"
+                href="https://wa.me/917092939303"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"

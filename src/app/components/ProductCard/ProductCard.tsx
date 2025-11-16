@@ -8,7 +8,7 @@ import { HeartIcon } from '@/app/components/HeartIcon';
 import { CartIcon } from '@/app/components/CartIcon';
 import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import { useCartProduct } from '@/app/lib/useCartProduct';
-import { getWhatsAppUrl } from '@/app/lib/whatsappUtils';
+import { handleBuyNow } from '@/app/lib/whatsappUtils';
 import styles from './ProductCard.module.css';
 
 type ProductCardProps = {
@@ -160,8 +160,7 @@ export function ProductCard({ product }: ProductCardProps) {
             type="button"
             className={`${styles.actionButton} ${styles.buyNow}`}
             onClick={() => {
-              const whatsappUrl = getWhatsAppUrl([product]);
-              window.location.href = whatsappUrl;
+              handleBuyNow([product]);
             }}
           >
             Buy now

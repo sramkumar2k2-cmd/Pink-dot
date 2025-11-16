@@ -1,8 +1,9 @@
 import { Product } from '@/app/shop/productData';
 import { getEffectivePrice, formatPrice, calculateTotal } from './priceUtils';
+import { getSavedAddress, hasAddress } from './addressUtils';
 
 // WhatsApp number in international format (without + sign)
-const WHATSAPP_NUMBER = '918105555337';
+const WHATSAPP_NUMBER = '917092939303';
 
 /**
  * Generates a WhatsApp message with cart product details
@@ -13,6 +14,7 @@ export function generateWhatsAppMessage(products: Product[]): string {
   }
 
   const totalPrice = calculateTotal(products);
+  const deliveryAddress = getSavedAddress();
   
   // Build message with simple formatting
   let message = 'Order Inquiry from Pink Dot\n\n';
@@ -28,6 +30,19 @@ export function generateWhatsAppMessage(products: Product[]): string {
   message += '--------------------------------\n';
   message += `Total Amount: ${formatPrice(totalPrice)}\n`;
   message += `Number of Items: ${products.length}\n\n`;
+  
+  if (deliveryAddress) {
+    message += 'Delivery Address Details:\n';
+    message += `Name: ${deliveryAddress.name}\n`;
+    message += `Phone: ${deliveryAddress.phone}\n`;
+    message += `Email: ${deliveryAddress.email}\n`;
+    message += `Street: ${deliveryAddress.street}\n`;
+    message += `City: ${deliveryAddress.city}\n`;
+    message += `District: ${deliveryAddress.district}\n`;
+    message += `Pincode: ${deliveryAddress.pincode}\n\n`;
+    message += `Complete Address:\n${deliveryAddress.address}\n\n`;
+  }
+  
   message += 'Please confirm the order details. Thank you!';
   
   return message;
@@ -46,8 +61,15 @@ function isMobileDevice(): boolean {
 /**
  * Generates WhatsApp URL with pre-filled message
  * Uses wa.me format which works best for both WhatsApp Web and mobile app
+ * Returns null if address is required but not found
  */
-export function getWhatsAppUrl(products: Product[]): string {
+export function getWhatsAppUrl(products: Product[], requireAddress: boolean = true): string | null {
+  if (requireAddress && typeof window !== 'undefined') {
+    if (!hasAddress()) {
+      return null; // Signal that address is required
+    }
+  }
+  
   const message = generateWhatsAppMessage(products);
   
   // Debug: log the message to console
@@ -69,5 +91,24 @@ export function getWhatsAppUrl(products: Product[]): string {
   }
   
   return url;
+}
+
+/**
+ * Check if address is required and handle redirect if missing
+ */
+export function handleBuyNow(products: Product[]): void {
+  if (typeof window === 'undefined') return;
+  
+  if (!hasAddress()) {
+    // Redirect to delivery address page with message and return path
+    const currentPath = window.location.pathname;
+    window.location.href = `/delivery-address?message=address_required&redirect=${encodeURIComponent(currentPath)}`;
+    return;
+  }
+  
+  const whatsappUrl = getWhatsAppUrl(products, false);
+  if (whatsappUrl) {
+    window.location.href = whatsappUrl;
+  }
 }
 

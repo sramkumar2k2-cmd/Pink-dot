@@ -1,6 +1,6 @@
 import styles from './WhatsAppButton.module.css';
 
-const WHATS_APP_URL = 'https://wa.me/918105555337';
+const WHATS_APP_URL = 'https://wa.me/917092939303';
 
 export default function WhatsAppButton() {
   return (

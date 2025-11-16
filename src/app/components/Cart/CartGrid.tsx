@@ -6,7 +6,7 @@ import { ProductCard } from '@/app/components/ProductCard';
 import { useCartSlugs } from '@/app/lib/useCartProduct';
 import { getProducts } from '@/app/shop/productData';
 import { calculateTotal, formatPrice, getEffectivePrice } from '@/app/lib/priceUtils';
-import { getWhatsAppUrl } from '@/app/lib/whatsappUtils';
+import { handleBuyNow } from '@/app/lib/whatsappUtils';
 import styles from './CartGrid.module.css';
 
 const allProducts = getProducts();
@@ -71,15 +71,13 @@ export function CartGrid() {
             <span className={styles.totalLabel}>Total Amount:</span>
             <span className={styles.totalPrice}>{formatPrice(totalPrice)}</span>
           </div>
-          <a
-            href={getWhatsAppUrl(cartProducts)}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => handleBuyNow(cartProducts)}
             className={styles.buyNowButton}
-            style={{ textDecoration: 'none', display: 'inline-block' }}
           >
             Buy Now
-          </a>
+          </button>
         </div>
       </div>
     </>
