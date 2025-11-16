@@ -73,7 +73,7 @@ You need to create **2 templates**:
 
    If you have any urgent queries, please feel free to contact us at:
    - Phone: +91 70929 39303
-   - Email: pinkdotfashionjewllery@gmail.com
+   - Email: pinkdotfashionjewellery@gmail.com
 
    We appreciate your interest in Pink Dot Fashion Jewellery and look forward to assisting you!
 

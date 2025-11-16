@@ -34,7 +34,7 @@ export default function SizeGuidePage() {
           ))}
         </div>
         <p className={styles.callout}>
-          Need a custom size? Reach out to <a href="mailto:pinkdotfashionjewllery@gmail.com">pinkdotfashionjewllery@gmail.com</a> and we&apos;ll craft something just for you.
+          Need a custom size? Reach out to <a href="mailto:pinkdotfashionjewellery@gmail.com">pinkdotfashionjewellery@gmail.com</a> and we&apos;ll craft something just for you.
         </p>
       </div>
     </section>

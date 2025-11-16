@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import styles from './page.module.css';
-import { sendContactThankYouEmail } from '@/app/lib/emailUtils';
+import { sendContactThankYouEmail, sendContactNotificationEmail } from '@/app/lib/emailUtils';
 
 function ContactPageContent() {
   const [formData, setFormData] = useState({
@@ -91,34 +91,70 @@ function ContactPageContent() {
     setEmailStatus({ type: null, message: '' });
     setShowAlert(false);
     
-    const { name, email, phone, subject, message } = formData;
-    
-    // Send thank you email first
+    // Send emails directly via EmailJS - both to customer and to Pink Dot
     try {
-      const emailResult = await sendContactThankYouEmail(formData);
+      // Send notification email to Pink Dot first
+      const notificationResult = await sendContactNotificationEmail(formData);
+      console.log('Notification email result:', notificationResult);
       
-      if (emailResult.success) {
-        setEmailStatus({
-          type: 'success',
-          message: 'Thank you! A confirmation email has been sent to your email address.',
+      // Send thank you email to customer
+      const thankYouResult = await sendContactThankYouEmail(formData);
+      console.log('Thank you email result:', thankYouResult);
+      
+      if (thankYouResult.success) {
+        if (notificationResult.success) {
+          setEmailStatus({
+            type: 'success',
+            message: 'Thank you! Your message has been sent successfully. A confirmation email has been sent to your email address.',
+          });
+        } else {
+          // Thank you sent but notification failed
+          setEmailStatus({
+            type: 'success',
+            message: 'Thank you! Your message has been sent. A confirmation email has been sent to your email address.',
+          });
+          console.warn('Notification email to Pink Dot failed:', notificationResult.error);
+        }
+        // Reset form after successful send
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          subject: '',
+          message: '',
         });
+        setErrors({});
+      } else {
+        // Even if thank you email fails, if notification was sent, still show success
+        if (notificationResult.success) {
+          setEmailStatus({
+            type: 'success',
+            message: 'Thank you! Your message has been received. We will get back to you soon.',
+          });
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            subject: '',
+            message: '',
+          });
+          setErrors({});
+        } else {
+          setEmailStatus({
+            type: 'error',
+            message: thankYouResult.error || 'Failed to send your message. Please try again later.',
+          });
+        }
       }
     } catch (error) {
-      // Continue even if thank you email fails
-      console.error('Error sending thank you email:', error);
+      console.error('Error sending email:', error);
+      setEmailStatus({
+        type: 'error',
+        message: 'An error occurred while sending your message. Please try again later.',
+      });
+    } finally {
+      setIsEmailSending(false);
     }
-    
-    // Also open default mail client
-    const emailSubject = encodeURIComponent(subject || 'Contact Inquiry');
-    const emailBody = encodeURIComponent(
-      `Name: ${name}\n` +
-      `Email: ${email}\n` +
-      `Phone: ${phone || 'Not provided'}\n\n` +
-      `Message:\n${message}`
-    );
-    
-    setIsEmailSending(false);
-    window.location.href = `mailto:pinkdotfashionjewllery@gmail.com?subject=${emailSubject}&body=${emailBody}`;
   };
 
   const handleWhatsAppSubmit = async (e: React.FormEvent) => {
@@ -190,10 +226,10 @@ function ContactPageContent() {
                 <h3>Email</h3>
                 <p>
                   <a
-                    href="mailto:pinkdotfashionjewllery@gmail.com"
+                    href="mailto:pinkdotfashionjewellery@gmail.com"
                     className={styles.infoLink}
                   >
-                    pinkdotfashionjewllery@gmail.com
+                    pinkdotfashionjewellery@gmail.com
                   </a>
                 </p>
               </div>

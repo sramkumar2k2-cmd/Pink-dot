@@ -4,15 +4,15 @@ import emailjs from '@emailjs/browser';
 // These values will be set when EmailJS account is configured
 // For now, using placeholder values that can be updated later
 export const EMAILJS_CONFIG = {
-  SERVICE_ID: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'your_service_id',
+  SERVICE_ID: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_nx9wa2d',
   TEMPLATE_ID_DELIVERY_ADDRESS: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_DELIVERY_ADDRESS || 'your_template_id_delivery',
-  TEMPLATE_ID_CONTACT: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT || 'your_template_id_contact',
-  PUBLIC_KEY: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || 'your_public_key',
+  TEMPLATE_ID_CONTACT: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT || 'template_t5zk1w1',
+  PUBLIC_KEY: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '9dm0OwOcsme-4j0Ik',
 };
 
 // Initialize EmailJS (call this once in your app)
 export function initEmailJS() {
-  if (typeof window !== 'undefined' && EMAILJS_CONFIG.PUBLIC_KEY !== 'your_public_key') {
+  if (typeof window !== 'undefined' && EMAILJS_CONFIG.PUBLIC_KEY !== '9dm0OwOcsme-4j0Ik') {
     emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
   }
 }
@@ -44,9 +44,8 @@ export async function sendDeliveryAddressThankYouEmail(
 ): Promise<{ success: boolean; error?: string }> {
   // Don't send email if EmailJS is not configured
   if (
-    EMAILJS_CONFIG.SERVICE_ID === 'your_service_id' ||
     EMAILJS_CONFIG.TEMPLATE_ID_DELIVERY_ADDRESS === 'your_template_id_delivery' ||
-    EMAILJS_CONFIG.PUBLIC_KEY === 'your_public_key'
+    EMAILJS_CONFIG.PUBLIC_KEY === '9dm0OwOcsme-4j0Ik'
   ) {
     console.warn('EmailJS is not configured. Skipping email send.');
     return { success: false, error: 'EmailJS not configured' };
@@ -115,9 +114,9 @@ export async function sendContactThankYouEmail(
 ): Promise<{ success: boolean; error?: string }> {
   // Don't send email if EmailJS is not configured
   if (
-    EMAILJS_CONFIG.SERVICE_ID === 'your_service_id' ||
-    EMAILJS_CONFIG.TEMPLATE_ID_CONTACT === 'your_template_id_contact' ||
-    EMAILJS_CONFIG.PUBLIC_KEY === 'your_public_key'
+    EMAILJS_CONFIG.SERVICE_ID === 'service_nx9wa2d' ||
+    EMAILJS_CONFIG.TEMPLATE_ID_CONTACT === 'template_4uzarom' ||
+    EMAILJS_CONFIG.PUBLIC_KEY === '9dm0OwOcsme-4j0Ik'
   ) {
     console.warn('EmailJS is not configured. Skipping email send.');
     return { success: false, error: 'EmailJS not configured' };
@@ -131,6 +130,12 @@ export async function sendContactThankYouEmail(
     initEmailJS();
 
     const templateParams = {
+      full_name: formData.name,
+      email: formData.email,
+      phone: formData.phone || 'Not provided',
+      subject: formData.subject,
+      message: formData.message,
+      // Additional formatted content for template
       to_email: formData.email,
       to_name: formData.name,
       customer_name: formData.name,
@@ -138,8 +143,8 @@ export async function sendContactThankYouEmail(
       customer_phone: formData.phone || 'Not provided',
       inquiry_subject: formData.subject,
       inquiry_message: formData.message,
-      subject: 'Thank You for Contacting Us - Pink Dot Fashion Jewellery',
-      message: `Dear ${formData.name},
+      email_subject: 'Thank You for Contacting Us - Pink Dot Fashion Jewellery',
+      formatted_message: `Dear ${formData.name},
 
 Thank you for reaching out to Pink Dot Fashion Jewellery!
 
@@ -152,7 +157,7 @@ Our team will review your message and get back to you as soon as possible. We ty
 
 If you have any urgent queries, please feel free to contact us at:
 - Phone: +91 70929 39303
-- Email: pinkdotfashionjewllery@gmail.com
+- Email: pinkdotfashionjewellery@gmail.com
 
 We appreciate your interest in Pink Dot Fashion Jewellery and look forward to assisting you!
 
