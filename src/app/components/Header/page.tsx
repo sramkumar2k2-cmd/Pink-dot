@@ -205,12 +205,6 @@ export default function Header() {
                         }
                       }}
                       onTouchStart={(e) => {
-                        // Only handle touch on the actual link element, not on page content
-                        const target = e.target as HTMLElement;
-                        const linkElement = target.closest('a');
-                        
-                        // Only prevent default if touching the link itself and dropdown is not open
-                        if (linkElement && openDropdown !== item.name) {
                         e.preventDefault();
                         e.stopPropagation();
                         if (openDropdown !== item.name) {
