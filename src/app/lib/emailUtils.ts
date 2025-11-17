@@ -7,9 +7,7 @@ export const EMAILJS_CONFIG = {
   SERVICE_ID: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID || 'service_nx9wa2d',
   TEMPLATE_ID_DELIVERY_ADDRESS: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_DELIVERY_ADDRESS || 'your_template_id_delivery',
   TEMPLATE_ID_CONTACT: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT || 'template_t5zk1w1',
-  TEMPLATE_ID_CONTACT_NOTIFICATION: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT_NOTIFICATION || 'template_t5zk1w1',
   PUBLIC_KEY: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY || '9dm0OwOcsme-4j0Ik',
-  PINK_DOT_EMAIL: process.env.NEXT_PUBLIC_PINK_DOT_EMAIL || 'pinkdotfashionjewellery@gmail.com',
 };
 
 // Initialize EmailJS (call this once in your app)
@@ -176,76 +174,6 @@ Pink Dot Fashion Jewellery Team`,
     return { success: true };
   } catch (error) {
     console.error('Error sending contact thank you email:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
-  }
-}
-
-/**
- * Send notification email to Pink Dot for contact form submission
- */
-export async function sendContactNotificationEmail(
-  formData: ContactFormData
-): Promise<{ success: boolean; error?: string }> {
-  // Don't send email if EmailJS is not configured
-  if (
-    EMAILJS_CONFIG.SERVICE_ID === 'service_nx9wa2d' ||
-    EMAILJS_CONFIG.TEMPLATE_ID_CONTACT_NOTIFICATION === 'template_t5zk1w1' ||
-    EMAILJS_CONFIG.PUBLIC_KEY === '9dm0OwOcsme-4j0Ik'
-  ) {
-    console.warn('EmailJS is not configured. Skipping email send.');
-    return { success: false, error: 'EmailJS not configured' };
-  }
-
-  try {
-    if (typeof window === 'undefined') {
-      return { success: false, error: 'Cannot send email on server side' };
-    }
-
-    initEmailJS();
-
-    const templateParams = {
-      to_email: EMAILJS_CONFIG.PINK_DOT_EMAIL,
-      to_name: 'Pink Dot Fashion Jewellery',
-      full_name: formData.name,
-      email: formData.email,
-      phone: formData.phone || 'Not provided',
-      subject: formData.subject,
-      message: formData.message,
-      // Additional formatted content for template
-      customer_name: formData.name,
-      customer_email: formData.email,
-      customer_phone: formData.phone || 'Not provided',
-      inquiry_subject: formData.subject,
-      inquiry_message: formData.message,
-      email_subject: `New Contact Form Submission: ${formData.subject}`,
-      formatted_message: `New Contact Form Submission
-
-Customer Details:
-- Name: ${formData.name}
-- Email: ${formData.email}
-- Phone: ${formData.phone || 'Not provided'}
-
-Subject: ${formData.subject}
-
-Message:
-${formData.message}
-
----
-This is an automated notification from the Pink Dot Fashion Jewellery contact form.`,
-    };
-
-    await emailjs.send(
-      EMAILJS_CONFIG.SERVICE_ID,
-      EMAILJS_CONFIG.TEMPLATE_ID_CONTACT_NOTIFICATION,
-      templateParams
-    );
-
-    return { success: true };
-  } catch (error) {
-    console.error('Error sending contact notification email:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error occurred',

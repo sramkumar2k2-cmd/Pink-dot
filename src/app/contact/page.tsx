@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import styles from './page.module.css';
-import { sendContactThankYouEmail, sendContactNotificationEmail } from '@/app/lib/emailUtils';
+import { sendContactThankYouEmail } from '@/app/lib/emailUtils';
 
 function ContactPageContent() {
   const [formData, setFormData] = useState({
@@ -91,30 +91,15 @@ function ContactPageContent() {
     setEmailStatus({ type: null, message: '' });
     setShowAlert(false);
     
-    // Send emails directly via EmailJS - both to customer and to Pink Dot
+    // Send email directly via EmailJS
     try {
-      // Send notification email to Pink Dot first
-      const notificationResult = await sendContactNotificationEmail(formData);
-      console.log('Notification email result:', notificationResult);
+      const emailResult = await sendContactThankYouEmail(formData);
       
-      // Send thank you email to customer
-      const thankYouResult = await sendContactThankYouEmail(formData);
-      console.log('Thank you email result:', thankYouResult);
-      
-      if (thankYouResult.success) {
-        if (notificationResult.success) {
-          setEmailStatus({
-            type: 'success',
-            message: 'Thank you! Your message has been sent successfully. A confirmation email has been sent to your email address.',
-          });
-        } else {
-          // Thank you sent but notification failed
-          setEmailStatus({
-            type: 'success',
-            message: 'Thank you! Your message has been sent. A confirmation email has been sent to your email address.',
-          });
-          console.warn('Notification email to Pink Dot failed:', notificationResult.error);
-        }
+      if (emailResult.success) {
+        setEmailStatus({
+          type: 'success',
+          message: 'Thank you! Your message has been sent successfully. A confirmation email has been sent to your email address.',
+        });
         // Reset form after successful send
         setFormData({
           name: '',
@@ -125,26 +110,10 @@ function ContactPageContent() {
         });
         setErrors({});
       } else {
-        // Even if thank you email fails, if notification was sent, still show success
-        if (notificationResult.success) {
-          setEmailStatus({
-            type: 'success',
-            message: 'Thank you! Your message has been received. We will get back to you soon.',
-          });
-          setFormData({
-            name: '',
-            email: '',
-            phone: '',
-            subject: '',
-            message: '',
-          });
-          setErrors({});
-        } else {
-          setEmailStatus({
-            type: 'error',
-            message: thankYouResult.error || 'Failed to send your message. Please try again later.',
-          });
-        }
+        setEmailStatus({
+          type: 'error',
+          message: emailResult.error || 'Failed to send your message. Please try again later.',
+        });
       }
     } catch (error) {
       console.error('Error sending email:', error);
