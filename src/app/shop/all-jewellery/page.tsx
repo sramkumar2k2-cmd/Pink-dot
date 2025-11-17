@@ -52,15 +52,6 @@ const quickLinks = [
     badge: "Collections",
   },
   {
-    title: "Gift Guide",
-    description: "Shop curated gift edits, bespoke wrapping, and services tailored to every celebration.",
-    href: "/gift-guide",
-    image: "/images/neck3.jpeg",
-    badge: "Gifting",
-    secondaryLabel: "Book consult",
-    secondaryHref: "/contact",
-  },
-  {
     title: "Sale Spotlight",
     description: "Catch limited-quantity archive pieces and bundles before they shimmer out of stock.",
     href: "/shop/sale",

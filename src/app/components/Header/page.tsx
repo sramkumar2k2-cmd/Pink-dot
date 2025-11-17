@@ -60,7 +60,6 @@ export default function Header() {
     },
     { name: 'Collections', href: '/collections', hasDropdown: true },
     { name: 'Our Story', href: '/our-story' },
-    { name: 'Gift Guide', href: '/gift-guide' },
     { name: 'Contact', href: '/contact' },
   ];
 

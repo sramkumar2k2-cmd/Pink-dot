@@ -208,12 +208,6 @@ const Navigation = () => {
             Our Story
           </Link>
           <Link 
-            href="/gift-guide" 
-            className={`${styles.navLink} ${pathname === '/gift-guide' ? styles.active : ''}`}
-          >
-            Gift Guide
-          </Link>
-          <Link 
             href="/contact" 
             className={`${styles.navLink} ${pathname === '/contact' ? styles.active : ''}`}
           >
@@ -307,13 +301,6 @@ const Navigation = () => {
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Our Story
-            </Link>
-            <Link 
-              href="/gift-guide" 
-              className={styles.mobileNavLink} 
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Gift Guide
             </Link>
             <Link 
               href="/contact" 
