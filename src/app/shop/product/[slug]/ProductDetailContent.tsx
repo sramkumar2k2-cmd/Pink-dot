@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
@@ -22,6 +22,9 @@ type ProductDetailContentProps = {
 export function ProductDetailContent({ product, breadcrumb }: ProductDetailContentProps) {
   const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const mainImageRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   const galleryImages = useMemo(() => {
     const baseImages = (product.images ?? []).filter(
@@ -58,6 +61,39 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
   const displayedPrice =
     product.salePrice && product.originalPrice ? product.salePrice : product.price;
 
+  const handleImagePrev = () => {
+    setSelectedIndex((prev) => (prev > 0 ? prev - 1 : galleryImages.length - 1));
+  };
+
+  const handleImageNext = () => {
+    setSelectedIndex((prev) => (prev < galleryImages.length - 1 ? prev + 1 : 0));
+  };
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchEndX.current = null;
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      handleImageNext();
+    }
+    if (isRightSwipe) {
+      handleImagePrev();
+    }
+  };
+
   return (
     <section className={styles.detail}>
       <div className={styles.gallery}>
@@ -71,7 +107,13 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
           </nav>
         ) : null}
 
-        <div className={styles.mainImage}>
+        <div 
+          className={styles.mainImage}
+          ref={mainImageRef}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <button
             type="button"
             aria-pressed={isFavorite}
@@ -84,40 +126,69 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
           >
             <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
           </button>
-          <Image
-            src={primaryImage.src}
-            alt={primaryImage.alt}
-            fill
-            className={styles.mainPhoto}
-            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 480px"
-            priority
-            unoptimized={primaryImage.src.startsWith('http')}
-          />
-        </div>
-
-        {galleryImages.length > 1 ? (
-          <div className={styles.thumbnails}>
-            {galleryImages.map((image, index) => (
+          
+          {galleryImages.length > 1 && (
+            <>
               <button
-                key={image.src}
                 type="button"
-                className={styles.thumbnailButton}
-                data-active={index === selectedIndex}
-                onClick={() => setSelectedIndex(index)}
-                aria-label={`Show alternate view ${index + 1} for ${product.name}`}
+                className={`${styles.mainCarouselButton} ${styles.mainCarouselPrev}`}
+                onClick={handleImagePrev}
+                aria-label="Previous image"
               >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className={styles.thumbnailImage}
-                    sizes="(max-width: 768px) 16vw, 120px"
-                    unoptimized={image.src.startsWith('http')}
-                  />
+                <svg className={styles.carouselIcon} viewBox="0 0 24 24">
+                  <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               </button>
+              <button
+                type="button"
+                className={`${styles.mainCarouselButton} ${styles.mainCarouselNext}`}
+                onClick={handleImageNext}
+                aria-label="Next image"
+              >
+                <svg className={styles.carouselIcon} viewBox="0 0 24 24">
+                  <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          <div className={styles.mainImageContainer}>
+            {galleryImages.map((image, index) => (
+              <div
+                key={image.src}
+                className={`${styles.mainImageSlide} ${
+                  index === selectedIndex ? styles.mainImageSlideActive : ''
+                }`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className={styles.mainPhoto}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 480px"
+                  priority={index === 0}
+                  unoptimized={image.src.startsWith('http')}
+                />
+              </div>
             ))}
           </div>
-        ) : null}
+
+          {galleryImages.length > 1 && (
+            <div className={styles.imageIndicators}>
+              {galleryImages.map((_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className={`${styles.indicator} ${
+                    index === selectedIndex ? styles.indicatorActive : ''
+                  }`}
+                  onClick={() => setSelectedIndex(index)}
+                  aria-label={`Go to image ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={styles.info}>

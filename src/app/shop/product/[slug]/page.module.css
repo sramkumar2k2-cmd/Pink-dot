@@ -29,10 +29,23 @@
   align-items: start;
 }
 
+@media (min-width: 769px) {
+  .detail {
+    align-items: stretch;
+  }
+}
+
 .gallery {
   position: relative;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.6rem;
+}
+
+@media (min-width: 769px) {
+  .gallery {
+    height: 100%;
+  }
 }
 
 .mainImage {
@@ -42,10 +55,117 @@
   aspect-ratio: 4 / 5;
   box-shadow: 0 22px 42px rgba(34, 24, 64, 0.14);
   background: linear-gradient(135deg, rgba(248, 240, 255, 0.88), rgba(236, 245, 255, 0.88));
+  touch-action: pan-y pinch-zoom;
+}
+
+@media (min-width: 769px) {
+  .mainImage {
+    aspect-ratio: auto;
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.mainImageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mainImageSlide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.mainImageSlideActive {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .mainPhoto {
   object-fit: cover;
+}
+
+.mainCarouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(34, 24, 64, 0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  color: #261b3f;
+}
+
+.mainCarouselButton:hover {
+  transform: translateY(-50%) scale(1.1);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 20px rgba(34, 24, 64, 0.3);
+}
+
+.mainCarouselButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.mainCarouselPrev {
+  left: 16px;
+}
+
+.mainCarouselNext {
+  right: 16px;
+}
+
+.imageIndicators {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 8px 12px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(34, 24, 64, 0.15);
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(38, 27, 63, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.indicator:hover {
+  background: rgba(38, 27, 63, 0.5);
+  transform: scale(1.2);
+}
+
+.indicatorActive {
+  background: #261b3f;
+  width: 24px;
+  border-radius: 4px;
 }
 
 .favoriteButton {
@@ -88,9 +208,18 @@
 }
 
 .thumbnails {
-  display: grid;
+  position: relative;
+  display: flex;
   gap: 0.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  overflow: hidden;
+}
+
+.thumbnailsContainer {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  will-change: transform;
+  transition: transform 0.3s ease;
 }
 
 .thumbnailButton {
@@ -104,7 +233,11 @@
   box-shadow: 0 12px 24px rgba(34, 24, 64, 0.12);
   opacity: 0.85;
   transition: transform 180ms ease, opacity 180ms ease, box-shadow 180ms ease;
+  flex-shrink: 0;
+  width: calc(25% - 0.375rem);
+  min-width: 80px;
 }
+
 
 .thumbnailButton[data-active='true'] {
   opacity: 1;
@@ -280,6 +413,57 @@
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+.carouselButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(34, 24, 64, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.2s ease, background 0.2s ease;
+  color: #261b3f;
+}
+
+.carouselButton:hover {
+  transform: translateY(-50%) scale(1.1);
+  background: rgba(255, 255, 255, 1);
+}
+
+.carouselButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.carouselButton.prev {
+  left: 8px;
+}
+
+.carouselButton.next {
+  right: 8px;
+}
+
+.carouselButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.carouselIcon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
 @media (max-width: 768px) {
   .page {
     padding: 1.2rem 0.9rem 2.4rem;
@@ -291,6 +475,10 @@
 
   .actionButton {
     min-width: 100%;
+  }
+
+  .thumbnailButton {
+    width: calc(33.333% - 0.333rem);
   }
 }
 

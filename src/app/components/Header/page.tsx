@@ -206,13 +206,17 @@ export default function Header() {
                         }
                       }}
                       onTouchStart={(e) => {
+                        // Only handle touch on the actual link element, not on page content
+                        const target = e.target as HTMLElement;
+                        const linkElement = target.closest('a');
+                        
+                        // Only prevent default if touching the link itself and dropdown is not open
+                        if (linkElement && openDropdown !== item.name) {
                         e.preventDefault();
                         e.stopPropagation();
-                        if (openDropdown !== item.name) {
                           setOpenDropdown(item.name);
-                        } else {
-                          closeDropdown();
                         }
+                        // If dropdown is open, allow normal link navigation
                       }}
                     >
                       {item.name}
@@ -223,13 +227,18 @@ export default function Header() {
                       openDropdown === item.name ? styles.dropdownOpen : ''
                     }`}
                     onTouchStart={(e) => {
+                      // Only prevent default when dropdown is actually open
+                      if (openDropdown === item.name) {
                       // Prevent touch from bubbling up and closing dropdown
                       e.stopPropagation();
-                      e.preventDefault();
+                        // Don't prevent default to allow normal interactions within dropdown
+                      }
                     }}
                     onTouchEnd={(e) => {
-                      // Prevent touch end from bubbling
+                      // Only stop propagation when dropdown is open
+                      if (openDropdown === item.name) {
                       e.stopPropagation();
+                      }
                     }}
                     onMouseDown={(e) => {
                       // Prevent mousedown from bubbling and closing dropdown
@@ -353,10 +362,16 @@ export default function Header() {
         </button>
       </div>
 
+      {isMobileMenuOpen && (
       <div 
-        className={`${styles.mobileMenuBackdrop} ${isMobileMenuOpen ? styles.open : ''}`}
+          className={`${styles.mobileMenuBackdrop} ${styles.open}`}
         onClick={() => setIsMobileMenuOpen(false)}
+          onTouchStart={(e) => {
+            // Prevent touch events from propagating to content below
+            e.stopPropagation();
+          }}
       />
+      )}
       <div
         id="pinkdot-mobile-menu"
         className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}
