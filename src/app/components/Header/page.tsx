@@ -97,6 +97,8 @@ export default function Header() {
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
+      // Prevent iOS bounce scroll
+      document.body.style.touchAction = 'none';
     } else {
       // Restore body scroll
       const scrollY = document.body.style.top;
@@ -104,17 +106,19 @@ export default function Header() {
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
+      document.body.style.touchAction = '';
       if (scrollY) {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     }
 
-    // Cleanup on unmount
+    // Cleanup on unmount - ensure body is always scrollable
     return () => {
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
+      document.body.style.touchAction = '';
     };
   }, [isMobileMenuOpen]);
 

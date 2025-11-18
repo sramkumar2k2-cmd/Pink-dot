@@ -497,15 +497,17 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     opacity: 0;
-    pointer-events: auto;
-    visibility: visible;
-    transition: opacity 0.3s ease;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
     z-index: 998;
-    touch-action: none;
+    touch-action: auto;
   }
 
   .mobileMenuBackdrop.open {
     opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
   }
 
   .mobileMenu {

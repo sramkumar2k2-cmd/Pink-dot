@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://pinkdotfashionjewellery.com'),
   title: "Pink Dot - Modern Fashion & Lifestyle",
   description: "Discover our unique collection of thoughtfully curated items",
   icons: {

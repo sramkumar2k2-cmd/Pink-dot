@@ -33,6 +33,9 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  /* Enable smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 body {
@@ -44,6 +47,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  /* Ensure body can scroll naturally on mobile */
+  position: relative;
+  /* Don't set overflow here - let it scroll naturally */
 }
 
 * {
@@ -67,4 +73,10 @@ a {
   flex: 1;
   display: flex;
   flex-direction: column;
+  /* Ensure main content can scroll on mobile */
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  position: relative;
+  width: 100%;
+  /* Don't set overflow - let parent body handle scrolling */
 }
