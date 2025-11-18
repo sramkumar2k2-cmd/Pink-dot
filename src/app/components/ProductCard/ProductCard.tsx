@@ -57,8 +57,12 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <article className={styles.card} style={cardStyle}>
       <div className={styles.visual}>
-        {product.tag ? <span className={styles.tag}>{product.tag}</span> : null}
-        {hasBadge ? <span className={styles.badge}>{product.badge}</span> : null}
+        {/* Show badge if exists, otherwise show tag - both on bottom-left */}
+        {hasBadge ? (
+          <span className={styles.badge}>{product.badge}</span>
+        ) : product.tag ? (
+          <span className={styles.tag}>{product.tag}</span>
+        ) : null}
 
         <div className={styles.topActions}>
           <button

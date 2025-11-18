@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react';
 import styles from './page.module.css';
-import { sendContactThankYouEmail } from '@/app/lib/emailUtils';
+import { sendContactThankYouEmail, sendContactNotificationEmail } from '@/app/lib/emailUtils';
 
 function ContactPageContent() {
   const [formData, setFormData] = useState({
@@ -91,9 +91,24 @@ function ContactPageContent() {
     setEmailStatus({ type: null, message: '' });
     setShowAlert(false);
     
-    // Send email directly via EmailJS
+    // Send thank you email to customer and notification to company
     try {
+      // Send thank you email to customer
       const emailResult = await sendContactThankYouEmail(formData);
+      
+      // Send notification email to company (non-blocking - don't wait for this)
+      sendContactNotificationEmail(formData)
+        .then((notificationResult) => {
+          if (notificationResult.success) {
+            console.log('Company notification email sent successfully');
+          } else {
+            console.log('Company notification email failed:', notificationResult.error);
+          }
+        })
+        .catch((error) => {
+          // Silently handle notification errors - don't show to user
+          console.log('Company notification email error:', error);
+        });
       
       if (emailResult.success) {
         setEmailStatus({

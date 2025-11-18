@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { getSavedAddress, saveAddress, type DeliveryAddress } from '@/app/lib/addressUtils';
-import { sendDeliveryAddressThankYouEmail } from '@/app/lib/emailUtils';
+import { sendDeliveryAddressThankYouEmail, sendDeliveryAddressNotificationEmail } from '@/app/lib/emailUtils';
 
 function DeliveryAddressContent() {
   const searchParams = useSearchParams();
@@ -27,13 +27,20 @@ function DeliveryAddressContent() {
   const [hasSavedAddress, setHasSavedAddress] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [emailStatus, setEmailStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+  const [originalAddress, setOriginalAddress] = useState<DeliveryAddress | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     // Load saved address if exists
     const savedAddress = getSavedAddress();
     if (savedAddress) {
       setFormData(savedAddress);
+      // Store a deep copy of the original address for comparison
+      setOriginalAddress({ ...savedAddress });
       setHasSavedAddress(true);
+      setIsEditMode(false); // Start in view mode when address exists
+    } else {
+      setIsEditMode(true); // Start in edit mode if no address exists
     }
     
     // Show alert if redirected from Buy Now
@@ -54,6 +61,7 @@ function DeliveryAddressContent() {
   }, [showAddressMessage]);
 
   const handleEditAddress = () => {
+    setIsEditMode(true);
     // Scroll to form and focus on first field
     setTimeout(() => {
       const formElement = document.getElementById('delivery-address-form');
@@ -67,6 +75,16 @@ function DeliveryAddressContent() {
     }, 100);
   };
 
+  const handleCancelEdit = () => {
+    // Reset form to original address
+    if (originalAddress) {
+      setFormData(originalAddress);
+    }
+    setIsEditMode(false);
+    setErrors({});
+    setEmailStatus({ type: null, message: '' });
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -76,9 +94,8 @@ function DeliveryAddressContent() {
       setErrors(prev => ({ ...prev, [name as keyof DeliveryAddress]: '' }));
     }
     
-    // Auto-save to localStorage as user types
-    const updatedData = { ...formData, [name]: value };
-    saveAddress(updatedData);
+    // Removed auto-save - address will only be saved on form submit
+    // This ensures change detection works correctly
   };
 
   const validateForm = (): boolean => {
@@ -126,6 +143,45 @@ function DeliveryAddressContent() {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Helper function to check if address has changed
+  const hasAddressChanged = (newAddress: DeliveryAddress, savedAddress: DeliveryAddress | null): boolean => {
+    if (!savedAddress) {
+      console.log('No saved address found - treating as new address');
+      return true; // No saved address, so this is a new address
+    }
+    
+    // Normalize fields for comparison (handle empty strings and null values)
+    const normalize = (value: string) => (value || '').trim();
+    const normalizeText = (value: string) => (value || '').trim().toLowerCase();
+    
+    // Compare all fields
+    const nameChanged = normalizeText(newAddress.name || '') !== normalizeText(savedAddress.name || '');
+    const phoneChanged = normalize(newAddress.phone || '') !== normalize(savedAddress.phone || '');
+    const emailChanged = normalizeText(newAddress.email || '') !== normalizeText(savedAddress.email || '');
+    const streetChanged = normalizeText(newAddress.street || '') !== normalizeText(savedAddress.street || '');
+    const cityChanged = normalizeText(newAddress.city || '') !== normalizeText(savedAddress.city || '');
+    const districtChanged = normalizeText(newAddress.district || '') !== normalizeText(savedAddress.district || '');
+    const pincodeChanged = normalize(newAddress.pincode || '') !== normalize(savedAddress.pincode || '');
+    const addressChanged = normalizeText(newAddress.address || '') !== normalizeText(savedAddress.address || '');
+    
+    const hasChanges = nameChanged || phoneChanged || emailChanged || streetChanged || cityChanged || districtChanged || pincodeChanged || addressChanged;
+    
+    // Debug logging
+    console.log('Address comparison:', {
+      name: { new: newAddress.name, saved: savedAddress.name, changed: nameChanged },
+      phone: { new: newAddress.phone, saved: savedAddress.phone, changed: phoneChanged },
+      email: { new: newAddress.email, saved: savedAddress.email, changed: emailChanged },
+      street: { new: newAddress.street, saved: savedAddress.street, changed: streetChanged },
+      city: { new: newAddress.city, saved: savedAddress.city, changed: cityChanged },
+      district: { new: newAddress.district, saved: savedAddress.district, changed: districtChanged },
+      pincode: { new: newAddress.pincode, saved: savedAddress.pincode, changed: pincodeChanged },
+      address: { new: newAddress.address, saved: savedAddress.address, changed: addressChanged },
+      hasChanges: hasChanges,
+    });
+    
+    return hasChanges;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -133,46 +189,90 @@ function DeliveryAddressContent() {
       setIsSubmitting(true);
       setEmailStatus({ type: null, message: '' });
       
-      // Save address first
-      saveAddress(formData);
-      setHasSavedAddress(true);
-      setShowAlert(false);
+      // Check if address has actually changed
+      // Compare against original address (loaded when page first rendered)
+      // If no original address exists, treat as new address (allow save)
+      const addressToCompare = originalAddress;
       
-      // Send thank you email
-      try {
-        const emailResult = await sendDeliveryAddressThankYouEmail(formData);
+      // Debug: Log both addresses for comparison
+      console.log('Comparing addresses:', {
+        formData: formData,
+        originalAddress: originalAddress,
+        addressToCompare: addressToCompare,
+        hasSavedAddress: hasSavedAddress,
+      });
+      
+      // Only check for changes if we have an original address to compare against
+      // If no original address, it's a new address (allow save)
+      if (addressToCompare) {
+        const addressChanged = hasAddressChanged(formData, addressToCompare);
         
-        if (emailResult.success) {
-          setEmailStatus({
-            type: 'success',
-            message: 'Address saved! A confirmation email has been sent to your email address.',
-          });
-        } else {
-          // Address is saved, but email might have failed (configuration issue)
+        if (!addressChanged) {
+          // No changes detected - don't save or send emails
+          console.log('No changes detected - blocking update');
+          setIsSubmitting(false);
           setEmailStatus({
             type: 'error',
-            message: 'Address saved successfully, but confirmation email could not be sent.',
+            message: 'No changes detected. Please modify at least one field to update your address.',
           });
+          return;
         }
-      } catch (error) {
-        setEmailStatus({
-          type: 'error',
-          message: 'Address saved successfully, but confirmation email could not be sent.',
-        });
-      } finally {
-        setIsSubmitting(false);
+        console.log('Changes detected - proceeding with update');
+      } else {
+        console.log('No original address - treating as new address');
       }
       
-      // Redirect after showing success message
-      setTimeout(() => {
-        const redirect = searchParams?.get('redirect');
-        if (redirect && redirect !== window.location.pathname) {
-          window.location.href = redirect;
-        } else {
-          // If no redirect, just refresh to show saved state
-          window.location.href = '/delivery-address';
-        }
-      }, 2000);
+      // Address has changed or is new - proceed with save and emails
+      saveAddress(formData);
+      // Update original address after successful save (store a copy)
+      setOriginalAddress({ ...formData });
+      setHasSavedAddress(true);
+      setIsEditMode(false); // Exit edit mode after successful save
+      setShowAlert(false);
+      
+      // Show success message immediately
+      setEmailStatus({
+        type: 'success',
+        message: hasSavedAddress ? 'Address updated successfully!' : 'Address saved successfully!',
+      });
+      
+      // Send thank you email to customer (non-blocking - address is already saved)
+      sendDeliveryAddressThankYouEmail(formData)
+        .then((emailResult) => {
+          if (emailResult.success) {
+            setEmailStatus({
+              type: 'success',
+              message: hasSavedAddress 
+                ? 'Address updated! A confirmation email has been sent to your email address.'
+                : 'Address saved! A confirmation email has been sent to your email address.',
+            });
+          }
+          // If email fails, address is still saved, so we don't show error
+        })
+        .catch((error) => {
+          // Silently handle email errors - address is already saved
+          console.log('Email sending failed, but address was saved:', error);
+        });
+      
+      // Send notification email to company (non-blocking - don't wait for this)
+      sendDeliveryAddressNotificationEmail(formData)
+        .then((notificationResult) => {
+          if (notificationResult.success) {
+            console.log('Company notification email sent successfully');
+          } else {
+            console.log('Company notification email failed:', notificationResult.error);
+          }
+        })
+        .catch((error) => {
+          // Silently handle notification errors - don't show to user
+          console.log('Company notification email error:', error);
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+      
+      // Don't redirect automatically - let user see the success message
+      // Remove auto-redirect to allow user to continue editing if needed
     }
   };
 
@@ -188,7 +288,7 @@ function DeliveryAddressContent() {
                 : 'Please provide your delivery address details for easy courier processing.'}
             </p>
           </div>
-          {hasSavedAddress && (
+          {hasSavedAddress && !isEditMode && (
             <button
               type="button"
               onClick={handleEditAddress}
@@ -200,6 +300,19 @@ function DeliveryAddressContent() {
                 <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               Edit Address
+            </button>
+          )}
+          {hasSavedAddress && isEditMode && (
+            <button
+              type="button"
+              onClick={handleCancelEdit}
+              className={styles.editButton}
+              aria-label="Cancel Edit"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Cancel
             </button>
           )}
         </div>
@@ -248,6 +361,7 @@ function DeliveryAddressContent() {
               placeholder="Enter your full name"
               value={formData.name}
               onChange={handleInputChange}
+              disabled={!isEditMode}
               required
             />
             {errors.name && <span className={styles.errorText}>{errors.name}</span>}
@@ -266,6 +380,7 @@ function DeliveryAddressContent() {
                 placeholder="10-digit phone number"
                 value={formData.phone}
                 onChange={handleInputChange}
+                disabled={!isEditMode}
                 maxLength={10}
                 required
               />
@@ -284,6 +399,7 @@ function DeliveryAddressContent() {
                 placeholder="your.email@example.com"
                 value={formData.email}
                 onChange={handleInputChange}
+                disabled={!isEditMode}
                 required
               />
               {errors.email && <span className={styles.errorText}>{errors.email}</span>}
@@ -302,6 +418,7 @@ function DeliveryAddressContent() {
               placeholder="House/Flat number, Building name, Street"
               value={formData.street}
               onChange={handleInputChange}
+              disabled={!isEditMode}
               required
             />
             {errors.street && <span className={styles.errorText}>{errors.street}</span>}
@@ -320,6 +437,7 @@ function DeliveryAddressContent() {
                 placeholder="City"
                 value={formData.city}
                 onChange={handleInputChange}
+                disabled={!isEditMode}
                 required
               />
               {errors.city && <span className={styles.errorText}>{errors.city}</span>}
@@ -337,6 +455,7 @@ function DeliveryAddressContent() {
                 placeholder="District"
                 value={formData.district}
                 onChange={handleInputChange}
+                disabled={!isEditMode}
                 required
               />
               {errors.district && <span className={styles.errorText}>{errors.district}</span>}
@@ -356,6 +475,7 @@ function DeliveryAddressContent() {
                 placeholder="6-digit pincode"
                 value={formData.pincode}
                 onChange={handleInputChange}
+                disabled={!isEditMode}
                 maxLength={6}
                 pattern="[0-9]{6}"
                 required
@@ -375,6 +495,7 @@ function DeliveryAddressContent() {
               placeholder="Enter your complete delivery address including all details"
               value={formData.address}
               onChange={handleInputChange}
+              disabled={!isEditMode}
               rows={4}
               required
             />
@@ -384,12 +505,13 @@ function DeliveryAddressContent() {
             </p>
           </div>
 
-          <div className={styles.buttonGroup}>
-            <button 
-              type="submit" 
-              className={styles.submitButton}
-              disabled={isSubmitting}
-            >
+          {isEditMode && (
+            <div className={styles.buttonGroup}>
+              <button 
+                type="submit" 
+                className={styles.submitButton}
+                disabled={isSubmitting}
+              >
               {isSubmitting ? (
                 <>
                   <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -409,7 +531,8 @@ function DeliveryAddressContent() {
                 </>
               )}
             </button>
-          </div>
+            </div>
+          )}
         </form>
       </div>
     </div>

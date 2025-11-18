@@ -48,8 +48,8 @@
 
 .tag {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  bottom: 18px;
+  left: 18px;
   background: rgba(24, 20, 44, 0.88);
   color: #fff;
   padding: 5px 10px;
@@ -58,6 +58,7 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   z-index: 2;
+  box-shadow: 0 4px 12px rgba(34, 25, 64, 0.12);
 }
 
 .badge {
@@ -76,8 +77,9 @@
 }
 
 .accent {
-  margin-top: 12px;
-  align-self: flex-start;
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
   background: rgba(255, 255, 255, 0.75);
   color: #3a2a55;
   padding: 5px 10px;
@@ -86,10 +88,12 @@
   font-weight: 600;
   letter-spacing: 0.02em;
   backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(34, 25, 64, 0.12);
+  z-index: 2;
 }
 
 .accentWithBadge {
-  margin-bottom: 0;
+  /* When badge is present, accent stays on right side */
 }
 
 .topActions {
@@ -288,7 +292,7 @@
   }
 
   .accentWithBadge {
-    margin-bottom: 56px;
+    /* Accent positioned absolutely on right, no margin needed */
   }
 }
 
