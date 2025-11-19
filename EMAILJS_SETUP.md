@@ -22,7 +22,7 @@ This project uses EmailJS to send thank you emails to customers when they:
 
 ### 3. Create Email Templates
 
-You need to create **2 templates**:
+You need to create **4 templates** (2 for customers, 2 for company notifications):
 
 #### Template 1: Delivery Address Thank You Email
 
@@ -80,7 +80,67 @@ You need to create **2 templates**:
    Best regards,
    Pink Dot Fashion Jewellery Team
    ```
-5. Note the **Template ID**
+5. **IMPORTANT - To Email Field**: Set "To Email" to `{{to_email}}` (this will be the customer's email)
+6. Note the **Template ID**
+
+#### Template 3: Delivery Address Notification (Company)
+
+**This template sends notifications to Pink Dot when customers update their address.**
+
+1. Go to **Email Templates** in EmailJS dashboard
+2. Click **Create New Template**
+3. Set **Template Name**: `delivery_address_notification_company`
+4. Set **Subject**: `New Delivery Address Update - Pink Dot Fashion Jewellery`
+5. **IMPORTANT - To Email Field**: Set "To Email" to `{{to_email}}` (this will be set to `pinkdotfashionjewellery@gmail.com` in the code)
+6. **From Name**: `Pink Dot Website`
+7. **From Email**: Your verified email address
+8. **Email Content**:
+   ```
+   A customer has updated their delivery address:
+
+   Customer Name: {{full_name}}
+   Email: {{email}}
+   Phone: {{phone}}
+
+   Delivery Address:
+   {{complete_address}}
+
+   Street: {{street_address}}
+   City: {{city}}
+   District: {{district}}
+   Pincode: {{pincode}}
+
+   This address will be used for future orders from this customer.
+   ```
+9. Note the **Template ID** (you'll need this for `NEXT_PUBLIC_EMAILJS_TEMPLATE_DELIVERY_NOTIFICATION`)
+
+#### Template 4: Contact Form Notification (Company)
+
+**This template sends notifications to Pink Dot when customers submit contact inquiries.**
+
+1. Create another template
+2. Set **Template Name**: `contact_inquiry_notification_company`
+3. Set **Subject**: `New Contact Form Inquiry: {{subject}}`
+4. **IMPORTANT - To Email Field**: Set "To Email" to `{{to_email}}` (this will be set to `pinkdotfashionjewellery@gmail.com` in the code)
+5. **From Name**: `Pink Dot Website`
+6. **From Email**: Your verified email address
+7. **Email Content**:
+   ```
+   You have received a new inquiry from your website:
+
+   From: {{full_name}}
+   Email: {{email}}
+   Phone: {{phone}}
+
+   Subject: {{subject}}
+
+   Message:
+   {{message}}
+
+   ---
+   Please respond to this inquiry at your earliest convenience.
+   ```
+8. Note the **Template ID** (you'll need this for `NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT_NOTIFICATION`)
 
 ### 4. Get Your Public Key
 
@@ -96,8 +156,15 @@ Create a `.env.local` file in the root of your project and add:
 NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_service_id_here
 NEXT_PUBLIC_EMAILJS_TEMPLATE_DELIVERY_ADDRESS=your_delivery_template_id_here
 NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT=your_contact_template_id_here
+NEXT_PUBLIC_EMAILJS_TEMPLATE_DELIVERY_NOTIFICATION=your_delivery_notification_template_id_here
+NEXT_PUBLIC_EMAILJS_TEMPLATE_CONTACT_NOTIFICATION=your_contact_notification_template_id_here
 NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_public_key_here
 ```
+
+**IMPORTANT**: 
+- Template IDs for notifications (`TEMPLATE_DELIVERY_NOTIFICATION` and `TEMPLATE_CONTACT_NOTIFICATION`) **MUST be different** from customer email templates
+- These notification templates must have "To Email" field set to `{{to_email}}` (not `{{email}}`)
+- The code will automatically set `to_email` to `pinkdotfashionjewellery@gmail.com` for company notifications
 
 Replace the placeholder values with your actual IDs and keys from EmailJS dashboard.
 

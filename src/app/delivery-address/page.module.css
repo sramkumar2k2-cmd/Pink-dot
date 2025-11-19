@@ -223,7 +223,40 @@
 .buttonGroup {
   display: flex;
   justify-content: flex-end;
+  gap: 1rem;
   margin-top: 1rem;
+}
+
+.cancelButton {
+  background: white;
+  color: var(--text-primary);
+  border: 2px solid rgba(255, 182, 193, 0.5);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cancelButton:hover {
+  background: rgba(255, 182, 193, 0.1);
+  border-color: #FF69B4;
+  transform: translateY(-2px);
+}
+
+.cancelButton:active {
+  transform: translateY(0);
+}
+
+.cancelButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
 .submitButton {
@@ -295,9 +328,11 @@
   }
 
   .buttonGroup {
+    flex-direction: column;
     justify-content: stretch;
   }
 
+  .cancelButton,
   .submitButton {
     width: 100%;
   }

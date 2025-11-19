@@ -2,7 +2,6 @@
 
 import { useState, Suspense } from 'react';
 import styles from './page.module.css';
-import { sendContactThankYouEmail, sendContactNotificationEmail } from '@/app/lib/emailUtils';
 
 function ContactPageContent() {
   const [formData, setFormData] = useState({
@@ -15,8 +14,7 @@ function ContactPageContent() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showAlert, setShowAlert] = useState(false);
-  const [isEmailSending, setIsEmailSending] = useState(false);
-  const [emailStatus, setEmailStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -47,12 +45,6 @@ function ContactPageContent() {
       newErrors.name = 'Name is required';
     }
     
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    
     if (!formData.subject.trim()) {
       newErrors.subject = 'Subject is required';
     }
@@ -80,67 +72,6 @@ function ContactPageContent() {
     return true;
   };
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
-    setIsEmailSending(true);
-    setEmailStatus({ type: null, message: '' });
-    setShowAlert(false);
-    
-    // Send thank you email to customer and notification to company
-    try {
-      // Send thank you email to customer
-      const emailResult = await sendContactThankYouEmail(formData);
-      
-      // Send notification email to company (non-blocking - don't wait for this)
-      sendContactNotificationEmail(formData)
-        .then((notificationResult) => {
-          if (notificationResult.success) {
-            console.log('Company notification email sent successfully');
-          } else {
-            console.log('Company notification email failed:', notificationResult.error);
-          }
-        })
-        .catch((error) => {
-          // Silently handle notification errors - don't show to user
-          console.log('Company notification email error:', error);
-        });
-      
-      if (emailResult.success) {
-        setEmailStatus({
-          type: 'success',
-          message: 'Thank you! Your message has been sent successfully. A confirmation email has been sent to your email address.',
-        });
-        // Reset form after successful send
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: '',
-        });
-        setErrors({});
-      } else {
-        setEmailStatus({
-          type: 'error',
-          message: emailResult.error || 'Failed to send your message. Please try again later.',
-        });
-      }
-    } catch (error) {
-      console.error('Error sending email:', error);
-      setEmailStatus({
-        type: 'error',
-        message: 'An error occurred while sending your message. Please try again later.',
-      });
-    } finally {
-      setIsEmailSending(false);
-    }
-  };
-
   const handleWhatsAppSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -148,39 +79,33 @@ function ContactPageContent() {
       return;
     }
     
-    setIsEmailSending(true);
-    setEmailStatus({ type: null, message: '' });
+    setIsSubmitting(true);
     setShowAlert(false);
     
     const { name, email, phone, subject, message } = formData;
-    
-    // Send thank you email first
-    try {
-      const emailResult = await sendContactThankYouEmail(formData);
-      
-      if (emailResult.success) {
-        setEmailStatus({
-          type: 'success',
-          message: 'Thank you! A confirmation email has been sent to your email address.',
-        });
-      }
-    } catch (error) {
-      // Continue even if thank you email fails
-      console.error('Error sending thank you email:', error);
-    }
     
     // Open WhatsApp
     const whatsappMessage = encodeURIComponent(
       `*Contact Inquiry - Pink Dot Fashion Jewellery*\n\n` +
       `*Name:* ${name}\n` +
-      `*Email:* ${email}\n` +
-      `*Phone:* ${phone || 'Not provided'}\n` +
+      `${email ? `*Email:* ${email}\n` : ''}` +
+      `${phone ? `*Phone:* ${phone}\n` : ''}` +
       `*Subject:* ${subject}\n\n` +
       `*Message:*\n${message}`
     );
     
-    setIsEmailSending(false);
+    setIsSubmitting(false);
     window.open(`https://wa.me/917092939303?text=${whatsappMessage}`, '_blank');
+    
+    // Reset form after opening WhatsApp
+    setFormData({
+      name: '',
+      email: '',
+      phone: '',
+      subject: '',
+      message: '',
+    });
+    setErrors({});
   };
 
   return (
@@ -323,24 +248,6 @@ function ContactPageContent() {
             </div>
           )}
 
-          {emailStatus.type && (
-            <div className={`${styles.alertMessage} ${emailStatus.type === 'success' ? styles.successMessage : styles.errorMessage}`}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {emailStatus.type === 'success' ? (
-                  <>
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </>
-                ) : (
-                  <>
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </>
-                )}
-              </svg>
-              <span>{emailStatus.message}</span>
-            </div>
-          )}
           
           <form className={styles.form}>
             <div className={styles.formGroup}>
@@ -362,23 +269,6 @@ function ContactPageContent() {
             
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
-                <label className={styles.label} htmlFor="email">
-                  Email <span className={styles.required}>*</span>
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
-                  placeholder="your.email@example.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-                {errors.email && <span className={styles.errorText}>{errors.email}</span>}
-              </div>
-              
-              <div className={styles.formGroup}>
                 <label className={styles.label} htmlFor="phone">Phone</label>
                 <input
                   type="tel"
@@ -387,6 +277,19 @@ function ContactPageContent() {
                   className={styles.input}
                   placeholder="(555) 123-4567"
                   value={formData.phone}
+                  onChange={handleInputChange}
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.label} htmlFor="email">Email (Optional)</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  className={styles.input}
+                  placeholder="your.email@example.com"
+                  value={formData.email}
                   onChange={handleInputChange}
                 />
               </div>
@@ -428,37 +331,11 @@ function ContactPageContent() {
             <div className={styles.buttonGroup}>
               <button 
                 type="button" 
-                onClick={handleEmailSubmit}
-                className={`${styles.button} ${styles.emailButton}`}
-                disabled={isEmailSending}
-              >
-                {isEmailSending ? (
-                  <>
-                    <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32">
-                        <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
-                        <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
-                      </circle>
-                    </svg>
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M3 8L10.89 13.26C11.2187 13.4793 11.6049 13.5963 12 13.5963C12.3951 13.5963 12.7813 13.4793 13.11 13.26L21 8M5 19H19C19.5304 19 20.0391 18.7893 20.4142 18.4142C20.7893 18.0391 21 17.5304 21 17V7C21 6.46957 20.7893 5.96086 20.4142 5.58579C20.0391 5.21071 19.5304 5 19 5H5C4.46957 5 3.96086 5.21071 3.58579 5.58579C3.21071 5.96086 3 6.46957 3 7V17C3 17.5304 3.21071 18.0391 3.58579 18.4142C3.96086 18.7893 4.46957 19 5 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    Send on Email
-                  </>
-                )}
-              </button>
-              
-              <button 
-                type="button" 
                 onClick={handleWhatsAppSubmit}
                 className={`${styles.button} ${styles.whatsappButton}`}
-                disabled={isEmailSending}
+                disabled={isSubmitting}
               >
-                {isEmailSending ? (
+                {isSubmitting ? (
                   <>
                     <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32">
@@ -466,7 +343,7 @@ function ContactPageContent() {
                         <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
                       </circle>
                     </svg>
-                    Sending...
+                    Opening...
                   </>
                 ) : (
                   <>

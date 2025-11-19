@@ -1,14 +1,59 @@
+/**
+ * Delivery Address Page
+ * 
+ * HOW TO CONFIGURE GOOGLE APPS SCRIPT:
+ * 
+ * 1. Create a new Google Apps Script project:
+ *    - Go to https://script.google.com
+ *    - Create a new project
+ * 
+ * 2. Create a Google Sheet to store the addresses:
+ *    - Create a new Google Sheet
+ *    - Add headers in row 1: Name, Phone, Email, Street, City, District, Pincode, Complete Address, Timestamp
+ * 
+ * 3. Write the Google Apps Script code:
+ *    function doPost(e) {
+ *      var sheet = SpreadsheetApp.openById('YOUR_SHEET_ID').getActiveSheet();
+ *      var data = JSON.parse(e.postData.contents);
+ *      sheet.appendRow([
+ *        data.name,
+ *        data.phone,
+ *        data.email,
+ *        data.street,
+ *        data.city,
+ *        data.district,
+ *        data.pincode,
+ *        data.address,
+ *        new Date()
+ *      ]);
+ *      return ContentService.createTextOutput(JSON.stringify({success: true}))
+ *        .setMimeType(ContentService.MimeType.JSON);
+ *    }
+ * 
+ * 4. Deploy as a web app:
+ *    - Click "Deploy" > "New deployment"
+ *    - Choose type: "Web app"
+ *    - Execute as: "Me"
+ *    - Who has access: "Anyone"
+ *    - Click "Deploy"
+ *    - Copy the Web App URL
+ * 
+ * 5. Replace GOOGLE_SCRIPT_URL_HERE below with your deployed URL
+ */
+
 "use client";
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
 import { getSavedAddress, saveAddress, type DeliveryAddress } from '@/app/lib/addressUtils';
 import { sendDeliveryAddressThankYouEmail, sendDeliveryAddressNotificationEmail } from '@/app/lib/emailUtils';
 
+// Replace this with your deployed Google Apps Script Web App URL
+const GOOGLE_SCRIPT_URL = 'GOOGLE_SCRIPT_URL_HERE';
+
 function DeliveryAddressContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const showAddressMessage = searchParams?.get('message') === 'address_required';
   
   const [formData, setFormData] = useState<DeliveryAddress>({
@@ -26,17 +71,16 @@ function DeliveryAddressContent() {
   const [showAlert, setShowAlert] = useState(false);
   const [hasSavedAddress, setHasSavedAddress] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [emailStatus, setEmailStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
-  const [originalAddress, setOriginalAddress] = useState<DeliveryAddress | null>(null);
+  const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
+  const [originalFormData, setOriginalFormData] = useState<DeliveryAddress | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
-    // Load saved address if exists
+    // Load saved address from localStorage if exists
     const savedAddress = getSavedAddress();
     if (savedAddress) {
       setFormData(savedAddress);
-      // Store a deep copy of the original address for comparison
-      setOriginalAddress({ ...savedAddress });
+      setOriginalFormData({ ...savedAddress });
       setHasSavedAddress(true);
       setIsEditMode(false); // Start in view mode when address exists
     } else {
@@ -75,14 +119,25 @@ function DeliveryAddressContent() {
     }, 100);
   };
 
-  const handleCancelEdit = () => {
-    // Reset form to original address
-    if (originalAddress) {
-      setFormData(originalAddress);
+  const handleCancel = () => {
+    // Reset form to original saved address or empty form
+    if (originalFormData) {
+      setFormData(originalFormData);
+      setIsEditMode(false); // Exit edit mode
+    } else {
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        street: '',
+        city: '',
+        district: '',
+        pincode: '',
+        address: '',
+      });
     }
-    setIsEditMode(false);
     setErrors({});
-    setEmailStatus({ type: null, message: '' });
+    setSubmitStatus({ type: null, message: '' });
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -143,136 +198,114 @@ function DeliveryAddressContent() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Helper function to check if address has changed
-  const hasAddressChanged = (newAddress: DeliveryAddress, savedAddress: DeliveryAddress | null): boolean => {
-    if (!savedAddress) {
-      console.log('No saved address found - treating as new address');
-      return true; // No saved address, so this is a new address
-    }
-    
-    // Normalize fields for comparison (handle empty strings and null values)
-    const normalize = (value: string) => (value || '').trim();
-    const normalizeText = (value: string) => (value || '').trim().toLowerCase();
-    
-    // Compare all fields
-    const nameChanged = normalizeText(newAddress.name || '') !== normalizeText(savedAddress.name || '');
-    const phoneChanged = normalize(newAddress.phone || '') !== normalize(savedAddress.phone || '');
-    const emailChanged = normalizeText(newAddress.email || '') !== normalizeText(savedAddress.email || '');
-    const streetChanged = normalizeText(newAddress.street || '') !== normalizeText(savedAddress.street || '');
-    const cityChanged = normalizeText(newAddress.city || '') !== normalizeText(savedAddress.city || '');
-    const districtChanged = normalizeText(newAddress.district || '') !== normalizeText(savedAddress.district || '');
-    const pincodeChanged = normalize(newAddress.pincode || '') !== normalize(savedAddress.pincode || '');
-    const addressChanged = normalizeText(newAddress.address || '') !== normalizeText(savedAddress.address || '');
-    
-    const hasChanges = nameChanged || phoneChanged || emailChanged || streetChanged || cityChanged || districtChanged || pincodeChanged || addressChanged;
-    
-    // Debug logging
-    console.log('Address comparison:', {
-      name: { new: newAddress.name, saved: savedAddress.name, changed: nameChanged },
-      phone: { new: newAddress.phone, saved: savedAddress.phone, changed: phoneChanged },
-      email: { new: newAddress.email, saved: savedAddress.email, changed: emailChanged },
-      street: { new: newAddress.street, saved: savedAddress.street, changed: streetChanged },
-      city: { new: newAddress.city, saved: savedAddress.city, changed: cityChanged },
-      district: { new: newAddress.district, saved: savedAddress.district, changed: districtChanged },
-      pincode: { new: newAddress.pincode, saved: savedAddress.pincode, changed: pincodeChanged },
-      address: { new: newAddress.address, saved: savedAddress.address, changed: addressChanged },
-      hasChanges: hasChanges,
-    });
-    
-    return hasChanges;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      setIsSubmitting(true);
-      setEmailStatus({ type: null, message: '' });
+    if (!validateForm()) {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setSubmitStatus({ type: null, message: '' });
+    setShowAlert(false);
+    
+    try {
+      // Save to localStorage first
+      saveAddress(formData);
+      setOriginalFormData({ ...formData });
       
-      // Check if address has actually changed
-      // Compare against original address (loaded when page first rendered)
-      // If no original address exists, treat as new address (allow save)
-      const addressToCompare = originalAddress;
+      // Prepare promises for parallel execution
+      const promises: Promise<any>[] = [];
       
-      // Debug: Log both addresses for comparison
-      console.log('Comparing addresses:', {
-        formData: formData,
-        originalAddress: originalAddress,
-        addressToCompare: addressToCompare,
-        hasSavedAddress: hasSavedAddress,
-      });
-      
-      // Only check for changes if we have an original address to compare against
-      // If no original address, it's a new address (allow save)
-      if (addressToCompare) {
-        const addressChanged = hasAddressChanged(formData, addressToCompare);
-        
-        if (!addressChanged) {
-          // No changes detected - don't save or send emails
-          console.log('No changes detected - blocking update');
-          setIsSubmitting(false);
-          setEmailStatus({
-            type: 'error',
-            message: 'No changes detected. Please modify at least one field to update your address.',
-          });
-          return;
-        }
-        console.log('Changes detected - proceeding with update');
-      } else {
-        console.log('No original address - treating as new address');
+      // Send POST request to Google Apps Script
+      if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'GOOGLE_SCRIPT_URL_HERE') {
+        promises.push(
+          fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+          }).then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to save to Google Sheet');
+            }
+            return response.json();
+          })
+        );
       }
       
-      // Address has changed or is new - proceed with save and emails
-      saveAddress(formData);
-      // Update original address after successful save (store a copy)
-      setOriginalAddress({ ...formData });
+      // Send thank you email to customer (non-blocking)
+      promises.push(
+        sendDeliveryAddressThankYouEmail(formData)
+          .then((emailResult) => {
+            if (emailResult.success) {
+              console.log('Thank you email sent successfully');
+            } else {
+              console.log('Thank you email failed:', emailResult.error);
+            }
+          })
+          .catch((error) => {
+            console.error('Error sending thank you email:', error);
+          })
+      );
+      
+      // Send notification email to company (non-blocking)
+      promises.push(
+        sendDeliveryAddressNotificationEmail(formData)
+          .then((notificationResult) => {
+            if (notificationResult.success) {
+              console.log('Company notification email sent successfully');
+            } else {
+              console.log('Company notification email failed:', notificationResult.error);
+            }
+          })
+          .catch((error) => {
+            console.error('Error sending company notification email:', error);
+          })
+      );
+      
+      // Wait for Google Apps Script (if configured), but don't wait for emails
+      const googleScriptSuccess = GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'GOOGLE_SCRIPT_URL_HERE';
+      
+      if (googleScriptSuccess) {
+        try {
+          await promises[0]; // Wait for Google Apps Script
+          setSubmitStatus({
+            type: 'success',
+            message: 'Address saved successfully! Your address has been saved to the company sheet and confirmation emails have been sent.',
+          });
+        } catch (error) {
+          // Google Script failed, but emails may still be sent
+          setSubmitStatus({
+            type: 'error',
+            message: 'Failed to save to Google Sheet. Please try again later. (Note: Emails may still be sent)',
+          });
+        }
+      } else {
+        // Google Script not configured, just show success
+        setSubmitStatus({
+          type: 'success',
+          message: 'Address saved successfully! Confirmation emails have been sent.',
+        });
+      }
+      
+      // Update state after successful save
+      setOriginalFormData({ ...formData });
       setHasSavedAddress(true);
       setIsEditMode(false); // Exit edit mode after successful save
-      setShowAlert(false);
       
-      // Show success message immediately
-      setEmailStatus({
-        type: 'success',
-        message: hasSavedAddress ? 'Address updated successfully!' : 'Address saved successfully!',
+      // Don't wait for emails - they run in background
+      // Emails will be sent asynchronously
+      
+    } catch (error) {
+      console.error('Error saving address:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: 'Failed to save address. Please try again later.',
       });
-      
-      // Send thank you email to customer (non-blocking - address is already saved)
-      sendDeliveryAddressThankYouEmail(formData)
-        .then((emailResult) => {
-          if (emailResult.success) {
-            setEmailStatus({
-              type: 'success',
-              message: hasSavedAddress 
-                ? 'Address updated! A confirmation email has been sent to your email address.'
-                : 'Address saved! A confirmation email has been sent to your email address.',
-            });
-          }
-          // If email fails, address is still saved, so we don't show error
-        })
-        .catch((error) => {
-          // Silently handle email errors - address is already saved
-          console.log('Email sending failed, but address was saved:', error);
-        });
-      
-      // Send notification email to company (non-blocking - don't wait for this)
-      sendDeliveryAddressNotificationEmail(formData)
-        .then((notificationResult) => {
-          if (notificationResult.success) {
-            console.log('Company notification email sent successfully');
-          } else {
-            console.log('Company notification email failed:', notificationResult.error);
-          }
-        })
-        .catch((error) => {
-          // Silently handle notification errors - don't show to user
-          console.log('Company notification email error:', error);
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        });
-      
-      // Don't redirect automatically - let user see the success message
-      // Remove auto-redirect to allow user to continue editing if needed
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -305,7 +338,7 @@ function DeliveryAddressContent() {
           {hasSavedAddress && isEditMode && (
             <button
               type="button"
-              onClick={handleCancelEdit}
+              onClick={handleCancel}
               className={styles.editButton}
               aria-label="Cancel Edit"
             >
@@ -328,10 +361,10 @@ function DeliveryAddressContent() {
         </div>
       )}
 
-      {emailStatus.type && (
-        <div className={`${styles.alertMessage} ${emailStatus.type === 'success' ? styles.successMessage : styles.errorMessage}`}>
+      {submitStatus.type && (
+        <div className={`${styles.alertMessage} ${submitStatus.type === 'success' ? styles.successMessage : styles.errorMessage}`}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {emailStatus.type === 'success' ? (
+            {submitStatus.type === 'success' ? (
               <>
                 <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -343,7 +376,7 @@ function DeliveryAddressContent() {
               </>
             )}
           </svg>
-          <span>{emailStatus.message}</span>
+          <span>{submitStatus.message}</span>
         </div>
       )}
 
@@ -378,11 +411,11 @@ function DeliveryAddressContent() {
                 name="phone"
                 className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
                 placeholder="10-digit phone number"
-                value={formData.phone}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                maxLength={10}
-                required
+              value={formData.phone}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              maxLength={10}
+              required
               />
               {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
             </div>
@@ -397,10 +430,10 @@ function DeliveryAddressContent() {
                 name="email"
                 className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                 placeholder="your.email@example.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                required
+              value={formData.email}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              required
               />
               {errors.email && <span className={styles.errorText}>{errors.email}</span>}
             </div>
@@ -435,10 +468,10 @@ function DeliveryAddressContent() {
                 name="city"
                 className={`${styles.input} ${errors.city ? styles.inputError : ''}`}
                 placeholder="City"
-                value={formData.city}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                required
+              value={formData.city}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              required
               />
               {errors.city && <span className={styles.errorText}>{errors.city}</span>}
             </div>
@@ -453,10 +486,10 @@ function DeliveryAddressContent() {
                 name="district"
                 className={`${styles.input} ${errors.district ? styles.inputError : ''}`}
                 placeholder="District"
-                value={formData.district}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                required
+              value={formData.district}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              required
               />
               {errors.district && <span className={styles.errorText}>{errors.district}</span>}
             </div>
@@ -473,12 +506,12 @@ function DeliveryAddressContent() {
                 name="pincode"
                 className={`${styles.input} ${errors.pincode ? styles.inputError : ''}`}
                 placeholder="6-digit pincode"
-                value={formData.pincode}
-                onChange={handleInputChange}
-                disabled={!isEditMode}
-                maxLength={6}
-                pattern="[0-9]{6}"
-                required
+              value={formData.pincode}
+              onChange={handleInputChange}
+              disabled={!isEditMode}
+              maxLength={6}
+              pattern="[0-9]{6}"
+              required
               />
               {errors.pincode && <span className={styles.errorText}>{errors.pincode}</span>}
             </div>
@@ -508,29 +541,37 @@ function DeliveryAddressContent() {
           {isEditMode && (
             <div className={styles.buttonGroup}>
               <button 
+                type="button" 
+                onClick={handleCancel}
+                className={styles.cancelButton}
+                disabled={isSubmitting}
+              >
+                Cancel
+              </button>
+              <button 
                 type="submit" 
                 className={styles.submitButton}
                 disabled={isSubmitting}
               >
-              {isSubmitting ? (
-                <>
-                  <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32">
-                      <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
-                      <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
-                    </circle>
-                  </svg>
-                  Saving...
-                </>
-              ) : (
-                <>
-                  {hasSavedAddress ? 'Update Address' : 'Save Address'}
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </>
-              )}
-            </button>
+                {isSubmitting ? (
+                  <>
+                    <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32">
+                        <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
+                        <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
+                      </circle>
+                    </svg>
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    {hasSavedAddress ? 'Update Address' : 'Save Address'}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </>
+                )}
+              </button>
             </div>
           )}
         </form>
