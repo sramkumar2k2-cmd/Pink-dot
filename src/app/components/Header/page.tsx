@@ -16,7 +16,7 @@ export default function Header() {
   const closeTimeoutRef = useRef<number | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpenSections, setMobileOpenSections] = useState<Record<string, boolean>>({
-    Shop: true,
+    Shop: false,
     Collections: false,
   });
   const pathname = usePathname();
