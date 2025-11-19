@@ -8,6 +8,7 @@ function ContactPageContent() {
     name: '',
     email: '',
     phone: '',
+    inquiryType: '',
     subject: '',
     message: '',
   });
@@ -16,7 +17,7 @@ function ContactPageContent() {
   const [showAlert, setShowAlert] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -90,6 +91,7 @@ function ContactPageContent() {
       `*Name:* ${name}\n` +
       `${email ? `*Email:* ${email}\n` : ''}` +
       `${phone ? `*Phone:* ${phone}\n` : ''}` +
+      `${formData.inquiryType ? `*Inquiry Type:* ${formData.inquiryType}\n` : ''}` +
       `*Subject:* ${subject}\n\n` +
       `*Message:*\n${message}`
     );
@@ -102,6 +104,7 @@ function ContactPageContent() {
       name: '',
       email: '',
       phone: '',
+      inquiryType: '',
       subject: '',
       message: '',
     });
@@ -219,19 +222,6 @@ function ContactPageContent() {
               </div>
             </div>
 
-            <div className={`${styles.mapSection} ${styles.mapMobileOnly}`}>
-              <h3 className={styles.mapTitle}>Locate Our Studio</h3>
-              <div className={styles.mapWrapper}>
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.115914494258!2d77.69097529999999!3d12.835785500000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6db276f5e855%3A0x2386a4a7ee3b513b!2sPink%20Dot%20Fashion%20Jewellery!5e0!3m2!1sen!2sin!4v1762795591265!5m2!1sen!2sin"
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Pink Dot Fashion Jewellery Location"
-                  className={styles.mapFrame}
-                />
-              </div>
-            </div>
           </div>
         </div>
 
@@ -293,6 +283,30 @@ function ContactPageContent() {
                   onChange={handleInputChange}
                 />
               </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label} htmlFor="inquiryType">
+                Inquiry Type
+              </label>
+              <select
+                id="inquiryType"
+                name="inquiryType"
+                className={styles.select}
+                value={formData.inquiryType}
+                onChange={handleInputChange}
+              >
+                <option value="">Select inquiry type</option>
+                <option value="Product Inquiry">Product Inquiry</option>
+                <option value="Order Status">Order Status</option>
+                <option value="Customization">Customization Request</option>
+                <option value="Returns & Exchanges">Returns & Exchanges</option>
+                <option value="Size Guide">Size Guide</option>
+                <option value="Wholesale">Wholesale Inquiry</option>
+                <option value="Partnership">Partnership Opportunity</option>
+                <option value="General Question">General Question</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
 
             <div className={styles.formGroup}>
@@ -359,17 +373,19 @@ function ContactPageContent() {
         </div>
       </div>
 
-      <div className={`${styles.mapSection} ${styles.mapDesktopOnly}`}>
-        <h2 className={styles.mapTitle}>Locate Our Studio</h2>
-        <div className={`${styles.mapWrapper} ${styles.mapWrapperLarge}`}>
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.115914494258!2d77.69097529999999!3d12.835785500000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6db276f5e855%3A0x2386a4a7ee3b513b!2sPink%20Dot%20Fashion%20Jewellery!5e0!3m2!1sen!2sin!4v1762795591265!5m2!1sen!2sin"
-            allowFullScreen
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Pink Dot Fashion Jewellery Location"
-            className={styles.mapFrame}
-          />
+      <div className={styles.mapSection}>
+        <div className={styles.mapContainer}>
+          <h2 className={styles.mapTitle}>Locate Our Studio</h2>
+          <div className={styles.mapWrapper}>
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.115914494258!2d77.69097529999999!3d12.835785500000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6db276f5e855%3A0x2386a4a7ee3b513b!2sPink%20Dot%20Fashion%20Jewellery!5e0!3m2!1sen!2sin!4v1762795591265!5m2!1sen!2sin"
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Pink Dot Fashion Jewellery Location"
+              className={styles.mapFrame}
+            />
+          </div>
         </div>
       </div>
     </div>
