@@ -32,3 +32,14 @@ export function calculateTotal(products: Array<{ price: string; salePrice?: stri
   }, 0);
 }
 
+/**
+ * Calculates the discount percentage from original and sale prices
+ */
+export function calculateDiscountPercentage(originalPrice: string, salePrice: string): number {
+  const original = parsePrice(originalPrice);
+  const sale = parsePrice(salePrice);
+  if (original === 0) return 0;
+  const discount = ((original - sale) / original) * 100;
+  return Math.round(discount);
+}
+

@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     shortcut: '/images/icon.png',
     apple: '/images/icon.png',
   },
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+  },
 };
 
 export default function RootLayout({

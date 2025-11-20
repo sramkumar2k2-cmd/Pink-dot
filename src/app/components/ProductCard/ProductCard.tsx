@@ -9,6 +9,7 @@ import { CartIcon } from '@/app/components/CartIcon';
 import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import { useCartProduct } from '@/app/lib/useCartProduct';
 import { handleBuyNow } from '@/app/lib/whatsappUtils';
+import { calculateDiscountPercentage } from '@/app/lib/priceUtils';
 import styles from './ProductCard.module.css';
 
 type ProductCardProps = {
@@ -40,8 +41,11 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const displaySpecs = uniqueSpecs.slice(0, 2);
 
-  const primaryPrice =
-    product.salePrice && product.originalPrice ? product.salePrice : product.price;
+  const hasDiscount = Boolean(product.salePrice && product.originalPrice);
+  const discountPercentage = hasDiscount && product.originalPrice && product.salePrice
+    ? calculateDiscountPercentage(product.originalPrice, product.salePrice)
+    : 0;
+  const primaryPrice = hasDiscount && product.salePrice ? product.salePrice : product.price;
 
   const heroImage =
     product.images?.[0] ??
@@ -139,10 +143,15 @@ export function ProductCard({ product }: ProductCardProps) {
         ) : null}
 
         <div className={styles.priceRow}>
-          {product.salePrice && product.originalPrice ? (
+          {hasDiscount ? (
             <>
-              <span className={styles.originalPrice}>{product.originalPrice}</span>
-              <span className={styles.price}>{product.salePrice}</span>
+              <div className={styles.priceContainer}>
+                <span className={styles.originalPrice}>{product.originalPrice}</span>
+                <span className={styles.salePrice}>{product.salePrice}</span>
+              </div>
+              {discountPercentage > 0 && (
+                <span className={styles.discountBadge}>{discountPercentage}% OFF</span>
+              )}
             </>
           ) : (
             <span className={styles.price}>{primaryPrice}</span>
