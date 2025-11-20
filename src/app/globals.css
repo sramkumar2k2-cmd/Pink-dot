@@ -82,3 +82,16 @@ a {
   width: 100%;
   /* Don't set overflow - let parent body handle scrolling */
 }
+
+/* Add padding-top on mobile to account for fixed header */
+@media (max-width: 768px) {
+  .app-main {
+    padding-top: 94px;
+    margin-top: 0;
+  }
+  
+  body {
+    padding-top: 0;
+    margin-top: 0;
+  }
+}

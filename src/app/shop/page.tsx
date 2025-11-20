@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
+import { ProductCard } from '@/app/components/ProductCard';
+import { getProductBySlug, getProductsByCategory } from '@/app/shop/productData';
+import type { Product } from '@/app/shop/productData';
 import styles from './page.module.css';
 import FadeReveal from '@/app/components/FadeReveal/FadeReveal';
 import fadeStyles from '@/app/components/FadeReveal/FadeReveal.module.css';
@@ -71,8 +74,12 @@ const curatedSets = [
     name: 'Layered Radiance',
     description: 'Aurora Lariat, Luna Glow Studs, and Muse Charm Chain layered to perfection.',
     price: '₹49,500 trio value',
+    originalPrice: '₹62,000',
     image: '/images/neck3.jpeg',
     href: '/collections/summer-collection',
+    badge: 'Best Value',
+    features: ['3-piece set', 'Perfect for layering', 'Studio styled'],
+    savings: 'Save ₹12,500',
   },
   {
     name: 'Celestial Night Out',
@@ -80,6 +87,9 @@ const curatedSets = [
     price: '₹79,900 set',
     image: '/images/earrings3.jpeg',
     href: '/collections/celestial-dreams',
+    badge: 'Limited Edition',
+    features: ['Evening elegance', 'Hand-set stones', 'Exclusive design'],
+    savings: null,
   },
   {
     name: 'Everyday Muse',
@@ -87,6 +97,40 @@ const curatedSets = [
     price: '₹58,900 trio',
     image: '/images/bracelets1.jpeg',
     href: '/shop/new-arrivals',
+    badge: 'Daily Wear',
+    features: ['Comfortable fit', 'Versatile styling', 'Lifetime care'],
+    savings: null,
+  },
+  {
+    name: 'Bridal Elegance',
+    description: 'A complete bridal set featuring Nova Crown Band, Opaline Chandeliers, and Aurora Lariat.',
+    price: '₹1,25,000 set',
+    originalPrice: '₹1,48,000',
+    image: '/images/neck1.jpeg',
+    href: '/collections/limited-edition',
+    badge: 'Wedding Collection',
+    features: ['Complete set', 'Customizable', 'Gift packaging'],
+    savings: 'Save ₹23,000',
+  },
+  {
+    name: 'Minimalist Stack',
+    description: 'Clean lines with Luna Stacking Trio, Solstice Signet, and Muse Charm Chain.',
+    price: '₹42,500 set',
+    image: '/images/ring2.jpeg',
+    href: '/collections/minimalist-threads',
+    badge: 'Minimalist',
+    features: ['Stackable pieces', 'Modern design', 'Everyday luxury'],
+    savings: null,
+  },
+  {
+    name: 'Art Deco Revival',
+    description: 'Vintage-inspired elegance with geometric patterns and bold statements.',
+    price: '₹95,000 collection',
+    image: '/images/neck2.jpeg',
+    href: '/collections/art-deco-revival',
+    badge: 'Vintage Style',
+    features: ['Art deco inspired', 'Statement pieces', 'Unique designs'],
+    savings: null,
   },
 ];
 
@@ -96,18 +140,155 @@ const services = [
     blurb: 'Book a 20-minute styling session to design your stack with our studio team.',
     href: '/contact',
     linkLabel: 'Reserve a consult',
+    icon: '✨',
   },
   {
     title: 'Size & Care Guides',
     blurb: 'From ring sizing to tarnish care, discover tips to treasure your jewels longer.',
     href: '/support/size-guide',
     linkLabel: 'Find your fit',
+    icon: '📏',
   },
   {
     title: 'Bespoke Studio',
     blurb: 'Sketch something uniquely yours with custom stones, engraving, and metal choices.',
     href: '/collections/limited-edition',
     linkLabel: 'Design bespoke',
+    icon: '🎨',
+  },
+];
+
+const featuredProductSlugs = [
+  'nova-crown-band',
+  'solstice-hoops',
+  'muse-charm-chain',
+  'aurora-lariat',
+];
+
+const newArrivalSlugs = [
+  'celestial-halo-ring',
+  'opaline-chandeliers',
+  'luna-cascade-collar',
+  'radiant-pave-band',
+];
+
+const bestSellerSlugs = [
+  'nova-crown-band',
+  'solstice-hoops',
+  'muse-charm-chain',
+  'aurora-lariat',
+  'luna-cascade-collar',
+  'opaline-chandeliers',
+];
+
+const saleProductSlugs = [
+  'radiant-pave-band',
+  'solstice-signet',
+  'luna-stacking-trio',
+];
+
+const featuredProducts = featuredProductSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item))
+  .slice(0, 4);
+
+const newArrivals = newArrivalSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item))
+  .slice(0, 4);
+
+const bestSellers = bestSellerSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item))
+  .slice(0, 6);
+
+const saleProducts = saleProductSlugs
+  .map((slug) => getProductBySlug(slug))
+  .filter((item): item is Product => Boolean(item))
+  .slice(0, 3);
+
+const collections = [
+  {
+    name: 'Celestial Dreams',
+    description: 'Ethereal gemstones and moonlit silhouettes that capture the magic of the night sky.',
+    image: '/images/neck3.jpeg',
+    href: '/collections/celestial-dreams',
+    badge: 'New',
+  },
+  {
+    name: 'Art Deco Revival',
+    description: 'Bold geometry and architectural elegance inspired by the roaring twenties.',
+    image: '/images/ring3.jpeg',
+    href: '/collections/art-deco-revival',
+    badge: 'Limited',
+  },
+  {
+    name: 'Summer Collection',
+    description: 'Vibrant hues and lightweight designs perfect for sun-kissed moments.',
+    image: '/images/earrings2.jpeg',
+    href: '/collections/summer-collection',
+    badge: 'Seasonal',
+  },
+  {
+    name: 'Minimalist Threads',
+    description: 'Clean lines and understated elegance for everyday sophistication.',
+    image: '/images/bracelets2.jpeg',
+    href: '/collections/minimalist-threads',
+    badge: 'Essentials',
+  },
+];
+
+const whyChooseUs = [
+  {
+    icon: '✨',
+    title: 'Handcrafted Excellence',
+    description: 'Each piece is meticulously crafted by skilled artisans using traditional techniques passed down through generations.',
+  },
+  {
+    icon: '💎',
+    title: 'Premium Materials',
+    description: 'We use only the finest recycled metals and ethically sourced gemstones, ensuring lasting beauty and quality.',
+  },
+  {
+    icon: '🎁',
+    title: 'Perfect Gifts',
+    description: 'Complimentary gift wrapping, personalized engraving, and custom sizing available for every special occasion.',
+  },
+  {
+    icon: '🚚',
+    title: 'Fast Delivery',
+    description: 'Secure packaging and express shipping options to get your treasures to you quickly and safely.',
+  },
+  {
+    icon: '🔄',
+    title: 'Lifetime Care',
+    description: 'Complimentary replating, resizing, and annual polishing services to keep your jewels shining forever.',
+  },
+  {
+    icon: '💝',
+    title: 'Personal Styling',
+    description: 'Book a virtual consultation with our stylists to create the perfect stack tailored to your unique style.',
+  },
+];
+
+const testimonials = [
+  {
+    quote: 'Every piece feels like it was made just for me. The quality is exceptional and the designs are timeless.',
+    author: 'Sarah M.',
+    location: 'Mumbai',
+    rating: 5,
+  },
+  {
+    quote: 'I love how Pink Dot pieces layer together. My collection has become my signature style.',
+    author: 'Priya K.',
+    location: 'Delhi',
+    rating: 5,
+  },
+  {
+    quote: 'The customer service is outstanding, and the jewellery is even more beautiful in person.',
+    author: 'Ananya R.',
+    location: 'Bangalore',
+    rating: 5,
   },
 ];
 
@@ -165,6 +346,166 @@ export default function ShopPage() {
                 <span>Lifetime</span>
                 <p>Complimentary replating & sizing</p>
               </div>
+            </div>
+          </section>
+
+          <section
+            className={[styles.shopFeaturedSection, fadeStyles.fadeInStart].join(' ')}
+            data-fade
+            style={{ transitionDelay: '0.2s' }}
+          >
+            <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.24s' }}>
+              <h2>Featured Treasures</h2>
+              <p>Handpicked favorites from our studio—each piece tells a story of craftsmanship and elegance.</p>
+            </div>
+            <div className={styles.shopProductsGrid}>
+              {featuredProducts.map((product, index) => (
+                <div
+                  key={product.slug}
+                  className={fadeStyles.fadeInStart}
+                  data-fade
+                  style={{ transitionDelay: `${index * 0.1 + 0.28}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+            <div className={[styles.shopViewAll, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.32s' }}>
+              <Link href="/shop/all-jewellery" className={styles.shopButtonPrimary}>
+                View All Products
+              </Link>
+            </div>
+          </section>
+
+          <section
+            className={[styles.shopNewArrivalsSection, fadeStyles.fadeInStart].join(' ')}
+            data-fade
+            style={{ transitionDelay: '0.22s' }}
+          >
+            <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.26s' }}>
+              <h2>Fresh from the Studio</h2>
+              <p>New arrivals that just landed—be the first to discover these limited-edition pieces.</p>
+            </div>
+            <div className={styles.shopProductsGrid}>
+              {newArrivals.map((product, index) => (
+                <div
+                  key={product.slug}
+                  className={fadeStyles.fadeInStart}
+                  data-fade
+                  style={{ transitionDelay: `${index * 0.1 + 0.3}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+            <div className={[styles.shopViewAll, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.34s' }}>
+              <Link href="/shop/new-arrivals" className={styles.shopButtonPrimary}>
+                Explore New Arrivals
+              </Link>
+            </div>
+          </section>
+
+          <section
+            className={[styles.shopBestSellersSection, fadeStyles.fadeInStart].join(' ')}
+            data-fade
+            style={{ transitionDelay: '0.24s' }}
+          >
+            <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.28s' }}>
+              <h2>Best Sellers</h2>
+              <p>Beloved treasures that sell out every season—these are the pieces our collectors can't get enough of.</p>
+            </div>
+            <div className={styles.shopProductsGrid}>
+              {bestSellers.map((product, index) => (
+                <div
+                  key={product.slug}
+                  className={fadeStyles.fadeInStart}
+                  data-fade
+                  style={{ transitionDelay: `${index * 0.08 + 0.32}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+            <div className={[styles.shopViewAll, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.4s' }}>
+              <Link href="/shop/best-sellers" className={styles.shopButtonPrimary}>
+                View All Best Sellers
+              </Link>
+            </div>
+          </section>
+
+          {saleProducts.length > 0 && (
+            <section
+              className={[styles.shopSaleSection, fadeStyles.fadeInStart].join(' ')}
+              data-fade
+              style={{ transitionDelay: '0.26s' }}
+            >
+              <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.3s' }}>
+                <h2>Special Offers</h2>
+                <p>Limited-time deals on select pieces—don't miss out on these exclusive savings.</p>
+              </div>
+              <div className={styles.shopProductsGrid}>
+                {saleProducts.map((product, index) => (
+                  <div
+                    key={product.slug}
+                    className={fadeStyles.fadeInStart}
+                    data-fade
+                    style={{ transitionDelay: `${index * 0.1 + 0.34}s` }}
+                  >
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              <div className={[styles.shopViewAll, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.38s' }}>
+                <Link href="/shop/sale" className={styles.shopButtonPrimary}>
+                  Shop All Sales
+                </Link>
+              </div>
+            </section>
+          )}
+
+          <section
+            className={[styles.shopCollectionsSection, fadeStyles.fadeInStart].join(' ')}
+            data-fade
+            style={{ transitionDelay: '0.28s' }}
+          >
+            <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.32s' }}>
+              <h2>Explore Our Collections</h2>
+              <p>Curated themes that tell a story—each collection is designed around a unique aesthetic and mood.</p>
+            </div>
+            <div className={styles.shopCollectionsGrid}>
+              {collections.map((collection, index) => (
+                <article
+                  key={collection.name}
+                  className={[styles.shopCollectionCard, fadeStyles.fadeInStart].join(' ')}
+                  data-fade
+                  style={{ transitionDelay: `${index * 0.1 + 0.36}s` }}
+                >
+                  <Link href={collection.href} className={styles.shopCollectionImageLink}>
+                    <div className={styles.shopCollectionImage}>
+                      <Image
+                        src={collection.image}
+                        alt={collection.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 400px"
+                        className={styles.shopCollectionPhoto}
+                      />
+                      {collection.badge && (
+                        <span className={styles.shopCollectionBadge}>{collection.badge}</span>
+                      )}
+                    </div>
+                  </Link>
+                  <div className={styles.shopCollectionContent}>
+                    <h3>{collection.name}</h3>
+                    <p>{collection.description}</p>
+                    <Link href={collection.href} className={styles.shopCollectionLink}>
+                      Explore Collection
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </Link>
+                  </div>
+                </article>
+              ))}
             </div>
           </section>
 
@@ -227,25 +568,55 @@ export default function ShopPage() {
                   key={set.name}
                   className={[styles.shopCuratedCard, fadeStyles.fadeInStart].join(' ')}
                   data-fade
-                  style={{ transitionDelay: `${index * 0.1 + 0.22}s` }}
+                  style={{ transitionDelay: `${index * 0.08 + 0.36}s` }}
                 >
-                  <div className={styles.shopCuratedImage}>
-                    <Image
-                      src={set.image}
-                      alt={set.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 320px"
-                      className={styles.shopCuratedPhoto}
-                    />
-                  </div>
+                  <Link href={set.href} className={styles.shopCuratedImageLink}>
+                    <div className={styles.shopCuratedImage}>
+                      <Image
+                        src={set.image}
+                        alt={set.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 320px"
+                        className={styles.shopCuratedPhoto}
+                      />
+                      {set.badge && (
+                        <span className={styles.shopCuratedBadge}>{set.badge}</span>
+                      )}
+                      {set.savings && (
+                        <span className={styles.shopCuratedSavings}>{set.savings}</span>
+                      )}
+                    </div>
+                  </Link>
                   <div className={styles.shopCuratedContent}>
-                    <span>{set.price}</span>
+                    <div className={styles.shopCuratedPriceRow}>
+                      <span className={styles.shopCuratedPrice}>{set.price}</span>
+                      {set.originalPrice && (
+                        <span className={styles.shopCuratedOriginalPrice}>{set.originalPrice}</span>
+                      )}
+                    </div>
                     <h3>{set.name}</h3>
                     <p>{set.description}</p>
-                    <Link href={set.href}>View the set</Link>
+                    {set.features && set.features.length > 0 && (
+                      <ul className={styles.shopCuratedFeatures}>
+                        {set.features.map((feature, idx) => (
+                          <li key={idx}>{feature}</li>
+                        ))}
+                      </ul>
+                    )}
+                    <Link href={set.href} className={styles.shopCuratedLink}>
+                      Explore Collection
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </Link>
                   </div>
                 </article>
               ))}
+            </div>
+            <div className={[styles.shopViewAll, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.44s' }}>
+              <Link href="/collections" className={styles.shopButtonPrimary}>
+                View All Collections
+              </Link>
             </div>
           </section>
 
@@ -266,9 +637,65 @@ export default function ShopPage() {
                   data-fade
                   style={{ transitionDelay: `${index * 0.1 + 0.22}s` }}
                 >
+                  <div className={styles.serviceIcon}>{service.icon}</div>
                   <h3>{service.title}</h3>
                   <p>{service.blurb}</p>
-                  <Link href={service.href}>{service.linkLabel}</Link>
+                  <Link href={service.href} className={styles.serviceLink}>{service.linkLabel}</Link>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section
+            className={[styles.shopWhyChooseSection, fadeStyles.fadeInStart].join(' ')}
+            data-fade
+            style={{ transitionDelay: '0.3s' }}
+          >
+            <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.34s' }}>
+              <h2>Why Choose Pink Dot</h2>
+              <p>What sets us apart—discover the values and services that make every Pink Dot piece special.</p>
+            </div>
+            <div className={styles.shopWhyChooseGrid}>
+              {whyChooseUs.map((feature, index) => (
+                <article
+                  key={feature.title}
+                  className={[styles.shopWhyChooseCard, fadeStyles.fadeInStart].join(' ')}
+                  data-fade
+                  style={{ transitionDelay: `${index * 0.08 + 0.38}s` }}
+                >
+                  <div className={styles.whyChooseIcon}>{feature.icon}</div>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section
+            className={[styles.shopTestimonialsSection, fadeStyles.fadeInStart].join(' ')}
+            data-fade
+            style={{ transitionDelay: '0.34s' }}
+          >
+            <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.38s' }}>
+              <h2>Loved by Our Community</h2>
+              <p>Real stories from collectors who have made Pink Dot part of their everyday elegance.</p>
+            </div>
+            <div className={styles.shopTestimonialsGrid}>
+              {testimonials.map((testimonial, index) => (
+                <article
+                  key={index}
+                  className={[styles.shopTestimonialCard, fadeStyles.fadeInStart].join(' ')}
+                  data-fade
+                  style={{ transitionDelay: `${index * 0.1 + 0.42}s` }}
+                >
+                  <div className={styles.testimonialStars}>
+                    {'★'.repeat(testimonial.rating)}
+                  </div>
+                  <p className={styles.testimonialQuote}>"{testimonial.quote}"</p>
+                  <div className={styles.testimonialAuthor}>
+                    <span className={styles.authorName}>{testimonial.author}</span>
+                    <span className={styles.authorLocation}>{testimonial.location}</span>
+                  </div>
                 </article>
               ))}
             </div>

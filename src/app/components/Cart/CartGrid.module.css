@@ -7,8 +7,8 @@
 
 .grid {
   display: grid;
-  gap: clamp(1.5rem, 3vw, 2.25rem);
-  grid-template-columns: repeat(auto-fill, minmax(260px, 320px));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   justify-content: center;
   width: 100%;
 }
@@ -197,7 +197,7 @@
 
 @media (max-width: 600px) {
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .emptyCard {
