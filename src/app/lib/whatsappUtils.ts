@@ -93,22 +93,83 @@ export function getWhatsAppUrl(products: Product[], requireAddress: boolean = tr
   return url;
 }
 
+const PENDING_PRODUCTS_STORAGE_KEY = 'pink_dot_pending_products';
+
 /**
- * Check if address is required and handle redirect if missing
+ * Store products in sessionStorage for later purchase
  */
-export function handleBuyNow(products: Product[]): void {
+export function storePendingProducts(products: Product[]): void {
   if (typeof window === 'undefined') return;
   
-  if (!hasAddress()) {
-    // Redirect to delivery address page with message and return path
-    const currentPath = window.location.pathname;
-    window.location.href = `/delivery-address?message=address_required&redirect=${encodeURIComponent(currentPath)}`;
+  try {
+    sessionStorage.setItem(PENDING_PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+  } catch (error) {
+    console.error('Error storing pending products:', error);
+  }
+}
+
+/**
+ * Get pending products from sessionStorage
+ */
+export function getPendingProducts(): Product[] | null {
+  if (typeof window === 'undefined') return null;
+  
+  try {
+    const productsJson = sessionStorage.getItem(PENDING_PRODUCTS_STORAGE_KEY);
+    if (!productsJson) return null;
+    
+    return JSON.parse(productsJson) as Product[];
+  } catch (error) {
+    console.error('Error reading pending products:', error);
+    return null;
+  }
+}
+
+/**
+ * Clear pending products from sessionStorage
+ */
+export function clearPendingProducts(): void {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    sessionStorage.removeItem(PENDING_PRODUCTS_STORAGE_KEY);
+  } catch (error) {
+    console.error('Error clearing pending products:', error);
+  }
+}
+
+/**
+ * Proceed to WhatsApp purchase with pending products
+ */
+export function proceedToPurchase(): void {
+  if (typeof window === 'undefined') return;
+  
+  const products = getPendingProducts();
+  if (!products || products.length === 0) {
+    console.error('No pending products found');
     return;
   }
   
+  // Clear pending products
+  clearPendingProducts();
+  
+  // Proceed to WhatsApp
   const whatsappUrl = getWhatsAppUrl(products, false);
   if (whatsappUrl) {
     window.location.href = whatsappUrl;
   }
+}
+
+/**
+ * Check if address is required and handle redirect if missing
+ * Now always redirects to delivery address page first
+ */
+export function handleBuyNow(products: Product[]): void {
+  if (typeof window === 'undefined') return;
+  
+  // Always store products and redirect to delivery address page
+  storePendingProducts(products);
+  const currentPath = window.location.pathname;
+  window.location.href = `/delivery-address?message=address_required&redirect=${encodeURIComponent(currentPath)}`;
 }
 

@@ -1,0 +1,382 @@
+.page {
+  padding: 3rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 200px);
+  background: #F5EFE6;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #2D3047 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: rgba(45, 48, 71, 0.75);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.statsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.statCard {
+  background: #FFFFFF;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(232, 196, 196, 0.2);
+  border: 1px solid rgba(232, 196, 196, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(232, 196, 196, 0.3);
+}
+
+.statNumber {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #2D3047 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+}
+
+.statLabel {
+  font-size: 0.95rem;
+  color: rgba(45, 48, 71, 0.7);
+  font-weight: 500;
+}
+
+.statStars {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  letter-spacing: 2px;
+}
+
+.feedbackGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 4rem;
+}
+
+.feedbackCard {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 12px 30px rgba(232, 196, 196, 0.25);
+  border: 1px solid rgba(232, 196, 196, 0.4);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feedbackCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c2185b 0%, #f06292 50%, #c2185b 100%);
+}
+
+.feedbackCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(232, 196, 196, 0.35);
+}
+
+.feedbackHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.customerInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.customerDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.customerName {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2D3047;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.verifiedBadge {
+  display: inline-flex;
+  align-items: center;
+  color: #10B981;
+  flex-shrink: 0;
+}
+
+.customerLocation {
+  font-size: 0.9rem;
+  color: rgba(45, 48, 71, 0.6);
+}
+
+.feedbackRating {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.star {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.starFilled {
+  opacity: 1;
+}
+
+.starEmpty {
+  opacity: 0.3;
+}
+
+.feedbackText {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(45, 48, 71, 0.85);
+  margin-bottom: 1.5rem;
+  flex: 1;
+  font-style: italic;
+}
+
+.feedbackImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: #f8f9fa;
+}
+
+.feedbackImage {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.feedbackCard:hover .feedbackImage {
+  transform: scale(1.05);
+}
+
+.feedbackFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(232, 196, 196, 0.3);
+  gap: 1rem;
+}
+
+.feedbackDate {
+  font-size: 0.875rem;
+  color: rgba(45, 48, 71, 0.6);
+}
+
+.googleLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #C2185B;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.googleLink:hover {
+  color: #FF1493;
+}
+
+.googleLink svg {
+  transition: transform 0.3s ease;
+}
+
+.googleLink:hover svg {
+  transform: translateX(2px);
+}
+
+.ctaSection {
+  background: linear-gradient(135deg, rgba(194, 24, 91, 0.95), rgba(240, 98, 146, 0.9));
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: white;
+  margin-top: 2rem;
+}
+
+.ctaTitle {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.ctaSubtitle {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.6;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 1rem 2.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.primaryButton {
+  background: white;
+  color: #C2185B;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  background: #f8f9fa;
+}
+
+.secondaryButton {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.secondaryButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 2rem 1rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  .statsSection {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .statCard {
+    padding: 1.5rem;
+  }
+
+  .feedbackGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .feedbackCard {
+    padding: 1.5rem;
+  }
+
+  .feedbackHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .feedbackRating {
+    align-self: flex-start;
+  }
+
+  .feedbackImageWrapper {
+    height: 200px;
+  }
+
+  .feedbackFooter {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .ctaSection {
+    padding: 2rem 1.5rem;
+  }
+
+  .ctaButtons {
+    flex-direction: column;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+}
+

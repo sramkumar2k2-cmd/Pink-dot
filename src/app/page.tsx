@@ -48,27 +48,6 @@ const collections = [
   },
 ];
 
-const testimonials = [
-  {
-    name: "Priya Sharma",
-    location: "Mumbai",
-    text: "The quality is exceptional and the designs are absolutely stunning. I receive compliments every time I wear my Pink Dot pieces!",
-    rating: 5,
-  },
-  {
-    name: "Ananya Patel",
-    location: "Delhi",
-    text: "Beautiful craftsmanship and attention to detail. The jewelry feels luxurious and makes me feel special every day.",
-    rating: 5,
-  },
-  {
-    name: "Meera Reddy",
-    location: "Bangalore",
-    text: "Fast shipping and excellent customer service. The pieces are even more beautiful in person than in photos!",
-    rating: 5,
-  },
-];
-
 const whyChooseUs = [
   {
     icon: "✨",
@@ -257,51 +236,6 @@ export default function Home() {
               <p className={styles.featureDescription}>{feature.description}</p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className={styles.testimonialsSection}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>What Our Customers Say</h2>
-          <p className={styles.sectionSubtitle}>Real stories from real customers</p>
-        </div>
-        <div className={styles.testimonialsGrid}>
-          {testimonials.map((testimonial, index) => (
-            <div key={index} className={styles.testimonialCard}>
-              <div className={styles.testimonialStars}>
-                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                  <span key={i}>⭐</span>
-                ))}
-              </div>
-              <p className={styles.testimonialText}>"{testimonial.text}"</p>
-              <div className={styles.testimonialAuthor}>
-                <strong>{testimonial.name}</strong>
-                <span>{testimonial.location}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className={styles.newsletterSection}>
-        <div className={styles.newsletterContent}>
-          <h2 className={styles.newsletterTitle}>Stay in the Loop</h2>
-          <p className={styles.newsletterSubtitle}>
-            Be the first to know about new arrivals, exclusive offers, and styling tips
-          </p>
-          <form className={styles.newsletterForm}>
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className={styles.newsletterInput}
-              required
-            />
-            <button type="submit" className={styles.newsletterButton}>
-              Subscribe
-            </button>
-          </form>
         </div>
       </section>
     </>

@@ -43,6 +43,7 @@ export default function Footer() {
       title: 'Legal & Company',
       links: [
         { name: 'About Us', href: '/company/about' },
+        { name: 'Customer Feedback', href: '/feedback' },
         { name: 'Privacy Policy', href: '/legal/privacy' },
         { name: 'Terms of Service', href: '/legal/terms' },
       ],

@@ -46,8 +46,9 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import styles from './page.module.css';
-import { getSavedAddress, saveAddress, type DeliveryAddress } from '@/app/lib/addressUtils';
+import { getSavedAddress, saveAddress, hasAddress, type DeliveryAddress } from '@/app/lib/addressUtils';
 import { sendDeliveryAddressThankYouEmail, sendDeliveryAddressNotificationEmail } from '@/app/lib/emailUtils';
+import { getPendingProducts, proceedToPurchase } from '@/app/lib/whatsappUtils';
 
 // Replace this with your deployed Google Apps Script Web App URL
 const GOOGLE_SCRIPT_URL = 'GOOGLE_SCRIPT_URL_HERE';
@@ -74,8 +75,13 @@ function DeliveryAddressContent() {
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
   const [originalFormData, setOriginalFormData] = useState<DeliveryAddress | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [hasPendingProducts, setHasPendingProducts] = useState(false);
 
   useEffect(() => {
+    // Check if there are pending products from Buy Now
+    const pendingProducts = getPendingProducts();
+    setHasPendingProducts(pendingProducts !== null && pendingProducts.length > 0);
+    
     // Load saved address from localStorage if exists
     const savedAddress = getSavedAddress();
     if (savedAddress) {
@@ -294,6 +300,10 @@ function DeliveryAddressContent() {
       setOriginalFormData({ ...formData });
       setHasSavedAddress(true);
       setIsEditMode(false); // Exit edit mode after successful save
+      
+      // Check if there are pending products after saving
+      const pendingProducts = getPendingProducts();
+      setHasPendingProducts(pendingProducts !== null && pendingProducts.length > 0);
       
       // Don't wait for emails - they run in background
       // Emails will be sent asynchronously
@@ -576,6 +586,28 @@ function DeliveryAddressContent() {
           )}
         </form>
       </div>
+
+      {/* Continue to Buy Section */}
+      {hasPendingProducts && hasSavedAddress && hasAddress() && !isEditMode && (
+        <div className={styles.continueToBuySection}>
+          <div className={styles.continueToBuyContent}>
+            <h3 className={styles.continueToBuyTitle}>Ready to Complete Your Purchase?</h3>
+            <p className={styles.continueToBuySubtitle}>
+              Your address is confirmed. Click below to proceed with your order.
+            </p>
+            <button
+              type="button"
+              onClick={proceedToPurchase}
+              className={styles.continueToBuyButton}
+            >
+              Continue to Buy
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
