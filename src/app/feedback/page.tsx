@@ -1,11 +1,18 @@
 "use client";
 
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import styles from './page.module.css';
 
-// Feedback data - You can update this with your Google reviews/feedback
-// Add images by placing them in the /public/images/feedback/ folder
-const feedbackData = [
+// If you want a single Google reviews page URL for all reviews,
+// set NEXT_PUBLIC_GOOGLE_REVIEWS_URL in your .env.local.
+const GOOGLE_REVIEWS_URL =
+  process.env.NEXT_PUBLIC_GOOGLE_REVIEWS_URL ||
+  'https://g.page/r/YOUR_GOOGLE_BUSINESS_PAGE';
+
+// Static fallback feedback data.
+// This will be shown if Google reviews are not available.
+const staticFeedbackData = [
   {
     id: 1,
     name: "Priya Sharma",
@@ -68,7 +75,72 @@ const feedbackData = [
   },
 ];
 
+type FeedbackItem = (typeof staticFeedbackData)[number] & {
+  source?: 'google' | 'manual';
+  reviewUrl?: string;
+};
+
 export default function FeedbackPage() {
+  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>(staticFeedbackData);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Try to load cached reviews from localStorage first
+    try {
+      const cached = localStorage.getItem('pink_dot_google_reviews');
+      if (cached) {
+        const parsed = JSON.parse(cached) as FeedbackItem[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setFeedbacks(parsed);
+        }
+      }
+    } catch {
+      // Ignore cache errors
+    }
+
+    // Then fetch fresh reviews from our backend API
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch('/api/google-reviews');
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const googleReviews = Array.isArray(data.reviews) ? data.reviews : [];
+
+        if (googleReviews.length > 0) {
+          // Map Google reviews into our FeedbackItem shape
+          const mapped: FeedbackItem[] = googleReviews.map((review: any, index: number) => ({
+            id: review.id ?? `google-${index}`,
+            name: review.name ?? 'Google User',
+            location: review.location ?? '',
+            rating: review.rating ?? 5,
+            text: review.text ?? '',
+            date: review.date ?? new Date().toISOString(),
+            image: review.image ?? '',
+            verified: review.verified ?? true,
+            reviewUrl: review.reviewUrl || GOOGLE_REVIEWS_URL,
+            source: 'google',
+          }));
+
+          // Combine Google reviews with static manual reviews
+          const combined = [...mapped, ...staticFeedbackData];
+          setFeedbacks(combined);
+
+          try {
+            localStorage.setItem('pink_dot_google_reviews', JSON.stringify(combined));
+          } catch {
+            // Ignore cache write errors
+          }
+        }
+      } catch (error) {
+        console.error('Error loading Google reviews:', error);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
   return (
     <div className={styles.page}>
       <div className={styles.header}>
@@ -95,7 +167,7 @@ export default function FeedbackPage() {
       </div>
 
       <div className={styles.feedbackGrid}>
-        {feedbackData.map((feedback) => (
+        {feedbacks.map((feedback) => (
           <article key={feedback.id} className={styles.feedbackCard}>
             <div className={styles.feedbackHeader}>
               <div className={styles.customerInfo}>
@@ -154,17 +226,19 @@ export default function FeedbackPage() {
                   day: 'numeric',
                 })}
               </span>
-              <a
-                href="https://g.page/r/YOUR_GOOGLE_BUSINESS_PAGE"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.googleLink}
-              >
-                View on Google
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
+              {(feedback.reviewUrl || GOOGLE_REVIEWS_URL) && (
+                <a
+                  href={feedback.reviewUrl || GOOGLE_REVIEWS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.googleLink}
+                >
+                  View on Google
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              )}
             </div>
           </article>
         ))}
