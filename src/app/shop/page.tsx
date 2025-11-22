@@ -143,13 +143,6 @@ const services = [
     icon: '✨',
   },
   {
-    title: 'Size & Care Guides',
-    blurb: 'From ring sizing to tarnish care, discover tips to treasure your jewels longer.',
-    href: '/support/size-guide',
-    linkLabel: 'Find your fit',
-    icon: '📏',
-  },
-  {
     title: 'Bespoke Studio',
     blurb: 'Sketch something uniquely yours with custom stones, engraving, and metal choices.',
     href: '/collections/limited-edition',

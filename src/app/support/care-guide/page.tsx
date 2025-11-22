@@ -17,7 +17,7 @@ export default function CareGuidePage() {
           <li>For deeper cleaning, gently soak in warm water with a drop of mild soap, rinse, and pat dry.</li>
         </ul>
         <p className={styles.callout}>
-          Professional refresh? Book a complimentary polish by emailing <a href="mailto:care@pinkdot.com">care@pinkdot.com</a>. We&apos;re here to keep your sparkle alive.
+          Professional refresh? Book a complimentary polish by emailing <a href="pinkdotfashionjewellery@gmail.com">pinkdotfashionjewellery@gmail.com</a>. We&apos;re here to keep your sparkle alive.
         </p>
       </div>
     </section>

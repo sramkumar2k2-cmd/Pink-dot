@@ -61,7 +61,6 @@ export default function EarringsPage() {
         backgroundImage="/images/earrings5.jpeg"
         actions={[
           { label: 'Shop all earrings', href: '/shop/earrings' },
-          { label: 'Styling tips', href: '/support/size-guide', variant: 'ghost' },
         ]}
         highlights={heroHighlights}
         overlayGradient="linear-gradient(135deg, rgba(30, 20, 35, 0.6), rgba(112, 68, 120, 0.28))"

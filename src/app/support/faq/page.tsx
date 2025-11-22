@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards, PayPal, Apple Pay, and Afterpay for qualifying orders."
+    answer: "We accept mobile payment transfer using QR codes and bank transfers for qualifying orders."
   }
 ];
 
@@ -33,7 +33,7 @@ export default function FAQPage() {
           </div>
         ))}
         <p className={styles.callout}>
-          Didn&apos;t find what you were looking for? Send us a note at <a href="mailto:hello@pinkdot.com">hello@pinkdot.com</a> and we&apos;ll be happy to help.
+          Didn&apos;t find what you were looking for? Send us a note at <a href="pinkdotfashionjewellery@gmail.com">pinkdotfashionjewellery@gmail.com</a> and we&apos;ll be happy to help.
         </p>
       </div>
     </section>

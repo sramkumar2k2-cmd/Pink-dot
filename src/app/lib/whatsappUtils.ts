@@ -170,6 +170,6 @@ export function handleBuyNow(products: Product[]): void {
   // Always store products and redirect to delivery address page
   storePendingProducts(products);
   const currentPath = window.location.pathname;
-  window.location.href = `/delivery-address?message=address_required&redirect=${encodeURIComponent(currentPath)}`;
+  window.location.href = `/support/delivery-address?message=address_required&redirect=${encodeURIComponent(currentPath)}`;
 }
 

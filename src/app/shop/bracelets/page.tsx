@@ -61,7 +61,6 @@ export default function BraceletsPage() {
         backgroundImage="/images/bracelets5.jpeg"
         actions={[
           { label: 'Shop all bracelets', href: '/shop/bracelets' },
-          { label: 'Find your fit', href: '/support/size-guide', variant: 'ghost' },
         ]}
         highlights={heroHighlights}
         overlayGradient="linear-gradient(135deg, rgba(32, 24, 18, 0.62), rgba(112, 72, 48, 0.28))"

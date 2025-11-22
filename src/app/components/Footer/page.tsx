@@ -32,11 +32,10 @@ export default function Footer() {
       title: 'Customer Service',
       links: [
         { name: 'Contact Us', href: '/contact' },
-        { name: 'Delivery Address', href: '/delivery-address' },
+        { name: 'Delivery Address', href: '/support/delivery-address' },
         { name: 'Shipping Information', href: '/support/shipping' },
         { name: 'Returns & Exchanges', href: '/support/returns' },
         { name: 'FAQ', href: '/support/faq' },
-        { name: 'Size Guide', href: '/support/size-guide' },
       ],
     },
     {

@@ -191,6 +191,60 @@
   font-size: 0.9rem;
 }
 
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.star {
+  font-size: 0.85rem;
+  line-height: 1;
+  color: #ffc107;
+  display: inline-block;
+}
+
+.starFull {
+  opacity: 1;
+}
+
+.starHalf {
+  position: relative;
+  color: #ffc107;
+}
+
+.starHalf::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #ffc107;
+}
+
+.starEmpty {
+  opacity: 0.25;
+}
+
+.ratingText {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(31, 24, 46, 0.85);
+}
+
+.reviewCount {
+  font-weight: 400;
+  color: rgba(31, 24, 46, 0.6);
+  font-size: 0.75rem;
+}
+
 .specs {
   display: flex;
   flex-wrap: wrap;

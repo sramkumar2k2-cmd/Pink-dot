@@ -154,9 +154,6 @@ export default function CollectionsPage() {
             <Link href="/contact" className={styles.primaryButton}>
               Start styling consult
             </Link>
-            <Link href="/support/size-guide" className={styles.secondaryButton}>
-              View care & sizing
-            </Link>
           </div>
         </section>
       </main>

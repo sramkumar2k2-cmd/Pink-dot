@@ -132,6 +132,31 @@ export function ProductCard({ product }: ProductCardProps) {
         </Link>
         <p className={styles.description}>{product.description}</p>
 
+        {product.rating !== undefined && (
+          <div className={styles.rating}>
+            <div className={styles.stars}>
+              {Array.from({ length: 5 }).map((_, i) => {
+                const starValue = i + 1;
+                const rating = product.rating || 0;
+                const isFull = starValue <= rating;
+                const isHalf = !isFull && starValue - 0.5 <= rating;
+                
+                return (
+                  <span key={i} className={`${styles.star} ${isFull ? styles.starFull : isHalf ? styles.starHalf : styles.starEmpty}`}>
+                    ★
+                  </span>
+                );
+              })}
+            </div>
+            <span className={styles.ratingText}>
+              {product.rating.toFixed(1)}
+              {product.reviewCount !== undefined && (
+                <span className={styles.reviewCount}> ({product.reviewCount})</span>
+              )}
+            </span>
+          </div>
+        )}
+
         {displaySpecs.length ? (
           <div className={styles.specs}>
             {displaySpecs.map((spec) => (

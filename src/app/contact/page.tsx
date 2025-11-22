@@ -301,7 +301,6 @@ function ContactPageContent() {
                 <option value="Order Status">Order Status</option>
                 <option value="Customization">Customization Request</option>
                 <option value="Returns & Exchanges">Returns & Exchanges</option>
-                <option value="Size Guide">Size Guide</option>
                 <option value="Wholesale">Wholesale Inquiry</option>
                 <option value="Partnership">Partnership Opportunity</option>
                 <option value="General Question">General Question</option>

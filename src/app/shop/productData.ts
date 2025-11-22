@@ -37,6 +37,8 @@ export type Product = {
   highlights?: string[];
   categories: ProductCategory[];
   related?: string[];
+  rating?: number; // Rating from 0 to 5 (e.g., 4.5, 4.0, 5.0)
+  reviewCount?: number; // Number of reviews
 };
 
 const products: Product[] = [
@@ -69,6 +71,8 @@ const products: Product[] = [
       'Ships within 24 hours',
     ],
     categories: ['all', 'necklaces', 'best-sellers'],
+    rating: 4.7,
+    reviewCount: 128,
   },
   {
     slug: 'solstice-choker',
@@ -99,6 +103,8 @@ const products: Product[] = [
       'Adjustable extender included',
     ],
     categories: ['all', 'necklaces'],
+    rating: 4.3,
+    reviewCount: 89,
   },
   {
     slug: 'elysian-pendant',
@@ -127,6 +133,8 @@ const products: Product[] = [
       'Comes with 16-18" adjustable chain',
     ],
     categories: ['all', 'necklaces'],
+    rating: 4.8,
+    reviewCount: 156,
   },
   {
     slug: 'serein-station',
@@ -155,6 +163,8 @@ const products: Product[] = [
       'Finished with secure lobster clasp',
     ],
     categories: ['all', 'necklaces'],
+    rating: 4.9,
+    reviewCount: 203,
   },
   {
     slug: 'nova-charm-set',
@@ -183,6 +193,38 @@ const products: Product[] = [
       'Packaged with layering guide',
     ],
     categories: ['all', 'necklaces'],
+    rating: 4.2,
+    reviewCount: 67,
+  },
+  {
+    slug: 'elysian-pendant',
+    name: 'Elysian Pendant',
+    description: 'Hand-cut mother-of-pearl framed with bead-set topaz halo.',
+    price: '₹15,600',
+    originalPrice: '₹19,500',
+    salePrice: '₹15,600',
+    tag: 'Limited',
+    gradient: 'linear-gradient(135deg, #e8f4ff 0%, #d9e9ff 45%, #eef6ff 100%)',
+    accent: 'Mother-of-Pearl',
+    secondaryAccent: 'Sterling Silver',
+    image: '/images/neck4.jpeg',
+    images: [
+      { src: '/images/neck4.jpeg', alt: 'Elysian Pendant on linen backdrop' },
+      { src: '/images/neck5.jpeg', alt: 'Elysian Pendant halo close-up' },
+      { src: '/images/neck6.jpeg', alt: 'Elysian Pendant worn with layered necklaces' },
+    ],
+    specs: [
+      { label: 'Gemstone', value: 'Mother-of-Pearl' },
+      { label: 'Metal', value: 'Sterling silver' },
+    ],
+    highlights: [
+      'Hand-cut pearlescent centre',
+      'Halo of bead-set white topaz',
+      'Comes with 16-18" adjustable chain',
+    ],
+    categories: ['all', 'necklaces'],
+    rating: 4.6,
+    reviewCount: 142,
   },
   {
     slug: 'atelier-bar-necklace',
@@ -211,6 +253,8 @@ const products: Product[] = [
       'Adjustable 16-18" chain',
     ],
     categories: ['all', 'necklaces'],
+    rating: 4.4,
+    reviewCount: 67,
   },
   {
     slug: 'luna-glow-studs',
@@ -239,6 +283,8 @@ const products: Product[] = [
       'Mirror-finish polish',
     ],
     categories: ['all', 'earrings'],
+    rating: 4.7,
+    reviewCount: 98,
   },
   {
     slug: 'solstice-hoops',
@@ -268,6 +314,8 @@ const products: Product[] = [
     categories: ['all', 'earrings', 'best-sellers', 'sale'],
     salePrice: '₹13,400',
     originalPrice: '₹17,800',
+    rating: 4.9,
+    reviewCount: 287,
   },
   {
     slug: 'nova-ear-climbers',
@@ -297,6 +345,8 @@ const products: Product[] = [
     categories: ['all', 'earrings', 'sale'],
     salePrice: '₹12,200',
     originalPrice: '₹16,200',
+    rating: 4.6,
+    reviewCount: 178,
   },
   {
     slug: 'opaline-chandeliers',
@@ -326,6 +376,8 @@ const products: Product[] = [
       'Complimentary polishing cloth',
     ],
     categories: ['all', 'earrings', 'best-sellers'],
+    rating: 4.8,
+    reviewCount: 245,
   },
   {
     slug: 'muse-ear-cuff-duo',
@@ -354,6 +406,8 @@ const products: Product[] = [
       'Lightweight for all-day wear',
     ],
     categories: ['all', 'earrings'],
+    rating: 4.3,
+    reviewCount: 92,
   },
   {
     slug: 'seraph-wing-studs',
@@ -382,6 +436,8 @@ const products: Product[] = [
       'Hypoallergenic backing',
     ],
     categories: ['all', 'earrings'],
+    rating: 4.7,
+    reviewCount: 167,
   },
   {
     slug: 'muse-charm-chain',
@@ -411,6 +467,8 @@ const products: Product[] = [
     categories: ['all', 'bracelets', 'best-sellers', 'sale'],
     salePrice: '₹13,900',
     originalPrice: '₹18,500',
+    rating: 4.9,
+    reviewCount: 312,
   },
   {
     slug: 'aster-cuff',
@@ -439,6 +497,8 @@ const products: Product[] = [
       'Triple-plated for shine retention',
     ],
     categories: ['all', 'bracelets'],
+    rating: 4.2,
+    reviewCount: 78,
   },
   {
     slug: 'luna-pearl-duo',
@@ -467,6 +527,8 @@ const products: Product[] = [
       'Finished with magnetic clasp',
     ],
     categories: ['all', 'bracelets'],
+    rating: 4.6,
+    reviewCount: 189,
   },
   {
     slug: 'aurora-tidal-bangle',
@@ -496,6 +558,8 @@ const products: Product[] = [
       'Limited 150-piece release',
     ],
     categories: ['all', 'bracelets', 'new-arrivals'],
+    rating: 4.4,
+    reviewCount: 156,
   },
   {
     slug: 'seraphine-wrap',
@@ -524,6 +588,8 @@ const products: Product[] = [
       'Discreet magnetic closure',
     ],
     categories: ['all', 'bracelets'],
+    rating: 4.8,
+    reviewCount: 298,
   },
   {
     slug: 'celestia-link-set',
@@ -552,6 +618,8 @@ const products: Product[] = [
       'Packaged with storage pouch',
     ],
     categories: ['all', 'bracelets'],
+    rating: 4.7,
+    reviewCount: 223,
   },
   {
     slug: 'nova-crown-band',
@@ -583,6 +651,8 @@ const products: Product[] = [
       'Complimentary first resizing',
     ],
     categories: ['all', 'rings', 'best-sellers', 'new-arrivals'],
+    rating: 4.1,
+    reviewCount: 65,
   },
   {
     slug: 'solstice-signet',
@@ -611,6 +681,8 @@ const products: Product[] = [
       'Complimentary monogram option',
     ],
     categories: ['all', 'rings'],
+    rating: 4.6,
+    reviewCount: 201,
   },
   {
     slug: 'luna-stacking-trio',
@@ -639,6 +711,8 @@ const products: Product[] = [
       'Comes with storage roll',
     ],
     categories: ['all', 'rings', 'new-arrivals'],
+    rating: 4.9,
+    reviewCount: 334,
   },
   {
     slug: 'orion-toi-et-moi',
@@ -667,6 +741,8 @@ const products: Product[] = [
       'Includes appraisal certificate',
     ],
     categories: ['all', 'rings'],
+    rating: 4.7,
+    reviewCount: 145,
   },
   {
     slug: 'radiant-pave-band',
@@ -695,6 +771,8 @@ const products: Product[] = [
       'Lifetime replating included',
     ],
     categories: ['all', 'rings'],
+    rating: 4.3,
+    reviewCount: 88,
   },
   {
     slug: 'aurora-heirloom',
@@ -724,6 +802,8 @@ const products: Product[] = [
     categories: ['all', 'rings', 'sale'],
     salePrice: '₹63,000',
     originalPrice: '₹84,000',
+    rating: 4.8,
+    reviewCount: 223,
   },
   {
     slug: 'celestial-halo-ring',
@@ -753,6 +833,8 @@ const products: Product[] = [
     categories: ['all', 'rings', 'best-sellers', 'sale'],
     originalPrice: '₹72,000',
     salePrice: '₹57,600',
+    rating: 4.9,
+    reviewCount: 267,
   },
   {
     slug: 'luna-cascade-collar',
@@ -780,6 +862,8 @@ const products: Product[] = [
     categories: ['all', 'necklaces', 'best-sellers', 'sale'],
     originalPrice: '₹18,500',
     salePrice: '₹14,800',
+    rating: 4.7,
+    reviewCount: 198,
   },
   {
     slug: 'stella-orbit-pendant',
@@ -809,6 +893,8 @@ const products: Product[] = [
       'Includes engraving token',
     ],
     categories: ['all', 'necklaces', 'new-arrivals'],
+    rating: 4.2,
+    reviewCount: 76,
   },
   {
     slug: 'celestine-ear-thread',
@@ -836,6 +922,8 @@ const products: Product[] = [
       'Online exclusive release',
     ],
     categories: ['all', 'earrings', 'new-arrivals'],
+    rating: 4.6,
+    reviewCount: 156,
   },
   {
     slug: 'elysian-collar',
@@ -863,6 +951,8 @@ const products: Product[] = [
       'Limited seasonal release',
     ],
     categories: ['all', 'necklaces', 'new-arrivals'],
+    rating: 4.8,
+    reviewCount: 289,
   },
   {
     slug: 'muse-stacking-trio',
@@ -890,6 +980,8 @@ const products: Product[] = [
       'Includes polishing cloth',
     ],
     categories: ['all', 'rings', 'new-arrivals'],
+    rating: 4.1,
+    reviewCount: 54,
   },
   {
     slug: 'luna-glow-anklet',
@@ -917,6 +1009,8 @@ const products: Product[] = [
       'Water-resistant plating',
     ],
     categories: ['all', 'bracelets', 'new-arrivals'],
+    rating: 4.5,
+    reviewCount: 187,
   },
   {
     slug: 'serenade-tennis-bracelet',
@@ -945,6 +1039,8 @@ const products: Product[] = [
     categories: ['all', 'bracelets', 'sale'],
     originalPrice: '₹32,000',
     salePrice: '₹25,600',
+    rating: 4.9,
+    reviewCount: 256,
   },
 ];
 

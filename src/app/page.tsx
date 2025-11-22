@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ProductCard } from "@/app/components/ProductCard";
 import { getProductsByCategory } from "@/app/shop/productData";
+import { ScrollingFeedback } from "@/app/components/ScrollingFeedback/ScrollingFeedback";
 import styles from "./page.module.css";
 
 const featureCards = [
@@ -117,6 +118,9 @@ export default function Home() {
         </section>
       </div>
     </main>
+
+      {/* Scrolling Feedback */}
+      <ScrollingFeedback />
 
       {/* Best Sellers Section */}
       {bestSellers.length > 0 && (
@@ -238,6 +242,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      {/* Scrolling Feedback at the end */}
+      <ScrollingFeedback />
     </>
   );
 }

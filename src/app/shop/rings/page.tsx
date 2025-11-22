@@ -61,7 +61,6 @@ export default function RingsPage() {
         backgroundImage="/images/ring5.jpeg"
         actions={[
           { label: 'Shop all rings', href: '/shop/rings' },
-          { label: 'Find your ring size', href: '/support/size-guide', variant: 'ghost' },
         ]}
         highlights={heroHighlights}
         overlayGradient="linear-gradient(135deg, rgba(28, 21, 30, 0.62), rgba(91, 60, 74, 0.3))"

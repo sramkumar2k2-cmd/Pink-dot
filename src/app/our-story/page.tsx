@@ -109,9 +109,6 @@ export default function OurStoryPage() {
             <Link href="/collections" className={styles.primaryButton}>
               Explore collections
             </Link>
-            <Link href="/support/size-guide" className={styles.secondaryButton}>
-              Learn about our craft
-            </Link>
           </div>
         </div>
         <div className={styles.heroVisual}>

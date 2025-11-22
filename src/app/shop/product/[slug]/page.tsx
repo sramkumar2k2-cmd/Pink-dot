@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { ProductCard } from '@/app/components/ProductCard';
+import { ProductFeedbackForm } from '@/app/components/ProductFeedback/ProductFeedbackForm';
 import {
   type Product,
   type ProductCategory,
@@ -121,6 +122,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
           </div>
         </section>
       ) : null}
+
+      <div className={styles.feedbackWrapper}>
+        <ProductFeedbackForm product={product} />
+      </div>
     </div>
   );
 }
