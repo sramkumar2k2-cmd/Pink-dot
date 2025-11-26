@@ -44,7 +44,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './page.module.css';
 import { getSavedAddress, saveAddress, hasAddress, type DeliveryAddress } from '@/app/lib/addressUtils';
 import { sendDeliveryAddressThankYouEmail, sendDeliveryAddressNotificationEmail } from '@/app/lib/emailUtils';
@@ -55,7 +55,10 @@ const GOOGLE_SCRIPT_URL = 'GOOGLE_SCRIPT_URL_HERE';
 
 function DeliveryAddressContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const showAddressMessage = searchParams?.get('message') === 'address_required';
+  const showReviewMessage = searchParams?.get('message') === 'address_required_for_review';
+  const redirectPath = searchParams?.get('redirect') || null;
   
   const [formData, setFormData] = useState<DeliveryAddress>({
     name: '',
@@ -76,6 +79,7 @@ function DeliveryAddressContent() {
   const [originalFormData, setOriginalFormData] = useState<DeliveryAddress | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [hasPendingProducts, setHasPendingProducts] = useState(false);
+  const [showReviewSuccessMessage, setShowReviewSuccessMessage] = useState(false);
 
   useEffect(() => {
     // Check if there are pending products from Buy Now
@@ -108,7 +112,23 @@ function DeliveryAddressContent() {
         }
       }, 300);
     }
-  }, [showAddressMessage]);
+    
+    // Show alert if redirected from review page
+    if (showReviewMessage) {
+      setShowAlert(true);
+      // Scroll to form
+      setTimeout(() => {
+        const formElement = document.getElementById('delivery-address-form');
+        if (formElement) {
+          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const nameField = document.getElementById('name');
+          if (nameField) {
+            (nameField as HTMLInputElement).focus();
+          }
+        }
+      }, 300);
+    }
+  }, [showAddressMessage, showReviewMessage]);
 
   const handleEditAddress = () => {
     setIsEditMode(true);
@@ -301,6 +321,15 @@ function DeliveryAddressContent() {
       setHasSavedAddress(true);
       setIsEditMode(false); // Exit edit mode after successful save
       
+      // If came from review page, show message for 10 seconds then redirect
+      if (showReviewMessage && redirectPath) {
+        setShowReviewSuccessMessage(true);
+        setTimeout(() => {
+          setShowReviewSuccessMessage(false);
+          router.push(redirectPath);
+        }, 10000); // 10 seconds
+      }
+      
       // Check if there are pending products after saving
       const pendingProducts = getPendingProducts();
       setHasPendingProducts(pendingProducts !== null && pendingProducts.length > 0);
@@ -367,7 +396,21 @@ function DeliveryAddressContent() {
             <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span>Please fill your delivery address to complete your purchase.</span>
+          <span>
+            {showReviewMessage 
+              ? 'Please fill your delivery address to submit a review. After filling, you can buy products and then give reviews.'
+              : 'Please fill your delivery address to complete your purchase.'}
+          </span>
+        </div>
+      )}
+
+      {showReviewSuccessMessage && (
+        <div className={`${styles.alertMessage} ${styles.successMessage}`}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span>Address saved! If you already bought from our shop and want to review on site, you can now go back and submit your review. Redirecting you back in a few seconds...</span>
         </div>
       )}
 

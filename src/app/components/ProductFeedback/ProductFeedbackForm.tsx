@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import type { Product } from '@/app/shop/productData';
 import { saveProductFeedback, getProductFeedbacks, imageToBase64, updateProductFeedback, deleteProductFeedback, type ProductFeedback } from '@/app/lib/productFeedbackUtils';
-import { getSavedAddress } from '@/app/lib/addressUtils';
+import { getSavedAddress, hasAddress } from '@/app/lib/addressUtils';
+import { useRouter } from 'next/navigation';
 import styles from './ProductFeedback.module.css';
 
 type ProductFeedbackFormProps = {
@@ -12,6 +13,7 @@ type ProductFeedbackFormProps = {
 };
 
 export function ProductFeedbackForm({ product }: ProductFeedbackFormProps) {
+  const router = useRouter();
   const [customerName, setCustomerName] = useState('');
   const [rating, setRating] = useState(5);
   const [text, setText] = useState('');
@@ -89,6 +91,13 @@ export function ProductFeedbackForm({ product }: ProductFeedbackFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if delivery address is filled before allowing review
+    if (!hasAddress()) {
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      router.push(`/support/delivery-address?message=address_required_for_review&redirect=${encodeURIComponent(currentPath)}`);
+      return;
+    }
     
     if (!customerName.trim() || !text.trim()) {
       alert('Please fill in all required fields');
@@ -198,6 +207,12 @@ export function ProductFeedbackForm({ product }: ProductFeedbackFormProps) {
             if (showForm) {
               handleCancel();
             } else {
+              // Check if delivery address is filled before showing form
+              if (!hasAddress()) {
+                const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+                router.push(`/support/delivery-address?message=address_required_for_review&redirect=${encodeURIComponent(currentPath)}`);
+                return;
+              }
               setShowForm(true);
             }
           }}
