@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedHero } from '@/app/components/AnimatedHero';
-import { ProductCard } from '@/app/components/ProductCard';
+import { ProductGrid } from '@/app/components/ProductGrid/ProductGrid';
 import type { Product } from '@/app/shop/productData';
 import { getProductBySlug } from '@/app/shop/productData';
 import styles from './page.module.css';
@@ -105,11 +105,7 @@ export default function NecklacesPage() {
             <h2>Signature layering pieces</h2>
             <p>Curated by our studio stylists to mix seamlessly with your current favourites.</p>
           </div>
-          <div className={styles.productsGrid}>
-            {products.map((product) => (
-              <ProductCard key={product.slug} product={product} />
-            ))}
-          </div>
+          <ProductGrid products={products} />
         </section>
 
         <section className={styles.storySection}>

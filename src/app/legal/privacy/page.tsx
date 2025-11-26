@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
           <p className={styles.heading}>Your Choices</p>
           <p>
             You can update your details, opt out of marketing emails, or delete your account at any time by contacting
-            <a href="mailto:privacy@pinkdot.com"> privacy@pinkdot.com</a>. We respond to all privacy requests within 48 hours.
+            <a href="pinkdotfashionjewellery@gmail.com"> pinkdotfashionjewellery@gmail.com</a>. We respond to all privacy requests within 48 hours.
           </p>
         </div>
       </div>

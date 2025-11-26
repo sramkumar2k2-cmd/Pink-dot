@@ -9,7 +9,7 @@
  * 
  * 2. Create a Google Sheet to store the addresses:
  *    - Create a new Google Sheet
- *    - Add headers in row 1: Name, Phone, Email, Street, City, District, Pincode, Complete Address, Timestamp
+ *    - Add headers in row 1: Name, Phone, Email, Street, City, State, Pincode, Complete Address, Timestamp
  * 
  * 3. Write the Google Apps Script code:
  *    function doPost(e) {
@@ -21,7 +21,7 @@
  *        data.email,
  *        data.street,
  *        data.city,
- *        data.district,
+ *        data.state,
  *        data.pincode,
  *        data.address,
  *        new Date()
@@ -66,7 +66,7 @@ function DeliveryAddressContent() {
     email: '',
     street: '',
     city: '',
-    district: '',
+    state: '',
     pincode: '',
     address: '',
   });
@@ -157,7 +157,7 @@ function DeliveryAddressContent() {
         email: '',
         street: '',
         city: '',
-        district: '',
+        state: '',
         pincode: '',
         address: '',
       });
@@ -206,8 +206,8 @@ function DeliveryAddressContent() {
       newErrors.city = 'City is required';
     }
     
-    if (!formData.district.trim()) {
-      newErrors.district = 'District is required';
+    if (!formData.state.trim()) {
+      newErrors.state = 'State is required';
     }
     
     if (!formData.pincode.trim()) {
@@ -397,9 +397,20 @@ function DeliveryAddressContent() {
             <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
           <span>
-            {showReviewMessage 
-              ? 'Please fill your delivery address to submit a review. After filling, you can buy products and then give reviews.'
-              : 'Please fill your delivery address to complete your purchase.'}
+            {showReviewMessage ? (
+              <span>
+                <strong>Please fill your delivery address to submit a review.</strong>
+                <br />
+                <br />
+                <strong>Two important points:</strong>
+                <br />
+                1. <strong>New customers:</strong> After filling your address, you can buy products online and then give reviews. This saves time for future purchases!
+                <br />
+                2. <strong>Offline shop customers:</strong> If you already bought from our physical shop and want to review online, just fill your address for updates. You can then share your experience and help others discover new products!
+              </span>
+            ) : (
+              'Please fill your delivery address to complete your purchase.'
+            )}
           </span>
         </div>
       )}
@@ -410,7 +421,19 @@ function DeliveryAddressContent() {
             <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span>Address saved! If you already bought from our shop and want to review on site, you can now go back and submit your review. Redirecting you back in a few seconds...</span>
+          <span>
+            <strong>Address saved successfully!</strong>
+            <br />
+            <br />
+            You can now:
+            <br />
+            • <strong>Buy products online</strong> - Your address is saved for quick checkout!
+            <br />
+            • <strong>Submit your review</strong> - Share your experience and help others discover new products!
+            <br />
+            <br />
+            Redirecting you back to the product page in a few seconds...
+          </span>
         </div>
       )}
 
@@ -530,21 +553,21 @@ function DeliveryAddressContent() {
             </div>
             
             <div className={styles.formGroup}>
-              <label className={styles.label} htmlFor="district">
-                District <span className={styles.required}>*</span>
+              <label className={styles.label} htmlFor="state">
+                State <span className={styles.required}>*</span>
               </label>
               <input
                 type="text"
-                id="district"
-                name="district"
-                className={`${styles.input} ${errors.district ? styles.inputError : ''}`}
-                placeholder="District"
-              value={formData.district}
-              onChange={handleInputChange}
-              disabled={!isEditMode}
-              required
-              />
-              {errors.district && <span className={styles.errorText}>{errors.district}</span>}
+                id="state"
+                name="state"
+                className={`${styles.input} ${errors.state ? styles.inputError : ''}`}
+                placeholder="State"
+              value={formData.state}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                required
+                />
+              {errors.state && <span className={styles.errorText}>{errors.state}</span>}
             </div>
           </div>
 

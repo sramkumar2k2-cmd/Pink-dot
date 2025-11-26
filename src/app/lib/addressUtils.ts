@@ -10,7 +10,7 @@ export type DeliveryAddress = {
   email: string;
   street: string;
   city: string;
-  district: string;
+  state: string;
   pincode: string;
   address: string; // Complete address field
 };
@@ -54,7 +54,7 @@ export function saveAddress(address: DeliveryAddress | Partial<DeliveryAddress>)
       email: address.email ?? existing?.email ?? '',
       street: address.street ?? existing?.street ?? '',
       city: address.city ?? existing?.city ?? '',
-      district: address.district ?? existing?.district ?? '',
+      state: address.state ?? existing?.state ?? '',
       pincode: address.pincode ?? existing?.pincode ?? '',
       address: address.address ?? existing?.address ?? '',
     };
@@ -79,7 +79,7 @@ export function hasAddress(): boolean {
     address.email?.trim() &&
     address.street?.trim() &&
     address.city?.trim() &&
-    address.district?.trim() &&
+    address.state?.trim() &&
     address.pincode?.trim() &&
     address.address?.trim()
   );

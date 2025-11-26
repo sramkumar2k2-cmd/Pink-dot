@@ -419,6 +419,13 @@
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 }
 
+@media (max-width: 768px) {
+  .relatedGrid {
+    grid-template-columns: repeat(2, 1fr);
+    align-items: start;
+  }
+}
+
 .carouselButton {
   position: absolute;
   top: 50%;

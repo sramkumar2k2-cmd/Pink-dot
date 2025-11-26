@@ -33,7 +33,7 @@ export default function TermsOfServicePage() {
         <div>
           <p className={styles.heading}>Need Support?</p>
           <p>
-            Reach out to <a href="mailto:legal@pinkdot.com">legal@pinkdot.com</a> with any questions about these terms.
+            Reach out to <a href="pinkdotfashionjewellery@gmail.com">pinkdotfashionjewellery@gmail.com</a> with any questions about these terms.
             We&apos;re always happy to help.
           </p>
         </div>

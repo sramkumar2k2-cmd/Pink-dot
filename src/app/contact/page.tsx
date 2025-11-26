@@ -299,10 +299,8 @@ function ContactPageContent() {
                 <option value="">Select inquiry type</option>
                 <option value="Product Inquiry">Product Inquiry</option>
                 <option value="Order Status">Order Status</option>
-                <option value="Customization">Customization Request</option>
                 <option value="Returns & Exchanges">Returns & Exchanges</option>
                 <option value="Wholesale">Wholesale Inquiry</option>
-                <option value="Partnership">Partnership Opportunity</option>
                 <option value="General Question">General Question</option>
                 <option value="Other">Other</option>
               </select>
