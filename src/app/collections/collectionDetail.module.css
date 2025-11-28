@@ -235,27 +235,30 @@
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1.4rem, 3vw, 2rem);
-}
-
-@media (max-width: 980px) {
-  .featuredProducts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  align-items: stretch;
 }
 
 @media (max-width: 768px) {
+  .featuredSection {
+    padding: 1.5rem;
+  }
+
   .featuredProducts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 0.75rem;
   }
 }
 
 @media (max-width: 540px) {
+  .featuredSection {
+    padding: 1rem;
+  }
+
   .featuredProducts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.875rem;
+    gap: 0.5rem;
   }
 }
 
@@ -385,4 +388,3 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-

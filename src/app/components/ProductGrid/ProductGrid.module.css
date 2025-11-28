@@ -1,6 +1,6 @@
 .productGridContainer {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: clamp(1.5rem, 3vw, 2rem);
   width: 100%;
   align-items: start;
@@ -23,7 +23,7 @@
   transform: translateY(-2px);
 }
 
-.productCardWrapper > * {
+.productCardWrapper>* {
   width: 100%;
   height: 100%;
 }
@@ -42,6 +42,7 @@
     opacity: 0;
     transform: translateY(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -65,12 +66,11 @@
 
 @media (max-width: 768px) {
   .productGridContainer {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .relatedProductsGrid {
     grid-template-columns: 1fr;
   }
 }
-
