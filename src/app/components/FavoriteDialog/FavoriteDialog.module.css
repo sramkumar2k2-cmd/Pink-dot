@@ -1,0 +1,283 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.dialog {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 95%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 2rem 1.5rem;
+  border-bottom: 2px solid rgba(194, 24, 91, 0.1);
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d3047;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: rgba(45, 48, 71, 0.6);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.closeButton:hover {
+  background: rgba(194, 24, 91, 0.1);
+  color: #c2185b;
+}
+
+.content {
+  padding: 2rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.productName {
+  font-size: 1.1rem;
+  color: rgba(45, 48, 71, 0.9);
+  margin: 0;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, rgba(194, 24, 91, 0.08), rgba(255, 182, 193, 0.12));
+  border-radius: 12px;
+  border: 1px solid rgba(194, 24, 91, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.productName span {
+  color: rgba(45, 48, 71, 0.7);
+  font-weight: 500;
+}
+
+.productName strong {
+  color: #c2185b;
+  font-weight: 700;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.formGroup {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  display: block;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2d3047;
+  margin: 0;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(194, 24, 91, 0.2);
+  border-radius: 12px;
+  font-size: 1rem;
+  color: #2d3047;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #c2185b;
+  box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.1);
+}
+
+.input::placeholder {
+  color: rgba(45, 48, 71, 0.4);
+}
+
+.folderToggle {
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.folderToggleButton {
+  background: none;
+  border: none;
+  color: #c2185b;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.folderToggleButton:hover {
+  background: rgba(194, 24, 91, 0.05);
+}
+
+
+.actions {
+  display: flex;
+  gap: 1.25rem;
+  padding: 2rem;
+  border-top: 2px solid rgba(194, 24, 91, 0.1);
+  flex-shrink: 0;
+  background: rgba(245, 239, 230, 0.3);
+  border-radius: 0 0 20px 20px;
+}
+
+.saveButton,
+.skipButton {
+  flex: 1;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  min-height: 50px;
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(194, 24, 91, 0.3);
+}
+
+.saveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(194, 24, 91, 0.4);
+}
+
+.skipButton {
+  background: rgba(45, 48, 71, 0.05);
+  color: #2d3047;
+  border: 2px solid rgba(45, 48, 71, 0.2);
+}
+
+.skipButton:hover {
+  background: rgba(45, 48, 71, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .dialog {
+    width: 98%;
+    max-height: 90vh;
+    border-radius: 16px;
+  }
+
+  .header {
+    padding: 1.5rem 1.5rem 1.25rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .content {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .productName {
+    font-size: 1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .formGroup {
+    gap: 0.625rem;
+  }
+
+  .label {
+    font-size: 0.95rem;
+  }
+
+  .input {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .folderToggleButton {
+    font-size: 0.95rem;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .actions {
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .saveButton,
+  .skipButton {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+

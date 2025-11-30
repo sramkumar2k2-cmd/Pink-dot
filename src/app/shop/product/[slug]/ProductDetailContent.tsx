@@ -7,6 +7,7 @@ import type { Product } from '@/app/shop/productData';
 import { HeartIcon } from '@/app/components/HeartIcon';
 import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import { handleBuyNow } from '@/app/lib/whatsappUtils';
+import { FavoriteDialog } from '@/app/components/FavoriteDialog/FavoriteDialog';
 import styles from './page.module.css';
 
 type Breadcrumb = {
@@ -20,8 +21,9 @@ type ProductDetailContentProps = {
 };
 
 export function ProductDetailContent({ product, breadcrumb }: ProductDetailContentProps) {
-  const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
+  const { isFavorite, toggleFavorite, saveFavoriteWithCustomName } = useFavoriteProduct(product.slug);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [showFavoriteDialog, setShowFavoriteDialog] = useState(false);
   const mainImageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -121,7 +123,13 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
             className={styles.favoriteButton}
             data-active={isFavorite}
             onClick={() => {
-              toggleFavorite();
+              if (isFavorite) {
+                // If already favorite, just remove it
+                toggleFavorite();
+              } else {
+                // If not favorite, show dialog to ask for custom name/folder
+                setShowFavoriteDialog(true);
+              }
             }}
           >
             <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
@@ -248,6 +256,22 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
           </button>
         </div>
       </div>
+
+      <FavoriteDialog
+        productName={product.name}
+        isOpen={showFavoriteDialog}
+        onSave={(customName, folder) => {
+          saveFavoriteWithCustomName(customName, folder);
+          setShowFavoriteDialog(false);
+        }}
+        onSkip={() => {
+          saveFavoriteWithCustomName(null, null);
+          setShowFavoriteDialog(false);
+        }}
+        onClose={() => {
+          setShowFavoriteDialog(false);
+        }}
+      />
     </section>
   );
 }

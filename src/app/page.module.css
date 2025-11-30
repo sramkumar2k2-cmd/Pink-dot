@@ -428,7 +428,7 @@
 
 .bestSellersGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1.25rem;
   margin-bottom: 2.5rem;
 }
@@ -436,6 +436,8 @@
 .bestSellerCard {
   position: relative;
   transition: transform 0.3s ease;
+  max-width: 280px;
+  margin: 0 auto;
 }
 
 .bestSellerCard:hover {
@@ -570,7 +572,7 @@
 
 .newArrivalsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1.25rem;
   margin-bottom: 2.5rem;
   align-items: stretch;
@@ -582,6 +584,8 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  max-width: 280px;
+  margin: 0 auto;
 }
 
 .newArrivalCard > * {
@@ -952,8 +956,13 @@
   .bestSellersGrid,
   .newArrivalsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
     margin-bottom: 2rem;
+  }
+
+  .bestSellerCard,
+  .newArrivalCard {
+    max-width: 100%;
   }
 
   .bestSellersCta,

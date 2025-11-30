@@ -2,6 +2,9 @@
 
 import { useState, Suspense } from 'react';
 import styles from './page.module.css';
+import { getProductBySlug, type Product } from '@/app/shop/productData';
+import { getEffectivePrice, formatPrice, calculateTotal } from '@/app/lib/priceUtils';
+import { getCartItemsWithTimestamps, formatPurchaseDateTime } from '@/app/lib/cartUtils';
 
 function ContactPageContent() {
   const [formData, setFormData] = useState({
@@ -85,19 +88,151 @@ function ContactPageContent() {
 
     const { name, email, phone, subject, message } = formData;
 
-    // Open WhatsApp
-    const whatsappMessage = encodeURIComponent(
-      `*Contact Inquiry - Pink Dot Fashion Jewellery*\n\n` +
+    let whatsappMessage = `*Contact Inquiry - Pink Dot Fashion Jewellery*\n\n` +
       `*Name:* ${name}\n` +
       `${email ? `*Email:* ${email}\n` : ''}` +
       `${phone ? `*Phone:* ${phone}\n` : ''}` +
       `${formData.inquiryType ? `*Inquiry Type:* ${formData.inquiryType}\n` : ''}` +
       `*Subject:* ${subject}\n\n` +
-      `*Message:*\n${message}`
-    );
+      `*Message:*\n${message}`;
+
+    // If inquiry type is "Order Status", include cart product details
+    if (formData.inquiryType === 'Order Status') {
+      try {
+        // Get cart products with timestamps from localStorage
+        const cartItemsWithTimestamps = typeof window !== 'undefined' 
+          ? getCartItemsWithTimestamps() 
+          : [];
+        
+        if (cartItemsWithTimestamps.length > 0) {
+          const cartProducts: (Product & { addedAt: string })[] = [];
+          
+          // Get product details for each slug with timestamp
+          cartItemsWithTimestamps.forEach(item => {
+            const product = getProductBySlug(item.slug);
+            if (product) {
+              // Ensure we have a valid timestamp
+              const timestamp = item.addedAt || new Date().toISOString();
+              cartProducts.push({
+                ...product,
+                addedAt: timestamp,
+              });
+            }
+          });
+
+          if (cartProducts.length > 0) {
+            whatsappMessage += `\n\n*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n`;
+            whatsappMessage += `*ORDER DETAILS*\n`;
+            whatsappMessage += `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n\n`;
+            
+            // Add product details with purchase date/time
+            cartProducts.forEach((product, index) => {
+              const price = getEffectivePrice(product);
+              
+              // Format purchase date/time - function handles null/undefined
+              const purchaseDateTime = formatPurchaseDateTime(product.addedAt);
+              
+              whatsappMessage += `*${index + 1}. ${product.name}*\n`;
+              whatsappMessage += `Price: ${price}\n`;
+              whatsappMessage += `Purchased: ${purchaseDateTime}\n`;
+              
+              if (product.description) {
+                whatsappMessage += `Description: ${product.description}\n`;
+              }
+              
+              if (product.specs && product.specs.length > 0) {
+                whatsappMessage += `Specs: ${product.specs.map(s => `${s.label}: ${s.value}`).join(', ')}\n`;
+              }
+              
+              whatsappMessage += `\n`;
+            });
+
+            // Calculate total
+            const totalPrice = calculateTotal(cartProducts);
+            whatsappMessage += `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n`;
+            whatsappMessage += `*Total Items:* ${cartProducts.length}\n`;
+            whatsappMessage += `*Total Amount:* ${formatPrice(totalPrice)}\n`;
+            whatsappMessage += `*━━━━━━━━━━━━━━━━━━━━━━━━━━━━*\n`;
+
+            // Store order inquiry in localStorage
+            const orderInquiry = {
+              timestamp: new Date().toISOString(),
+              name,
+              email: email || '',
+              phone: phone || '',
+              inquiryType: formData.inquiryType,
+              subject,
+              message,
+              products: cartProducts.map(p => ({
+                slug: p.slug,
+                name: p.name,
+                price: getEffectivePrice(p),
+                description: p.description,
+                specs: p.specs || [],
+                image: p.image,
+                purchasedAt: p.addedAt,
+                purchasedDateTime: formatPurchaseDateTime(p.addedAt),
+              })),
+              totalAmount: totalPrice,
+              totalItems: cartProducts.length,
+            };
+
+            try {
+              const orderInquiriesKey = 'pinkdot:order_inquiries';
+              const existingInquiries = typeof window !== 'undefined' 
+                ? localStorage.getItem(orderInquiriesKey) 
+                : null;
+              
+              const inquiries = existingInquiries ? JSON.parse(existingInquiries) : [];
+              inquiries.push(orderInquiry);
+              
+              if (typeof window !== 'undefined') {
+                localStorage.setItem(orderInquiriesKey, JSON.stringify(inquiries));
+              }
+            } catch (storageError) {
+              console.error('Error storing order inquiry:', storageError);
+            }
+          } else {
+            whatsappMessage += `\n\n*Note:* No products found in cart.`;
+          }
+        } else {
+          whatsappMessage += `\n\n*Note:* No products found in cart.`;
+        }
+      } catch (error) {
+        console.error('Error processing cart products:', error);
+        whatsappMessage += `\n\n*Note:* Unable to retrieve cart products.`;
+      }
+    } else {
+      // Store regular inquiry in localStorage
+      const inquiry = {
+        timestamp: new Date().toISOString(),
+        name,
+        email: email || '',
+        phone: phone || '',
+        inquiryType: formData.inquiryType || '',
+        subject,
+        message,
+      };
+
+      try {
+        const inquiriesKey = 'pinkdot:contact_inquiries';
+        const existingInquiries = typeof window !== 'undefined' 
+          ? localStorage.getItem(inquiriesKey) 
+          : null;
+        
+        const inquiries = existingInquiries ? JSON.parse(existingInquiries) : [];
+        inquiries.push(inquiry);
+        
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(inquiriesKey, JSON.stringify(inquiries));
+        }
+      } catch (storageError) {
+        console.error('Error storing contact inquiry:', storageError);
+      }
+    }
 
     setIsSubmitting(false);
-    window.open(`https://wa.me/917092939303?text=${whatsappMessage}`, '_blank');
+    window.open(`https://wa.me/917092939303?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
 
     // Reset form after opening WhatsApp
     setFormData({

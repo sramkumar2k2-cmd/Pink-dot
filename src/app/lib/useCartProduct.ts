@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
+import { addToCartWithTimestamp, removeFromCartWithTimestamp } from './cartUtils';
 
 const STORAGE_KEY = 'pinkdot:cart';
 
@@ -160,6 +161,8 @@ export function useCartProduct(slug: string | undefined | null) {
       return;
     }
 
+    // Use the timestamp-aware function
+    addToCartWithTimestamp(normalizedSlug);
     writeCart([...cartSlugsCache, normalizedSlug]);
   }, [normalizedSlug]);
 
@@ -172,6 +175,8 @@ export function useCartProduct(slug: string | undefined | null) {
       return;
     }
 
+    // Use the timestamp-aware function
+    removeFromCartWithTimestamp(normalizedSlug);
     writeCart(cartSlugsCache.filter((value) => value !== normalizedSlug));
   }, [normalizedSlug]);
 

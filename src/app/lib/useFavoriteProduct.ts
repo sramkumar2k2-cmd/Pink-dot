@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react';
+import { saveFavoriteWithMetadata, removeFavoriteMetadata } from './favoriteUtils';
 
 const STORAGE_KEY = 'pinkdot:favorites';
 
@@ -162,11 +163,36 @@ export function useFavoriteProduct(slug: string | undefined | null) {
       : currentFavorites.filter((value) => value !== normalizedSlug);
 
     writeFavorites(nextFavorites);
+
+    // Remove metadata if unfavoriting
+    if (!shouldFavorite) {
+      removeFavoriteMetadata(normalizedSlug);
+    }
+  }, [normalizedSlug]);
+
+  const saveFavoriteWithCustomName = useCallback((customName?: string | null, folder?: string | null) => {
+    if (!isBrowser() || !normalizedSlug) {
+      return;
+    }
+
+    try {
+      // Ensure it's in favorites first
+      const currentFavorites = favoriteSlugsCache;
+      if (!currentFavorites.includes(normalizedSlug)) {
+        writeFavorites([...currentFavorites, normalizedSlug]);
+      }
+
+      // Save metadata
+      saveFavoriteWithMetadata(normalizedSlug, customName, folder);
+    } catch (error) {
+      console.error('Error saving favorite with custom name:', error);
+    }
   }, [normalizedSlug]);
 
   return {
     isFavorite,
     toggleFavorite,
+    saveFavoriteWithCustomName,
   };
 }
 

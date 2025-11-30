@@ -1,6 +1,6 @@
 'use client';
 
-import { type CSSProperties } from 'react';
+import { type CSSProperties, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
@@ -10,6 +10,7 @@ import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
 import { useCartProduct } from '@/app/lib/useCartProduct';
 import { handleBuyNow } from '@/app/lib/whatsappUtils';
 import { calculateDiscountPercentage } from '@/app/lib/priceUtils';
+import { FavoriteDialog } from '@/app/components/FavoriteDialog/FavoriteDialog';
 import styles from './ProductCard.module.css';
 
 type ProductCardProps = {
@@ -21,8 +22,9 @@ type CardStyle = CSSProperties & {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
-  const { isFavorite, toggleFavorite } = useFavoriteProduct(product.slug);
+  const { isFavorite, toggleFavorite, saveFavoriteWithCustomName } = useFavoriteProduct(product.slug);
   const { isInCart, addToCart, toggleCart } = useCartProduct(product.slug);
+  const [showFavoriteDialog, setShowFavoriteDialog] = useState(false);
 
   const cardStyle: CardStyle = {};
   const hasBadge = Boolean(product.badge);
@@ -78,7 +80,14 @@ export function ProductCard({ product }: ProductCardProps) {
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
-              toggleFavorite();
+              
+              if (isFavorite) {
+                // If already favorite, just remove it
+                toggleFavorite();
+              } else {
+                // If not favorite, show dialog to ask for custom name/folder
+                setShowFavoriteDialog(true);
+              }
             }}
           >
             <HeartIcon filled={isFavorite} className={styles.favoriteIcon} />
@@ -205,6 +214,32 @@ export function ProductCard({ product }: ProductCardProps) {
           </button>
         </div>
       </div>
+
+      <FavoriteDialog
+        productName={product.name}
+        isOpen={showFavoriteDialog}
+        onSave={(customName, folder) => {
+          if (saveFavoriteWithCustomName) {
+            saveFavoriteWithCustomName(customName, folder);
+          } else {
+            // Fallback: use toggleFavorite if saveFavoriteWithCustomName is not available
+            toggleFavorite();
+          }
+          setShowFavoriteDialog(false);
+        }}
+        onSkip={() => {
+          if (saveFavoriteWithCustomName) {
+            saveFavoriteWithCustomName(null, null);
+          } else {
+            // Fallback: use toggleFavorite if saveFavoriteWithCustomName is not available
+            toggleFavorite();
+          }
+          setShowFavoriteDialog(false);
+        }}
+        onClose={() => {
+          setShowFavoriteDialog(false);
+        }}
+      />
     </article>
   );
 }
