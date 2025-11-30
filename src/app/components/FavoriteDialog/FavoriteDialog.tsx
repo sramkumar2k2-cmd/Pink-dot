@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './FavoriteDialog.module.css';
 
 type FavoriteDialogProps = {
@@ -11,6 +12,25 @@ type FavoriteDialogProps = {
   onClose: () => void;
 };
 
+// Global state to track if any dialog is open
+let globalDialogOpen = false;
+const dialogInstances = new Set<() => void>();
+
+function registerDialog(closeFn: () => void) {
+  dialogInstances.add(closeFn);
+  return () => {
+    dialogInstances.delete(closeFn);
+  };
+}
+
+function closeAllOtherDialogs(currentCloseFn: () => void) {
+  dialogInstances.forEach((closeFn) => {
+    if (closeFn !== currentCloseFn) {
+      closeFn();
+    }
+  });
+}
+
 export function FavoriteDialog({ productName, isOpen, onSave, onSkip, onClose }: FavoriteDialogProps) {
   const [customName, setCustomName] = useState('');
   const [folder, setFolder] = useState('');
@@ -19,36 +39,60 @@ export function FavoriteDialog({ productName, isOpen, onSave, onSkip, onClose }:
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isOpen) {
+      // Register this dialog instance
+      const unregister = registerDialog(onClose);
+      
+      // Close all other dialogs
+      closeAllOtherDialogs(onClose);
+      
+      // Update global state
+      globalDialogOpen = true;
+      
+      return () => {
+        unregister();
+        if (dialogInstances.size === 0) {
+          globalDialogOpen = false;
+        }
+      };
+    }
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isOpen]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dialogRef.current && !dialogRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
+      if (event.key === 'Escape' && globalDialogOpen) {
+        // Close the most recently opened dialog
+        const dialogs = Array.from(dialogInstances);
+        if (dialogs.length > 0) {
+          dialogs[dialogs.length - 1]();
+        }
       }
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      // Prevent body scroll when dialog is open
+      document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleEscape);
+    } else {
+      // Restore body scroll when no dialogs are open
+      if (dialogInstances.size === 0) {
+        document.body.style.overflow = '';
+      }
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      if (dialogInstances.size === 0) {
+        document.body.style.overflow = '';
+      }
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
 
   const handleSave = () => {
     const nameToSave = customName.trim() || null;
@@ -66,9 +110,18 @@ export function FavoriteDialog({ productName, isOpen, onSave, onSkip, onClose }:
     setShowFolderInput(false);
   };
 
-  return (
-    <div className={styles.overlay}>
-      <div className={styles.dialog} ref={dialogRef}>
+  if (!isOpen) return null;
+
+  const dialogContent = (
+    <div 
+      className={styles.overlay} 
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div className={styles.dialog} ref={dialogRef} onClick={(e) => e.stopPropagation()}>
         <div className={styles.header}>
           <h3 className={styles.title}>Save to Favorites</h3>
           <button
@@ -158,5 +211,12 @@ export function FavoriteDialog({ productName, isOpen, onSave, onSkip, onClose }:
       </div>
     </div>
   );
+
+  // Use portal to render at document body level to ensure proper z-index stacking
+  if (typeof window !== 'undefined') {
+    return createPortal(dialogContent, document.body);
+  }
+  
+  return null;
 }
 
