@@ -59,7 +59,7 @@ function DeliveryAddressContent() {
   const showAddressMessage = searchParams?.get('message') === 'address_required';
   const showReviewMessage = searchParams?.get('message') === 'address_required_for_review';
   const redirectPath = searchParams?.get('redirect') || null;
-  
+
   const [formData, setFormData] = useState<DeliveryAddress>({
     name: '',
     phone: '',
@@ -69,8 +69,9 @@ function DeliveryAddressContent() {
     state: '',
     pincode: '',
     address: '',
+    district: '',
   });
-  
+
   const [errors, setErrors] = useState<Partial<Record<keyof DeliveryAddress, string>>>({});
   const [showAlert, setShowAlert] = useState(false);
   const [hasSavedAddress, setHasSavedAddress] = useState(false);
@@ -79,24 +80,36 @@ function DeliveryAddressContent() {
   const [originalFormData, setOriginalFormData] = useState<DeliveryAddress | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [hasPendingProducts, setHasPendingProducts] = useState(false);
+  const [isAddressComplete, setIsAddressComplete] = useState(false);
   const [showReviewSuccessMessage, setShowReviewSuccessMessage] = useState(false);
+  const [isFetchingPincode, setIsFetchingPincode] = useState(false);
 
   useEffect(() => {
     // Check if there are pending products from Buy Now
     const pendingProducts = getPendingProducts();
     setHasPendingProducts(pendingProducts !== null && pendingProducts.length > 0);
-    
+
     // Load saved address from localStorage if exists
     const savedAddress = getSavedAddress();
     if (savedAddress) {
       setFormData(savedAddress);
       setOriginalFormData({ ...savedAddress });
       setHasSavedAddress(true);
-      setIsEditMode(false); // Start in view mode when address exists
+
+      // Check if address is complete
+      if (hasAddress()) {
+        setIsAddressComplete(true);
+        setIsEditMode(false); // Start in view mode only if address is complete
+      } else {
+        setIsAddressComplete(false);
+        setIsEditMode(true); // Force edit mode if address is incomplete
+        setShowAlert(true); // Show alert to prompt user
+      }
     } else {
+      setIsAddressComplete(false);
       setIsEditMode(true); // Start in edit mode if no address exists
     }
-    
+
     // Show alert if redirected from Buy Now
     if (showAddressMessage) {
       setShowAlert(true);
@@ -112,7 +125,7 @@ function DeliveryAddressContent() {
         }
       }, 300);
     }
-    
+
     // Show alert if redirected from review page
     if (showReviewMessage) {
       setShowAlert(true);
@@ -129,6 +142,51 @@ function DeliveryAddressContent() {
       }, 300);
     }
   }, [showAddressMessage, showReviewMessage]);
+
+  // Pincode Auto-fill Effect
+  useEffect(() => {
+    const fetchPincodeDetails = async () => {
+      const pincode = formData.pincode;
+
+      // Only fetch if 6 digits and we are in edit mode
+      if (pincode.length === 6 && /^\d{6}$/.test(pincode) && isEditMode) {
+        setIsFetchingPincode(true);
+        try {
+          const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+          const data = await response.json();
+
+          if (data && data[0] && data[0].Status === 'Success') {
+            const postOffice = data[0].PostOffice[0];
+            const city = postOffice.District;
+            const state = postOffice.State;
+
+            setFormData(prev => ({
+              ...prev,
+              city: prev.city || city, // Only auto-fill if empty or let user overwrite? Let's auto-fill but allow edit
+              state: prev.state || state
+            }));
+
+            // If we want to overwrite even if filled (user might have entered wrong one), we can remove the check.
+            // But usually better to only fill if empty OR if the user just typed the pincode.
+            // Since this runs on pincode change, it's safe to overwrite or at least we can be smart.
+            // Let's overwrite for now as per "show exact state and city automatically"
+            setFormData(prev => ({
+              ...prev,
+              city: city,
+              state: state
+            }));
+          }
+        } catch (error) {
+          console.error('Error fetching pincode details:', error);
+        } finally {
+          setIsFetchingPincode(false);
+        }
+      }
+    };
+
+    const timeoutId = setTimeout(fetchPincodeDetails, 500); // Debounce
+    return () => clearTimeout(timeoutId);
+  }, [formData.pincode, isEditMode]);
 
   const handleEditAddress = () => {
     setIsEditMode(true);
@@ -160,6 +218,7 @@ function DeliveryAddressContent() {
         state: '',
         pincode: '',
         address: '',
+        district: '',
       });
     }
     setErrors({});
@@ -169,80 +228,80 @@ function DeliveryAddressContent() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     // Clear error for this field
     if (errors[name as keyof DeliveryAddress]) {
       setErrors(prev => ({ ...prev, [name as keyof DeliveryAddress]: '' }));
     }
-    
+
     // Removed auto-save - address will only be saved on form submit
     // This ensures change detection works correctly
   };
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof DeliveryAddress, string>> = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!formData.phone.trim()) {
       newErrors.phone = 'Phone number is required';
     } else if (!/^\d{10}$/.test(formData.phone.replace(/\D/g, ''))) {
       newErrors.phone = 'Please enter a valid 10-digit phone number';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    
+
     if (!formData.street.trim()) {
       newErrors.street = 'Street address is required';
     }
-    
+
     if (!formData.city.trim()) {
       newErrors.city = 'City is required';
     }
-    
+
     if (!formData.state.trim()) {
       newErrors.state = 'State is required';
     }
-    
+
     if (!formData.pincode.trim()) {
       newErrors.pincode = 'Pincode is required';
     } else if (!/^\d{6}$/.test(formData.pincode)) {
       newErrors.pincode = 'Please enter a valid 6-digit pincode';
     }
-    
+
     if (!formData.address.trim()) {
       newErrors.address = 'Complete address is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
     setShowAlert(false);
-    
+
     try {
       // Save to localStorage first
       saveAddress(formData);
       setOriginalFormData({ ...formData });
-      
+
       // Prepare promises for parallel execution
       const promises: Promise<any>[] = [];
-      
+
       // Send POST request to Google Apps Script
       if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'GOOGLE_SCRIPT_URL_HERE') {
         promises.push(
@@ -260,7 +319,7 @@ function DeliveryAddressContent() {
           })
         );
       }
-      
+
       // Send thank you email to customer (non-blocking)
       promises.push(
         sendDeliveryAddressThankYouEmail(formData)
@@ -275,7 +334,7 @@ function DeliveryAddressContent() {
             console.error('Error sending thank you email:', error);
           })
       );
-      
+
       // Send notification email to company (non-blocking)
       promises.push(
         sendDeliveryAddressNotificationEmail(formData)
@@ -290,10 +349,10 @@ function DeliveryAddressContent() {
             console.error('Error sending company notification email:', error);
           })
       );
-      
+
       // Wait for Google Apps Script (if configured), but don't wait for emails
       const googleScriptSuccess = GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'GOOGLE_SCRIPT_URL_HERE';
-      
+
       if (googleScriptSuccess) {
         try {
           await promises[0]; // Wait for Google Apps Script
@@ -315,12 +374,12 @@ function DeliveryAddressContent() {
           message: 'Address saved successfully! Confirmation emails have been sent.',
         });
       }
-      
+
       // Update state after successful save
       setOriginalFormData({ ...formData });
       setHasSavedAddress(true);
       setIsEditMode(false); // Exit edit mode after successful save
-      
+
       // If came from review page, show message for 10 seconds then redirect
       if (showReviewMessage && redirectPath) {
         setShowReviewSuccessMessage(true);
@@ -329,14 +388,14 @@ function DeliveryAddressContent() {
           router.push(redirectPath);
         }, 10000); // 10 seconds
       }
-      
+
       // Check if there are pending products after saving
       const pendingProducts = getPendingProducts();
       setHasPendingProducts(pendingProducts !== null && pendingProducts.length > 0);
-      
+
       // Don't wait for emails - they run in background
       // Emails will be sent asynchronously
-      
+
     } catch (error) {
       console.error('Error saving address:', error);
       setSubmitStatus({
@@ -355,7 +414,7 @@ function DeliveryAddressContent() {
           <div>
             <h1 className={styles.title}>Delivery Address</h1>
             <p className={styles.subtitle}>
-              {hasSavedAddress 
+              {hasSavedAddress
                 ? 'Your delivery address is saved. You can edit it below if needed.'
                 : 'Please provide your delivery address details for easy courier processing.'}
             </p>
@@ -368,8 +427,8 @@ function DeliveryAddressContent() {
               aria-label="Edit Address"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M18.5 2.50023C18.8978 2.10243 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.10243 21.5 2.50023C21.8978 2.89804 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.10243 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Edit Address
             </button>
@@ -382,7 +441,7 @@ function DeliveryAddressContent() {
               aria-label="Cancel Edit"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Cancel
             </button>
@@ -391,10 +450,19 @@ function DeliveryAddressContent() {
       </div>
 
       {showAlert && (
-        <div className={styles.alertMessage}>
+        <div className={`${styles.alertMessage} ${showAddressMessage && isAddressComplete ? styles.successMessage : ''}`}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            {showAddressMessage && isAddressComplete ? (
+              <>
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </>
+            ) : (
+              <>
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </>
+            )}
           </svg>
           <span>
             {showReviewMessage ? (
@@ -409,7 +477,11 @@ function DeliveryAddressContent() {
                 2. <strong>Offline shop customers:</strong> If you already bought from our physical shop and want to review online, just fill your address for updates. You can then share your experience and help others discover new products!
               </span>
             ) : (
-              'Please fill your delivery address to complete your purchase.'
+              showAddressMessage && isAddressComplete ? (
+                'Please verify your address. If you need to make changes, you can update it below. Otherwise, please click "Continue to Purchase".'
+              ) : (
+                'Please fill your delivery address to complete your purchase.'
+              )
             )}
           </span>
         </div>
@@ -418,8 +490,8 @@ function DeliveryAddressContent() {
       {showReviewSuccessMessage && (
         <div className={`${styles.alertMessage} ${styles.successMessage}`}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <span>
             <strong>Address saved successfully!</strong>
@@ -442,13 +514,13 @@ function DeliveryAddressContent() {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             {submitStatus.type === 'success' ? (
               <>
-                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </>
             ) : (
               <>
-                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 8V12M12 16H12.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </>
             )}
           </svg>
@@ -487,15 +559,15 @@ function DeliveryAddressContent() {
                 name="phone"
                 className={`${styles.input} ${errors.phone ? styles.inputError : ''}`}
                 placeholder="10-digit phone number"
-              value={formData.phone}
-              onChange={handleInputChange}
-              disabled={!isEditMode}
-              maxLength={10}
-              required
+                value={formData.phone}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                maxLength={10}
+                required
               />
               {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
             </div>
-            
+
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="email">
                 Email ID <span className={styles.required}>*</span>
@@ -506,10 +578,10 @@ function DeliveryAddressContent() {
                 name="email"
                 className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
                 placeholder="your.email@example.com"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled={!isEditMode}
-              required
+                value={formData.email}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                required
               />
               {errors.email && <span className={styles.errorText}>{errors.email}</span>}
             </div>
@@ -544,14 +616,14 @@ function DeliveryAddressContent() {
                 name="city"
                 className={`${styles.input} ${errors.city ? styles.inputError : ''}`}
                 placeholder="City"
-              value={formData.city}
-              onChange={handleInputChange}
-              disabled={!isEditMode}
-              required
+                value={formData.city}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                required
               />
               {errors.city && <span className={styles.errorText}>{errors.city}</span>}
             </div>
-            
+
             <div className={styles.formGroup}>
               <label className={styles.label} htmlFor="state">
                 State <span className={styles.required}>*</span>
@@ -562,11 +634,11 @@ function DeliveryAddressContent() {
                 name="state"
                 className={`${styles.input} ${errors.state ? styles.inputError : ''}`}
                 placeholder="State"
-              value={formData.state}
+                value={formData.state}
                 onChange={handleInputChange}
                 disabled={!isEditMode}
                 required
-                />
+              />
               {errors.state && <span className={styles.errorText}>{errors.state}</span>}
             </div>
           </div>
@@ -582,14 +654,15 @@ function DeliveryAddressContent() {
                 name="pincode"
                 className={`${styles.input} ${errors.pincode ? styles.inputError : ''}`}
                 placeholder="6-digit pincode"
-              value={formData.pincode}
-              onChange={handleInputChange}
-              disabled={!isEditMode}
-              maxLength={6}
-              pattern="[0-9]{6}"
-              required
+                value={formData.pincode}
+                onChange={handleInputChange}
+                disabled={!isEditMode}
+                maxLength={6}
+                pattern="[0-9]{6}"
+                required
               />
               {errors.pincode && <span className={styles.errorText}>{errors.pincode}</span>}
+              {isFetchingPincode && <span className={styles.helperText}>Fetching city and state...</span>}
             </div>
           </div>
 
@@ -616,16 +689,16 @@ function DeliveryAddressContent() {
 
           {isEditMode && (
             <div className={styles.buttonGroup}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={handleCancel}
                 className={styles.cancelButton}
                 disabled={isSubmitting}
               >
                 Cancel
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className={styles.submitButton}
                 disabled={isSubmitting}
               >
@@ -633,8 +706,8 @@ function DeliveryAddressContent() {
                   <>
                     <svg className={styles.spinner} width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="32" strokeDashoffset="32">
-                        <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
-                        <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
+                        <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite" />
+                        <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite" />
                       </circle>
                     </svg>
                     Saving...
@@ -643,7 +716,7 @@ function DeliveryAddressContent() {
                   <>
                     {hasSavedAddress ? 'Update Address' : 'Save Address'}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </>
                 )}
@@ -668,7 +741,7 @@ function DeliveryAddressContent() {
             >
               Continue to Buy
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>

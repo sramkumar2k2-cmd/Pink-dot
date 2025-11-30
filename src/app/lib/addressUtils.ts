@@ -12,6 +12,7 @@ export type DeliveryAddress = {
   city: string;
   state: string;
   pincode: string;
+  district: string;
   address: string; // Complete address field
 };
 
@@ -20,19 +21,25 @@ export type DeliveryAddress = {
  */
 export function getSavedAddress(): DeliveryAddress | null {
   if (typeof window === 'undefined') return null;
-  
+
   try {
     const addressJson = localStorage.getItem(ADDRESS_STORAGE_KEY);
     if (!addressJson) return null;
-    
+
     const address = JSON.parse(addressJson) as DeliveryAddress;
-    
-    // Validate that it has required fields
-    if (address && typeof address === 'object' && address.name && address.address) {
-      return address;
-    }
-    
-    return null;
+
+    // Return with default empty strings for all fields to ensure controlled inputs
+    return {
+      name: address.name || '',
+      phone: address.phone || '',
+      email: address.email || '',
+      street: address.street || '',
+      city: address.city || '',
+      state: address.state || '',
+      pincode: address.pincode || '',
+      district: address.district || '',
+      address: address.address || '',
+    };
   } catch (error) {
     console.error('Error reading address from localStorage:', error);
     return null;
@@ -44,7 +51,7 @@ export function getSavedAddress(): DeliveryAddress | null {
  */
 export function saveAddress(address: DeliveryAddress | Partial<DeliveryAddress>): void {
   if (typeof window === 'undefined') return;
-  
+
   try {
     // Merge with existing address if partial update
     const existing = getSavedAddress();
@@ -56,9 +63,10 @@ export function saveAddress(address: DeliveryAddress | Partial<DeliveryAddress>)
       city: address.city ?? existing?.city ?? '',
       state: address.state ?? existing?.state ?? '',
       pincode: address.pincode ?? existing?.pincode ?? '',
+      district: address.district ?? existing?.district ?? '',
       address: address.address ?? existing?.address ?? '',
     };
-    
+
     localStorage.setItem(ADDRESS_STORAGE_KEY, JSON.stringify(fullAddress));
   } catch (error) {
     console.error('Error saving address to localStorage:', error);
@@ -71,7 +79,7 @@ export function saveAddress(address: DeliveryAddress | Partial<DeliveryAddress>)
 export function hasAddress(): boolean {
   const address = getSavedAddress();
   if (!address) return false;
-  
+
   // Check if all required fields are filled
   return !!(
     address.name?.trim() &&
@@ -90,7 +98,7 @@ export function hasAddress(): boolean {
  */
 export function clearAddress(): void {
   if (typeof window === 'undefined') return;
-  
+
   try {
     localStorage.removeItem(ADDRESS_STORAGE_KEY);
   } catch (error) {
