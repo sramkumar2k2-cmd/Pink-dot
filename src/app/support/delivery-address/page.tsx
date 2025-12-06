@@ -537,7 +537,7 @@ function DeliveryAddressContent() {
           {hasSavedAddress && !isEditMode && (
             <button
               type="button"
-              onClick={handleEditAddress}
+              onClick={() => handleEditAddress()}
               className={styles.editButton}
               aria-label="Edit Address"
             >
