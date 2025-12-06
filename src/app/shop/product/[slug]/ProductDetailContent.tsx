@@ -1,11 +1,12 @@
 'use client';
 
-import { useMemo, useState, useRef } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/app/shop/productData';
 import { HeartIcon } from '@/app/components/HeartIcon';
 import { useFavoriteProduct } from '@/app/lib/useFavoriteProduct';
+import { useCartProduct } from '@/app/lib/useCartProduct';
 import { handleBuyNow } from '@/app/lib/whatsappUtils';
 import { FavoriteDialog } from '@/app/components/FavoriteDialog/FavoriteDialog';
 import styles from './page.module.css';
@@ -22,11 +23,26 @@ type ProductDetailContentProps = {
 
 export function ProductDetailContent({ product, breadcrumb }: ProductDetailContentProps) {
   const { isFavorite, toggleFavorite, saveFavoriteWithCustomName } = useFavoriteProduct(product.slug);
+  const { isInCart, quantity, addToCart, setQuantity, incrementQuantity, decrementQuantity } = useCartProduct(product.slug);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showFavoriteDialog, setShowFavoriteDialog] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const [quantityInput, setQuantityInput] = useState('0');
   const mainImageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+
+  // Handle client-side mounting to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Sync quantity input with actual quantity
+  useEffect(() => {
+    if (isMounted) {
+      setQuantityInput(quantity.toString() || '0');
+    }
+  }, [quantity, isMounted]);
 
   const galleryImages = useMemo(() => {
     const baseImages = (product.images ?? []).filter(
@@ -236,10 +252,62 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
         ) : null}
 
         <div className={styles.actions}>
+          <div className={styles.quantityControls}>
+            <button
+              type="button"
+              className={styles.quantityButton}
+              onClick={() => {
+                if (quantity > 0) {
+                  decrementQuantity();
+                }
+              }}
+              disabled={!isMounted || quantity === 0}
+              aria-label="Decrease quantity"
+            >
+              −
+            </button>
+            <input
+              type="number"
+              min="0"
+              value={quantityInput}
+              onChange={(e) => {
+                const value = e.target.value;
+                setQuantityInput(value);
+              }}
+              onBlur={(e) => {
+                const numValue = parseInt(e.target.value, 10);
+                if (!isNaN(numValue) && numValue >= 0) {
+                  setQuantity(numValue);
+                } else {
+                  setQuantityInput(quantity.toString());
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.currentTarget.blur();
+                }
+              }}
+              className={styles.quantityInput}
+              aria-label="Quantity"
+            />
+            <button
+              type="button"
+              className={styles.quantityButton}
+              onClick={() => {
+                incrementQuantity();
+              }}
+              aria-label="Increase quantity"
+            >
+              +
+            </button>
+          </div>
           <button
             type="button"
             className={`${styles.actionButton} ${styles.addToCart}`}
             onClick={() => {
+              if (quantity === 0) {
+                addToCart();
+              }
               console.info(`Added ${product.slug} to cart from detail page`);
             }}
           >

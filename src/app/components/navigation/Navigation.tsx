@@ -29,11 +29,12 @@ const Navigation = () => {
 
   const collectionsMenu = {
     items: [
-      { name: 'Celestial Dreams', path: '/collections/celestial-dreams' },
-      { name: 'Art Deco Revival', path: '/collections/art-deco-revival' },
-      { name: 'Minimalist Threads', path: '/collections/minimalist-threads' },
-      { name: 'Summer Collection', path: '/collections/summer-collection' },
-      { name: 'Limited Edition', path: '/collections/limited-edition' },
+      { name: 'American Diamond Jewellery', path: '/collections/american-diamond-jewellery' },
+      { name: 'Premium Gold Plated Jewellery', path: '/collections/premium-gold-plated-jewellery' },
+      { name: 'Kundan Jewellery', path: '/collections/kundan-jewellery' },
+      { name: 'Oxidised Jewellery', path: '/collections/oxidised-jewellery' },
+      { name: 'Antique Jewellery', path: '/collections/antique-jewellery' },
+      { name: 'Premium Panchaloham', path: '/collections/premium-panchaloham' },
     ],
   };
 
@@ -98,27 +99,27 @@ const Navigation = () => {
         <Link href="/" className={styles.navLogo}>
           Pink Dot
         </Link>
-        
+
         <div className={styles.desktopMenu}>
-          <Link 
-            href="/shop/all-jewellery" 
+          <Link
+            href="/shop/all-jewellery"
             className={`${styles.navLink} ${pathname === '/shop/all-jewellery' ? styles.active : ''}`}
           >
             All Jewellery
           </Link>
           {/* Shop Section with Page Link AND Dropdown */}
           <div className={styles.servicesNavItem}>
-            <Link 
-              href="/shop" 
+            <Link
+              href="/shop"
               className={`${styles.navLink} ${styles.servicesPageLink} ${pathname === '/shop' || pathname.startsWith('/shop/') ? styles.active : ''}`}
               onMouseEnter={() => window.innerWidth > 968 && setIsShopOpen(true)}
             >
               Shop
             </Link>
-            
+
             {/* Shop Dropdown */}
             <div className={styles.servicesDropdown} ref={shopDropdownRef}>
-              <button 
+              <button
                 className={styles.dropdownArrowBtn}
                 onClick={() => setIsShopOpen(!isShopOpen)}
                 onMouseEnter={() => window.innerWidth > 968 && setIsShopOpen(true)}
@@ -128,8 +129,8 @@ const Navigation = () => {
                   ▼
                 </span>
               </button>
-              
-              <div 
+
+              <div
                 className={`${styles.dropdownMenu} ${isShopOpen ? styles.show : ''}`}
                 onMouseLeave={() => window.innerWidth > 968 && setIsShopOpen(false)}
               >
@@ -161,17 +162,17 @@ const Navigation = () => {
 
           {/* Collections Section with Page Link AND Dropdown */}
           <div className={styles.servicesNavItem}>
-            <Link 
-              href="/collections" 
+            <Link
+              href="/collections"
               className={`${styles.navLink} ${styles.servicesPageLink} ${pathname === '/collections' || pathname.startsWith('/collections/') ? styles.active : ''}`}
               onMouseEnter={() => window.innerWidth > 968 && setIsCollectionsOpen(true)}
             >
               Collections
             </Link>
-            
+
             {/* Collections Dropdown */}
             <div className={styles.servicesDropdown} ref={collectionsDropdownRef}>
-              <button 
+              <button
                 className={styles.dropdownArrowBtn}
                 onClick={() => setIsCollectionsOpen(!isCollectionsOpen)}
                 onMouseEnter={() => window.innerWidth > 968 && setIsCollectionsOpen(true)}
@@ -181,8 +182,8 @@ const Navigation = () => {
                   ▼
                 </span>
               </button>
-              
-              <div 
+
+              <div
                 className={`${styles.dropdownMenu} ${isCollectionsOpen ? styles.show : ''}`}
                 onMouseLeave={() => window.innerWidth > 968 && setIsCollectionsOpen(false)}
               >
@@ -200,15 +201,15 @@ const Navigation = () => {
               </div>
             </div>
           </div>
-          
-          <Link 
-            href="/our-story" 
+
+          <Link
+            href="/our-story"
             className={`${styles.navLink} ${pathname === '/our-story' ? styles.active : ''}`}
           >
             Our Story
           </Link>
-          <Link 
-            href="/contact" 
+          <Link
+            href="/contact"
             className={`${styles.navLink} ${pathname === '/contact' ? styles.active : ''}`}
           >
             Contact
@@ -217,7 +218,7 @@ const Navigation = () => {
 
         {/* Mobile Hamburger Menu */}
         <div className={styles.mobileMenuContainer} ref={mobileMenuRef}>
-          <button 
+          <button
             className={`${styles.hamburgerMenu} ${isMobileMenuOpen ? styles.active : ''}`}
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
@@ -229,21 +230,21 @@ const Navigation = () => {
 
           {/* Mobile Navigation Menu */}
           <div className={`${styles.mobileNavMenu} ${isMobileMenuOpen ? styles.active : ''}`}>
-            <Link 
-              href="/shop/all-jewellery" 
-              className={styles.mobileNavLink} 
+            <Link
+              href="/shop/all-jewellery"
+              className={styles.mobileNavLink}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               All Jewellery
             </Link>
-            <Link 
-              href="/shop" 
-              className={styles.mobileNavLink} 
+            <Link
+              href="/shop"
+              className={styles.mobileNavLink}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Shop
             </Link>
-            
+
             <div className={styles.mobileServicesSection}>
               <div className={styles.mobileServicesHeader}>Categories</div>
               {shopMenu.categories.map((category, index) => (
@@ -257,7 +258,7 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
-            
+
             <div className={styles.mobileServicesSection}>
               <div className={styles.mobileServicesHeader}>Featured</div>
               {shopMenu.featured.map((featured, index) => (
@@ -271,16 +272,16 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
-            
+
             {/* Collections Section */}
-            <Link 
-              href="/collections" 
-              className={styles.mobileNavLink} 
+            <Link
+              href="/collections"
+              className={styles.mobileNavLink}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Collections
             </Link>
-            
+
             <div className={styles.mobileServicesSection}>
               <div className={styles.mobileServicesHeader}>Our Collections:</div>
               {collectionsMenu.items.map((collection, index) => (
@@ -294,17 +295,17 @@ const Navigation = () => {
                 </Link>
               ))}
             </div>
-            
-            <Link 
-              href="/our-story" 
-              className={styles.mobileNavLink} 
+
+            <Link
+              href="/our-story"
+              className={styles.mobileNavLink}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Our Story
             </Link>
-            <Link 
-              href="/contact" 
-              className={styles.mobileNavLink} 
+            <Link
+              href="/contact"
+              className={styles.mobileNavLink}
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact

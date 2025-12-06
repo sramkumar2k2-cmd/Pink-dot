@@ -9,7 +9,7 @@ import { getCartItemsWithTimestamps, formatPurchaseDateTime } from '@/app/lib/ca
 function ContactPageContent() {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    email: '',z
     phone: '',
     inquiryType: '',
     subject: '',

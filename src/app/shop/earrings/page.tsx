@@ -93,7 +93,7 @@ export default function EarringsPage() {
             </div>
             <div className={styles.highlightFooter}>
               <span className={styles.highlightPrice}>{spotlight.price}</span>
-              <Link href="/collections/celestial-dreams" className={styles.highlightLink}>
+              <Link href="/collections/american-diamond-jewellery" className={styles.highlightLink}>
                 Explore celestial edit
               </Link>
             </div>

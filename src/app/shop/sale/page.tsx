@@ -71,7 +71,7 @@ export default function SalePage() {
         backgroundImage="/images/ring2.jpeg"
         actions={[
           { label: 'Shop all sale', href: '/shop/all-jewellery' },
-          { label: 'See limited editions', href: '/collections/limited-edition', variant: 'ghost' },
+          { label: 'See antique jewellery', href: '/collections/antique-jewellery', variant: 'ghost' },
         ]}
         highlights={saleHighlights}
         overlayGradient="linear-gradient(135deg, rgba(28, 18, 16, 0.62), rgba(120, 60, 48, 0.28))"

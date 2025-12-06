@@ -96,7 +96,7 @@
 .logoImage {
   display: block;
   height: auto;
-  width: 160px;
+  width: 220px;
   max-width: 100%;
   background: transparent;
   mix-blend-mode: normal;
@@ -457,7 +457,7 @@
   }
 
   .logoImage {
-    width: 140px;
+    width: 220px;
   }
 
   .container {
@@ -573,7 +573,7 @@
   .mobileLogoImage {
     width: auto;
     height: auto;
-    max-width: 120px;
+    max-width: 160px;
     max-height: 42px;
   }
 
@@ -781,7 +781,7 @@
 
 @media (max-width: 480px) {
   .logoImage {
-    width: 120px;
+    width: 160px;
   }
 
   .mobileMenu {

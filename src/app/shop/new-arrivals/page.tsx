@@ -49,19 +49,19 @@ const capsules = [
     name: 'Sunrise Palette',
     image: '/images/neck5.jpeg',
     description: 'A warm medley of citrine, peach moonstone, and polished vermeil.',
-    href: '/collections/summer-collection',
+    href: '/collections/oxidised-jewellery',
   },
   {
     name: 'Moonlit Reverie',
     image: '/images/earrings1.jpeg',
     description: 'Iridescent opals and lab-grown diamonds that glow after dusk.',
-    href: '/collections/celestial-dreams',
+    href: '/collections/american-diamond-jewellery',
   },
   {
     name: 'City Siren',
     image: '/images/ring5.jpeg',
     description: 'Architectural silhouettes and satin finishes for statement nights.',
-    href: '/collections/art-deco-revival',
+    href: '/collections/premium-gold-plated-jewellery',
   },
 ];
 

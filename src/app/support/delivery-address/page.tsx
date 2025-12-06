@@ -46,7 +46,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import styles from './page.module.css';
-import { getSavedAddress, saveAddress, hasAddress, type DeliveryAddress } from '@/app/lib/addressUtils';
+import { getSavedAddress, saveAddress, hasAddress, getAllAddresses, deleteAddress, setDefaultAddress, getAddressById, type DeliveryAddress, type SavedAddress } from '@/app/lib/addressUtils';
 import { sendDeliveryAddressThankYouEmail, sendDeliveryAddressNotificationEmail } from '@/app/lib/emailUtils';
 import { getPendingProducts, proceedToPurchase } from '@/app/lib/whatsappUtils';
 
@@ -79,25 +79,40 @@ function DeliveryAddressContent() {
   const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' });
   const [originalFormData, setOriginalFormData] = useState<DeliveryAddress | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
   const [hasPendingProducts, setHasPendingProducts] = useState(false);
   const [isAddressComplete, setIsAddressComplete] = useState(false);
   const [showReviewSuccessMessage, setShowReviewSuccessMessage] = useState(false);
   const [isFetchingPincode, setIsFetchingPincode] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [showAddressList, setShowAddressList] = useState(false);
 
   useEffect(() => {
     // Check if there are pending products from Buy Now
     const pendingProducts = getPendingProducts();
     setHasPendingProducts(pendingProducts !== null && pendingProducts.length > 0);
 
-    // Load saved address from localStorage if exists
-    const savedAddress = getSavedAddress();
-    if (savedAddress) {
-      setFormData(savedAddress);
-      setOriginalFormData({ ...savedAddress });
-      setHasSavedAddress(true);
+      // Load all saved addresses
+      const allAddresses = getAllAddresses();
+      setSavedAddresses(allAddresses);
+      
+      // Get selected address ID
+      const selectedId = typeof window !== 'undefined' 
+        ? localStorage.getItem('pink_dot_selected_address_id')
+        : null;
+      setSelectedAddressId(selectedId);
 
-      // Check if address is complete
-      if (hasAddress()) {
+      // Load saved address from localStorage if exists
+      const savedAddress = getSavedAddress();
+      if (savedAddress) {
+        setFormData(savedAddress);
+        setOriginalFormData({ ...savedAddress });
+        setHasSavedAddress(true);
+        setSelectedAddressId(savedAddress.id || null);
+
+        // Check if address is complete
+        if (hasAddress()) {
         setIsAddressComplete(true);
         setIsEditMode(false); // Start in view mode only if address is complete
       } else {
@@ -188,9 +203,95 @@ function DeliveryAddressContent() {
     return () => clearTimeout(timeoutId);
   }, [formData.pincode, isEditMode]);
 
-  const handleEditAddress = () => {
-    setIsEditMode(true);
+  const handleEditAddress = (addressId?: string) => {
+    if (addressId) {
+      const addressToEdit = getAddressById(addressId);
+      if (addressToEdit) {
+        setFormData(addressToEdit);
+        setOriginalFormData({ ...addressToEdit });
+        setEditingAddressId(addressId);
+        setIsEditMode(true);
+        setShowAddressList(false);
+      }
+    } else {
+      setOriginalFormData({ ...formData });
+      setIsEditMode(true);
+      setEditingAddressId(null);
+    }
+    setShowAlert(false);
+    setSubmitStatus({ type: null, message: '' });
     // Scroll to form and focus on first field
+    setTimeout(() => {
+      const formElement = document.getElementById('delivery-address-form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const nameField = document.getElementById('name');
+        if (nameField) {
+          (nameField as HTMLInputElement).focus();
+        }
+      }
+    }, 100);
+  };
+
+  const handleSelectAddress = (addressId: string) => {
+    const address = getAddressById(addressId);
+    if (address) {
+      setFormData(address);
+      setSelectedAddressId(addressId);
+      setDefaultAddress(addressId);
+      setShowAddressList(false);
+      setIsEditMode(false);
+      setIsAddressComplete(hasAddress());
+    }
+  };
+
+  const handleDeleteAddress = (addressId: string) => {
+    if (window.confirm('Are you sure you want to delete this address?')) {
+      deleteAddress(addressId);
+      const updated = getAllAddresses();
+      setSavedAddresses(updated);
+      
+      if (selectedAddressId === addressId) {
+        // If deleted address was selected, select the first available or clear
+        if (updated.length > 0) {
+          handleSelectAddress(updated[0].id);
+        } else {
+          setFormData({
+            name: '',
+            phone: '',
+            email: '',
+            street: '',
+            city: '',
+            state: '',
+            pincode: '',
+            address: '',
+            district: '',
+          });
+          setSelectedAddressId(null);
+          setHasSavedAddress(false);
+          setIsEditMode(true);
+        }
+      }
+    }
+  };
+
+  const handleAddNewAddress = () => {
+    setFormData({
+      name: '',
+      phone: '',
+      email: '',
+      street: '',
+      city: '',
+      state: '',
+      pincode: '',
+      address: '',
+      district: '',
+    });
+    setOriginalFormData(null);
+    setEditingAddressId(null);
+    setIsEditMode(true);
+    setShowAddressList(false);
+    setSubmitStatus({ type: null, message: '' });
     setTimeout(() => {
       const formElement = document.getElementById('delivery-address-form');
       if (formElement) {
@@ -296,7 +397,21 @@ function DeliveryAddressContent() {
 
     try {
       // Save to localStorage first
-      saveAddress(formData);
+      const saved = saveAddress({
+        ...formData,
+        id: editingAddressId || undefined,
+      });
+      
+      // Update state
+      if (editingAddressId) {
+        setEditingAddressId(null);
+      }
+      
+      // Reload addresses
+      const updated = getAllAddresses();
+      setSavedAddresses(updated);
+      setSelectedAddressId(saved.id);
+      setDefaultAddress(saved.id);
       setOriginalFormData({ ...formData });
 
       // Prepare promises for parallel execution
@@ -525,6 +640,88 @@ function DeliveryAddressContent() {
             )}
           </svg>
           <span>{submitStatus.message}</span>
+        </div>
+      )}
+
+      {/* Saved Addresses List */}
+      {savedAddresses.length > 0 && (
+        <div className={styles.savedAddressesSection}>
+          <div className={styles.savedAddressesHeader}>
+            <h2 className={styles.savedAddressesTitle}>Saved Addresses</h2>
+            <button
+              type="button"
+              onClick={() => setShowAddressList(!showAddressList)}
+              className={styles.toggleButton}
+            >
+              {showAddressList ? 'Hide' : 'Show'} Addresses ({savedAddresses.length})
+            </button>
+          </div>
+          
+          {showAddressList && (
+            <div className={styles.addressesList}>
+              {savedAddresses.map((address) => (
+                <div
+                  key={address.id}
+                  className={`${styles.addressCard} ${selectedAddressId === address.id ? styles.selectedAddress : ''} ${address.isDefault ? styles.defaultAddress : ''}`}
+                >
+                  <div className={styles.addressCardHeader}>
+                    <div className={styles.addressCardTitle}>
+                      {address.isDefault && (
+                        <span className={styles.defaultBadge}>Default</span>
+                      )}
+                      <span className={styles.addressName}>{address.name}</span>
+                    </div>
+                    <div className={styles.addressCardActions}>
+                      <button
+                        type="button"
+                        onClick={() => handleSelectAddress(address.id)}
+                        className={styles.selectButton}
+                        disabled={selectedAddressId === address.id}
+                      >
+                        {selectedAddressId === address.id ? 'Selected' : 'Select'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleEditAddress(address.id)}
+                        className={styles.editAddressButton}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteAddress(address.id)}
+                        className={styles.deleteAddressButton}
+                        disabled={savedAddresses.length === 1}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                  <div className={styles.addressCardBody}>
+                    <p className={styles.addressText}>
+                      {address.address}
+                    </p>
+                    <div className={styles.addressDetails}>
+                      <span>{address.street}</span>
+                      <span>{address.city}, {address.district}</span>
+                      <span>{address.state} - {address.pincode}</span>
+                    </div>
+                    <div className={styles.addressContact}>
+                      <span>Phone: {address.phone}</span>
+                      <span>Email: {address.email}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={handleAddNewAddress}
+                className={styles.addNewAddressButton}
+              >
+                + Add New Address
+              </button>
+            </div>
+          )}
         </div>
       )}
 

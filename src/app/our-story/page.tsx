@@ -225,7 +225,7 @@ export default function OurStoryPage() {
           <Link href="/contact" className={styles.primaryButton}>
             Book a studio visit
           </Link>
-          <Link href="/collections/limited-edition" className={styles.secondaryButton}>
+          <Link href="/collections/antique-jewellery" className={styles.secondaryButton}>
             Discover limited editions
           </Link>
         </div>

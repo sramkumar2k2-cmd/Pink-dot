@@ -6,9 +6,9 @@ import { getProductBySlug } from "@/app/shop/productData";
 import styles from "../collectionDetail.module.css";
 import { getCollectionBySlug } from "../collectionData";
 
-const collection = getCollectionBySlug("celestial-dreams");
+const collection = getCollectionBySlug("antique-jewellery");
 
-export default function CelestialDreamsPage() {
+export default function AntiqueJewelleryPage() {
   if (!collection) {
     return null;
   }
@@ -21,21 +21,21 @@ export default function CelestialDreamsPage() {
 
   const heroHighlights = [collection.tagline, ...collection.highlights.slice(0, 2)].filter(Boolean);
   const heroSpotlight = {
-    badge: "Signature Collection",
+    badge: "Collector’s Release",
     name: collection.name,
     description: collection.description,
     image: collection.heroImage,
     imageAlt: `${collection.name} hero visual`,
-    meta: [`${collection.featuredProducts.length} featured pieces`, "Curated gallery"],
+    meta: [`${collection.featuredProducts.length} tiny-batch pieces`, "Numbered authenticity"],
     swatches: collection.highlights.slice(0, 3),
   };
 
   return (
     <div className={styles.page}>
       <AnimatedHero
-        tag="Signature Collection"
+        tag="Antique Jewellery"
         title={`Discover ${collection.name}`}
-        subtitle="Handpicked creations to illuminate every chapter—from dusk-lit rooftops to midnight celebrations."
+        subtitle="Collector-worthy jewels crafted in intentionally tiny batches—once they find a home, they won’t return."
         backgroundImage={collection.heroImage}
         actions={[
           {
@@ -47,8 +47,8 @@ export default function CelestialDreamsPage() {
           { label: "View all collections", href: "/collections", variant: "ghost" },
         ]}
         highlights={heroHighlights}
-        overlayGradient="linear-gradient(135deg, rgba(28, 18, 32, 0.62), rgba(92, 68, 120, 0.3))"
-        glowColors={{ primary: "rgba(183, 160, 255, 0.55)", secondary: "rgba(121, 95, 237, 0.48)" }}
+        overlayGradient="linear-gradient(135deg, rgba(24, 18, 27, 0.65), rgba(120, 70, 98, 0.32))"
+        glowColors={{ primary: "rgba(255, 200, 220, 0.6)", secondary: "rgba(180, 120, 200, 0.5)" }}
         spotlight={heroSpotlight}
       />
 
@@ -102,3 +102,5 @@ export default function CelestialDreamsPage() {
     </div>
   );
 }
+
+export const dynamic = 'force-static';

@@ -3,14 +3,92 @@
  */
 
 const CART_STORAGE_KEY = 'pinkdot:cart';
+const CART_QUANTITIES_KEY = 'pinkdot:cart_quantities';
 const CART_TIMESTAMPS_KEY = 'pinkdot:cart_timestamps';
+
+// Store listeners for quantity changes
+const quantityListeners = new Set<() => void>();
+
+const emitQuantityChange = () => {
+  quantityListeners.forEach((listener) => listener());
+};
 
 export type CartItemWithTimestamp = {
   slug: string;
   addedAt: string; // ISO timestamp
+  quantity?: number;
+};
+
+export type CartItem = {
+  slug: string;
+  quantity: number;
 };
 
 const isBrowser = () => typeof window !== 'undefined';
+
+/**
+ * Get cart items with quantities (migrates old format if needed)
+ */
+export function getCartItems(): CartItem[] {
+  if (!isBrowser()) {
+    return [];
+  }
+
+  try {
+    const cartJson = localStorage.getItem(CART_STORAGE_KEY);
+    const quantitiesJson = localStorage.getItem(CART_QUANTITIES_KEY);
+    
+    if (!cartJson) {
+      return [];
+    }
+
+    // Try to parse as new format (object with quantities)
+    let cartItems: CartItem[] = [];
+    try {
+      const parsed = JSON.parse(cartJson);
+      if (Array.isArray(parsed)) {
+        // Old format: array of slugs - migrate to new format
+        const quantities: Record<string, number> = quantitiesJson 
+          ? JSON.parse(quantitiesJson) 
+          : {};
+        
+        cartItems = parsed.map(slug => ({
+          slug,
+          quantity: quantities[slug] || 1,
+        }));
+        
+        // Save in new format
+        const newFormat: Record<string, number> = {};
+        cartItems.forEach(item => {
+          newFormat[item.slug] = item.quantity;
+        });
+        localStorage.setItem(CART_QUANTITIES_KEY, JSON.stringify(newFormat));
+      } else if (typeof parsed === 'object') {
+        // New format: object with slug: quantity
+        cartItems = Object.entries(parsed).map(([slug, quantity]) => ({
+          slug,
+          quantity: typeof quantity === 'number' ? quantity : 1,
+        }));
+      }
+    } catch {
+      // Fallback: treat as old format
+      const cartSlugs: string[] = JSON.parse(cartJson);
+      const quantities: Record<string, number> = quantitiesJson 
+        ? JSON.parse(quantitiesJson) 
+        : {};
+      
+      cartItems = cartSlugs.map(slug => ({
+        slug,
+        quantity: quantities[slug] || 1,
+      }));
+    }
+
+    return cartItems;
+  } catch (error) {
+    console.error('Error reading cart items:', error);
+    return [];
+  }
+}
 
 /**
  * Get all cart items with their timestamps
@@ -22,12 +100,7 @@ export function getCartItemsWithTimestamps(): CartItemWithTimestamp[] {
   }
 
   try {
-    const cartJson = localStorage.getItem(CART_STORAGE_KEY);
-    if (!cartJson) {
-      return [];
-    }
-
-    const cartSlugs: string[] = JSON.parse(cartJson);
+    const cartItems = getCartItems();
     const timestampsJson = localStorage.getItem(CART_TIMESTAMPS_KEY);
     const timestamps: Record<string, string> = timestampsJson 
       ? JSON.parse(timestampsJson) 
@@ -37,14 +110,15 @@ export function getCartItemsWithTimestamps(): CartItemWithTimestamp[] {
     let timestampsUpdated = false;
     const now = new Date().toISOString();
     
-    const items: CartItemWithTimestamp[] = cartSlugs.map(slug => {
-      if (!timestamps[slug]) {
-        timestamps[slug] = now;
+    const items: CartItemWithTimestamp[] = cartItems.map(item => {
+      if (!timestamps[item.slug]) {
+        timestamps[item.slug] = now;
         timestampsUpdated = true;
       }
       return {
-        slug,
-        addedAt: timestamps[slug],
+        slug: item.slug,
+        addedAt: timestamps[item.slug],
+        quantity: item.quantity,
       };
     });
 
@@ -61,7 +135,101 @@ export function getCartItemsWithTimestamps(): CartItemWithTimestamp[] {
 }
 
 /**
- * Add a product to cart with timestamp
+ * Get quantity for a specific product
+ */
+export function getCartQuantity(slug: string): number {
+  if (!isBrowser()) {
+    return 0;
+  }
+
+  try {
+    const cartItems = getCartItems();
+    const item = cartItems.find(item => item.slug === slug);
+    return item?.quantity || 0;
+  } catch (error) {
+    console.error('Error getting cart quantity:', error);
+    return 0;
+  }
+}
+
+/**
+ * Set quantity for a product (adds to cart if not present, removes if quantity is 0)
+ */
+export function setCartQuantity(slug: string, quantity: number): void {
+  if (!isBrowser()) {
+    return;
+  }
+
+  try {
+    const cartItems = getCartItems();
+    const quantities: Record<string, number> = {};
+    
+    // Build quantities object from existing items
+    cartItems.forEach(item => {
+      if (item.slug !== slug) {
+        quantities[item.slug] = item.quantity;
+      }
+    });
+
+    // Add or update the item
+    if (quantity > 0) {
+      quantities[slug] = quantity;
+      
+      // Update timestamp if adding new item
+      if (!cartItems.find(item => item.slug === slug)) {
+        const timestampsJson = localStorage.getItem(CART_TIMESTAMPS_KEY);
+        const timestamps: Record<string, string> = timestampsJson 
+          ? JSON.parse(timestampsJson) 
+          : {};
+        timestamps[slug] = new Date().toISOString();
+        localStorage.setItem(CART_TIMESTAMPS_KEY, JSON.stringify(timestamps));
+      }
+    } else {
+      // Remove timestamp if quantity is 0
+      const timestampsJson = localStorage.getItem(CART_TIMESTAMPS_KEY);
+      if (timestampsJson) {
+        const timestamps: Record<string, string> = JSON.parse(timestampsJson);
+        delete timestamps[slug];
+        localStorage.setItem(CART_TIMESTAMPS_KEY, JSON.stringify(timestamps));
+      }
+    }
+
+    // Save quantities
+    localStorage.setItem(CART_QUANTITIES_KEY, JSON.stringify(quantities));
+    
+    // Also update the legacy cart format for backward compatibility
+    const slugs = Object.keys(quantities);
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(slugs));
+    
+    // Trigger change event for listeners
+    emitQuantityChange();
+    
+    // Also trigger storage event for cross-tab sync
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: CART_QUANTITIES_KEY,
+      newValue: JSON.stringify(quantities),
+    }));
+    window.dispatchEvent(new StorageEvent('storage', {
+      key: CART_STORAGE_KEY,
+      newValue: JSON.stringify(slugs),
+    }));
+  } catch (error) {
+    console.error('Error setting cart quantity:', error);
+  }
+}
+
+/**
+ * Subscribe to quantity changes
+ */
+export function subscribeToQuantityChanges(listener: () => void): () => void {
+  quantityListeners.add(listener);
+  return () => {
+    quantityListeners.delete(listener);
+  };
+}
+
+/**
+ * Add a product to cart with timestamp (increments quantity by 1)
  */
 export function addToCartWithTimestamp(slug: string): void {
   if (!isBrowser()) {
@@ -69,31 +237,15 @@ export function addToCartWithTimestamp(slug: string): void {
   }
 
   try {
-    // Get existing cart
-    const cartJson = localStorage.getItem(CART_STORAGE_KEY);
-    const cartSlugs: string[] = cartJson ? JSON.parse(cartJson) : [];
-
-    // Add slug if not already present
-    if (!cartSlugs.includes(slug)) {
-      cartSlugs.push(slug);
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartSlugs));
-
-      // Store timestamp
-      const timestampsJson = localStorage.getItem(CART_TIMESTAMPS_KEY);
-      const timestamps: Record<string, string> = timestampsJson 
-        ? JSON.parse(timestampsJson) 
-        : {};
-
-      timestamps[slug] = new Date().toISOString();
-      localStorage.setItem(CART_TIMESTAMPS_KEY, JSON.stringify(timestamps));
-    }
+    const currentQuantity = getCartQuantity(slug);
+    setCartQuantity(slug, currentQuantity + 1);
   } catch (error) {
     console.error('Error adding to cart with timestamp:', error);
   }
 }
 
 /**
- * Remove a product from cart (and its timestamp)
+ * Remove a product from cart (and its timestamp) - sets quantity to 0
  */
 export function removeFromCartWithTimestamp(slug: string): void {
   if (!isBrowser()) {
@@ -101,21 +253,7 @@ export function removeFromCartWithTimestamp(slug: string): void {
   }
 
   try {
-    // Get existing cart
-    const cartJson = localStorage.getItem(CART_STORAGE_KEY);
-    const cartSlugs: string[] = cartJson ? JSON.parse(cartJson) : [];
-
-    // Remove slug
-    const updatedSlugs = cartSlugs.filter(s => s !== slug);
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(updatedSlugs));
-
-    // Remove timestamp
-    const timestampsJson = localStorage.getItem(CART_TIMESTAMPS_KEY);
-    if (timestampsJson) {
-      const timestamps: Record<string, string> = JSON.parse(timestampsJson);
-      delete timestamps[slug];
-      localStorage.setItem(CART_TIMESTAMPS_KEY, JSON.stringify(timestamps));
-    }
+    setCartQuantity(slug, 0);
   } catch (error) {
     console.error('Error removing from cart with timestamp:', error);
   }

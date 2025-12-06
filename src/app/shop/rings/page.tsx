@@ -93,7 +93,7 @@ export default function RingsPage() {
             </div>
             <div className={styles.highlightFooter}>
               <span className={styles.highlightPrice}>{bestSeller.price}</span>
-              <Link href="/collections/limited-edition" className={styles.highlightLink}>
+              <Link href="/collections/antique-jewellery" className={styles.highlightLink}>
                 View limited release
               </Link>
             </div>

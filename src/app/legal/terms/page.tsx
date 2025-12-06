@@ -19,7 +19,7 @@ export default function TermsOfServicePage() {
           <p className={styles.heading}>Ordering & Availability</p>
           <p>
             All prices are listed in INR unless noted otherwise. We reserve the right to update product listings,
-            adjust pricing, or limit quantities to ensure fair access to limited-edition pieces.
+            adjust pricing, or limit quantities to ensure fair access to antique jewellery pieces.
           </p>
         </div>
         <div>

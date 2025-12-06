@@ -1,36 +1,25 @@
 'use client';
 
-import { useCallback, useMemo, useSyncExternalStore } from 'react';
-import { addToCartWithTimestamp, removeFromCartWithTimestamp } from './cartUtils';
+import { useCallback, useMemo, useSyncExternalStore, useState, useEffect } from 'react';
+import { addToCartWithTimestamp, removeFromCartWithTimestamp, getCartQuantity, setCartQuantity, getCartItems, subscribeToQuantityChanges } from './cartUtils';
 
 const STORAGE_KEY = 'pinkdot:cart';
+const QUANTITIES_KEY = 'pinkdot:cart_quantities';
 
 const isBrowser = () => typeof window !== 'undefined';
-
-const parseCart = (rawValue: string | null): string[] => {
-  if (!rawValue) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(rawValue);
-    if (Array.isArray(parsed)) {
-      return parsed.filter((value): value is string => typeof value === 'string');
-    }
-
-    return [];
-  } catch (error) {
-    console.warn('Could not parse cart items from storage', error);
-    return [];
-  }
-};
 
 const readCartFromStorage = (): string[] => {
   if (!isBrowser()) {
     return [];
   }
 
-  return parseCart(window.localStorage.getItem(STORAGE_KEY));
+  try {
+    const cartItems = getCartItems();
+    return cartItems.map(item => item.slug);
+  } catch (error) {
+    console.warn('Could not read cart from storage', error);
+    return [];
+  }
 };
 
 let cartSlugsCache: string[] = [];
@@ -76,6 +65,7 @@ const writeCart = (slugs: string[]) => {
   const uniqueSlugs = Array.from(new Set(slugs));
 
   if (setCacheIfChanged(uniqueSlugs)) {
+    // Update legacy format for backward compatibility
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(uniqueSlugs));
     emitChange();
     return;
@@ -85,12 +75,11 @@ const writeCart = (slugs: string[]) => {
 };
 
 const handleStorageEvent = (event: StorageEvent) => {
-  if (event.key && event.key !== STORAGE_KEY) {
+  if (event.key && (event.key !== STORAGE_KEY && event.key !== QUANTITIES_KEY)) {
     return;
   }
 
-  const nextValue =
-    typeof event.newValue === 'string' ? parseCart(event.newValue) : readCartFromStorage();
+  const nextValue = readCartFromStorage();
 
   if (setCacheIfChanged(nextValue)) {
     emitChange();
@@ -152,18 +141,37 @@ export function useCartProduct(slug: string | undefined | null) {
     return cartSlugs.includes(normalizedSlug);
   }, [cartSlugs, normalizedSlug]);
 
+  // Subscribe to quantity changes
+  const [quantityVersion, setQuantityVersion] = useState(0);
+  
+  useEffect(() => {
+    if (!isBrowser() || !normalizedSlug) {
+      return;
+    }
+    
+    const unsubscribe = subscribeToQuantityChanges(() => {
+      setQuantityVersion(prev => prev + 1);
+    });
+    
+    return unsubscribe;
+  }, [normalizedSlug]);
+
+  const quantity = useMemo(() => {
+    if (!normalizedSlug || !isBrowser()) {
+      return 0;
+    }
+    // Include quantityVersion to force recalculation
+    return getCartQuantity(normalizedSlug);
+  }, [normalizedSlug, cartSlugs, quantityVersion]);
+
   const addToCart = useCallback(() => {
     if (!isBrowser() || !normalizedSlug) {
       return;
     }
 
-    if (cartSlugsCache.includes(normalizedSlug)) {
-      return;
-    }
-
-    // Use the timestamp-aware function
-    addToCartWithTimestamp(normalizedSlug);
-    writeCart([...cartSlugsCache, normalizedSlug]);
+    const currentQty = getCartQuantity(normalizedSlug);
+    setCartQuantity(normalizedSlug, currentQty + 1);
+    refreshCacheFromStorage();
   }, [normalizedSlug]);
 
   const removeFromCart = useCallback(() => {
@@ -171,13 +179,63 @@ export function useCartProduct(slug: string | undefined | null) {
       return;
     }
 
-    if (!cartSlugsCache.includes(normalizedSlug)) {
+    setCartQuantity(normalizedSlug, 0);
+    refreshCacheFromStorage();
+  }, [normalizedSlug]);
+
+  const setQuantity = useCallback((qty: number) => {
+    if (!isBrowser() || !normalizedSlug) {
       return;
     }
 
-    // Use the timestamp-aware function
-    removeFromCartWithTimestamp(normalizedSlug);
-    writeCart(cartSlugsCache.filter((value) => value !== normalizedSlug));
+    const validQty = Math.max(0, Math.floor(qty));
+    const wasInCart = cartSlugsCache.includes(normalizedSlug);
+    setCartQuantity(normalizedSlug, validQty);
+    
+    // Update cart slugs based on new quantity
+    if (validQty > 0 && !wasInCart) {
+      writeCart([...cartSlugsCache, normalizedSlug]);
+    } else if (validQty === 0 && wasInCart) {
+      writeCart(cartSlugsCache.filter((value) => value !== normalizedSlug));
+    } else {
+      refreshCacheFromStorage();
+    }
+  }, [normalizedSlug]);
+
+  const incrementQuantity = useCallback(() => {
+    if (!isBrowser() || !normalizedSlug) {
+      return;
+    }
+
+    const currentQty = getCartQuantity(normalizedSlug);
+    const newQty = currentQty + 1;
+    setCartQuantity(normalizedSlug, newQty);
+    
+    // Update cart slugs if item wasn't in cart
+    if (currentQty === 0 && !cartSlugsCache.includes(normalizedSlug)) {
+      writeCart([...cartSlugsCache, normalizedSlug]);
+    } else {
+      refreshCacheFromStorage();
+    }
+  }, [normalizedSlug]);
+
+  const decrementQuantity = useCallback(() => {
+    if (!isBrowser() || !normalizedSlug) {
+      return;
+    }
+
+    const currentQty = getCartQuantity(normalizedSlug);
+    if (currentQty > 0) {
+      const newQty = currentQty - 1;
+      setCartQuantity(normalizedSlug, newQty);
+      
+      // Update cart slugs if quantity becomes 0
+      if (newQty === 0 && cartSlugsCache.includes(normalizedSlug)) {
+        writeCart(cartSlugsCache.filter((value) => value !== normalizedSlug));
+      } else {
+        refreshCacheFromStorage();
+      }
+    }
   }, [normalizedSlug]);
 
   const toggleCart = useCallback(() => {
@@ -194,8 +252,12 @@ export function useCartProduct(slug: string | undefined | null) {
 
   return {
     isInCart,
+    quantity,
     addToCart,
     removeFromCart,
+    setQuantity,
+    incrementQuantity,
+    decrementQuantity,
     toggleCart,
   };
 }

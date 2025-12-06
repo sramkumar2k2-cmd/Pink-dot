@@ -76,7 +76,7 @@ const curatedSets = [
     price: '₹49,500 trio value',
     originalPrice: '₹62,000',
     image: '/images/neck3.jpeg',
-    href: '/collections/summer-collection',
+    href: '/collections/oxidised-jewellery',
     badge: 'Best Value',
     features: ['3-piece set', 'Perfect for layering', 'Studio styled'],
     savings: 'Save ₹12,500',
@@ -86,8 +86,8 @@ const curatedSets = [
     description: 'Opaline Chandeliers paired with Celestial Halo Ring for after-dark shimmer.',
     price: '₹79,900 set',
     image: '/images/earrings3.jpeg',
-    href: '/collections/celestial-dreams',
-    badge: 'Limited Edition',
+    href: '/collections/american-diamond-jewellery',
+    badge: 'Antique Jewellery',
     features: ['Evening elegance', 'Hand-set stones', 'Exclusive design'],
     savings: null,
   },
@@ -107,7 +107,7 @@ const curatedSets = [
     price: '₹1,25,000 set',
     originalPrice: '₹1,48,000',
     image: '/images/neck1.jpeg',
-    href: '/collections/limited-edition',
+    href: '/collections/antique-jewellery',
     badge: 'Wedding Collection',
     features: ['Complete set', 'Customizable', 'Gift packaging'],
     savings: 'Save ₹23,000',
@@ -117,17 +117,17 @@ const curatedSets = [
     description: 'Clean lines with Luna Stacking Trio, Solstice Signet, and Muse Charm Chain.',
     price: '₹42,500 set',
     image: '/images/ring2.jpeg',
-    href: '/collections/minimalist-threads',
+    href: '/collections/kundan-jewellery',
     badge: 'Minimalist',
     features: ['Stackable pieces', 'Modern design', 'Everyday luxury'],
     savings: null,
   },
   {
-    name: 'Art Deco Revival',
+    name: 'Premium Gold Plated Jewellery',
     description: 'Vintage-inspired elegance with geometric patterns and bold statements.',
     price: '₹95,000 collection',
     image: '/images/neck2.jpeg',
-    href: '/collections/art-deco-revival',
+    href: '/collections/premium-gold-plated-jewellery',
     badge: 'Vintage Style',
     features: ['Art deco inspired', 'Statement pieces', 'Unique designs'],
     savings: null,
@@ -145,7 +145,7 @@ const services = [
   {
     title: 'Bespoke Studio',
     blurb: 'Sketch something uniquely yours with custom stones, engraving, and metal choices.',
-    href: '/collections/limited-edition',
+    href: '/collections/antique-jewellery',
     linkLabel: 'Design bespoke',
     icon: '🎨',
   },
@@ -202,31 +202,31 @@ const saleProducts = saleProductSlugs
 
 const collections = [
   {
-    name: 'Celestial Dreams',
+    name: 'American Diamond Jewellery',
     description: 'Ethereal gemstones and moonlit silhouettes that capture the magic of the night sky.',
     image: '/images/neck3.jpeg',
-    href: '/collections/celestial-dreams',
+    href: '/collections/american-diamond-jewellery',
     badge: 'New',
   },
   {
-    name: 'Art Deco Revival',
+    name: 'Premium Gold Plated Jewellery',
     description: 'Bold geometry and architectural elegance inspired by the roaring twenties.',
     image: '/images/ring3.jpeg',
-    href: '/collections/art-deco-revival',
+    href: '/collections/premium-gold-plated-jewellery',
     badge: 'Limited',
   },
   {
-    name: 'Summer Collection',
+    name: 'Oxidised Jewellery',
     description: 'Vibrant hues and lightweight designs perfect for sun-kissed moments.',
     image: '/images/earrings2.jpeg',
-    href: '/collections/summer-collection',
+    href: '/collections/oxidised-jewellery',
     badge: 'Seasonal',
   },
   {
-    name: 'Minimalist Threads',
+    name: 'Kundan Jewellery',
     description: 'Clean lines and understated elegance for everyday sophistication.',
     image: '/images/bracelets2.jpeg',
-    href: '/collections/minimalist-threads',
+    href: '/collections/kundan-jewellery',
     badge: 'Essentials',
   },
 ];
@@ -377,7 +377,7 @@ export default function ShopPage() {
           >
             <div className={[styles.sectionHeading, fadeStyles.fadeInStart].join(' ')} data-fade style={{ transitionDelay: '0.26s' }}>
               <h2>Fresh from the Studio</h2>
-              <p>New arrivals that just landed—be the first to discover these limited-edition pieces.</p>
+              <p>New arrivals that just landed—be the first to discover these antique jewellery pieces.</p>
             </div>
             <div className={styles.shopProductsGrid}>
               {newArrivals.map((product, index) => (

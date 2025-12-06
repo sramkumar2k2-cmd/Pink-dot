@@ -368,6 +368,80 @@
   box-shadow: 0 22px 36px rgba(255, 166, 210, 0.32);
 }
 
+.quantityControls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 180px;
+  background: linear-gradient(135deg, #3a2363 0%, #5f3a96 100%);
+  border-radius: 999px;
+  padding: 6px;
+  box-shadow: 0 18px 34px rgba(63, 41, 113, 0.25);
+}
+
+.quantityButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 180ms ease, transform 180ms ease;
+  flex-shrink: 0;
+}
+
+.quantityButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.quantityButton:active {
+  transform: scale(0.95);
+}
+
+.quantityButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.quantityButton:disabled:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: none;
+}
+
+.quantityInput {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.quantityInput::-webkit-outer-spin-button,
+.quantityInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.quantityInput:focus {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+}
+
 .highlights {
   display: grid;
   gap: 0.6rem;
@@ -487,6 +561,10 @@
   }
 
   .actionButton {
+    min-width: 100%;
+  }
+
+  .quantityControls {
     min-width: 100%;
   }
 

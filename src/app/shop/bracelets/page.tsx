@@ -93,7 +93,7 @@ export default function BraceletsPage() {
             </div>
             <div className={styles.highlightFooter}>
               <span className={styles.highlightPrice}>{spotlight.price}</span>
-              <Link href="/collections/limited-edition" className={styles.highlightLink}>
+              <Link href="/collections/antique-jewellery" className={styles.highlightLink}>
                 Discover limited edit
               </Link>
             </div>

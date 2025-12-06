@@ -6,9 +6,9 @@ import { getProductBySlug } from "@/app/shop/productData";
 import styles from "../collectionDetail.module.css";
 import { getCollectionBySlug } from "../collectionData";
 
-const collection = getCollectionBySlug("oxidised-jewellery");
+const collection = getCollectionBySlug("kundan-jewellery");
 
-export default function OxidisedJewelleryPage() {
+export default function KundanJewelleryPage() {
   if (!collection) {
     return null;
   }
@@ -26,7 +26,7 @@ export default function OxidisedJewelleryPage() {
     description: collection.description,
     image: collection.heroImage,
     imageAlt: `${collection.name} hero visual`,
-    meta: [`${collection.featuredProducts.length} featured pieces`, "Sunset-ready palette"],
+    meta: [`${collection.featuredProducts.length} featured pieces`, "Featherlight layering"],
     swatches: collection.highlights.slice(0, 3),
   };
 
@@ -35,7 +35,7 @@ export default function OxidisedJewelleryPage() {
       <AnimatedHero
         tag="Signature Collection"
         title={`Discover ${collection.name}`}
-        subtitle="Colour-drenched gems designed for golden hours and getaway adventures."
+        subtitle="Weightless silhouettes and tactile finishes designed to melt into your everyday rhythm."
         backgroundImage={collection.heroImage}
         actions={[
           {
@@ -47,8 +47,8 @@ export default function OxidisedJewelleryPage() {
           { label: "View all collections", href: "/collections", variant: "ghost" },
         ]}
         highlights={heroHighlights}
-        overlayGradient="linear-gradient(135deg, rgba(28, 18, 16, 0.6), rgba(218, 122, 64, 0.32))"
-        glowColors={{ primary: "rgba(255, 196, 140, 0.55)", secondary: "rgba(255, 150, 120, 0.48)" }}
+        overlayGradient="linear-gradient(135deg, rgba(18, 26, 28, 0.6), rgba(80, 118, 130, 0.32))"
+        glowColors={{ primary: "rgba(180, 224, 220, 0.55)", secondary: "rgba(120, 160, 200, 0.45)" }}
         spotlight={heroSpotlight}
       />
 

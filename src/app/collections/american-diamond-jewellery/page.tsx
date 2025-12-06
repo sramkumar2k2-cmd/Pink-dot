@@ -6,9 +6,9 @@ import { getProductBySlug } from "@/app/shop/productData";
 import styles from "../collectionDetail.module.css";
 import { getCollectionBySlug } from "../collectionData";
 
-const collection = getCollectionBySlug("limited-edition");
+const collection = getCollectionBySlug("american-diamond-jewellery");
 
-export default function LimitedEditionPage() {
+export default function AmericanDiamondJewelleryPage() {
   if (!collection) {
     return null;
   }
@@ -21,32 +21,34 @@ export default function LimitedEditionPage() {
 
   const heroHighlights = [collection.tagline, ...collection.highlights.slice(0, 2)].filter(Boolean);
   const heroSpotlight = {
-    badge: "Collector’s Release",
+    badge: "Signature Collection",
     name: collection.name,
     description: collection.description,
     image: collection.heroImage,
     imageAlt: `${collection.name} hero visual`,
-    meta: [`${collection.featuredProducts.length} tiny-batch pieces`, "Numbered authenticity"],
+    meta: [`${collection.featuredProducts.length} featured pieces`, "Curated gallery"],
     swatches: collection.highlights.slice(0, 3),
   };
 
   return (
     <div className={styles.page}>
       <AnimatedHero
-        tag="Limited Edition"
+        tag="Signature Collection"
         title={`Discover ${collection.name}`}
-        subtitle="Collector-worthy jewels crafted in intentionally tiny batches—once they find a home, they won’t return."
+        subtitle="Handpicked creations to illuminate every chapter—from dusk-lit rooftops to midnight celebrations."
         backgroundImage={collection.heroImage}
         actions={[
           {
             label: "Shop featured pieces",
-            href: primaryProduct ? `/shop/product/${primaryProduct.slug}` : "/shop/all-jewellery",
+            href: primaryProduct
+              ? `/shop/product/${encodeURIComponent(primaryProduct.slug.toLowerCase())}`
+              : "/shop/all-jewellery",
           },
           { label: "View all collections", href: "/collections", variant: "ghost" },
         ]}
         highlights={heroHighlights}
-        overlayGradient="linear-gradient(135deg, rgba(24, 18, 27, 0.65), rgba(120, 70, 98, 0.32))"
-        glowColors={{ primary: "rgba(255, 200, 220, 0.6)", secondary: "rgba(180, 120, 200, 0.5)" }}
+        overlayGradient="linear-gradient(135deg, rgba(28, 18, 32, 0.62), rgba(92, 68, 120, 0.3))"
+        glowColors={{ primary: "rgba(183, 160, 255, 0.55)", secondary: "rgba(121, 95, 237, 0.48)" }}
         spotlight={heroSpotlight}
       />
 
@@ -100,3 +102,5 @@ export default function LimitedEditionPage() {
     </div>
   );
 }
+
+export const dynamic = 'force-static';

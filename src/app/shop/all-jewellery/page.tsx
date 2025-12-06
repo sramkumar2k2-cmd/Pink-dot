@@ -46,7 +46,7 @@ const quickLinks = [
   },
   {
     title: "Signature Collections",
-    description: "Step inside thematic edits—Celestial Dreams, Minimalist Threads, and more—crafted as immersive worlds.",
+    description: "Step inside thematic edits—American Diamond Jewellery, Kundan Jewellery, and more—crafted as immersive worlds.",
     href: "/collections",
     image: "/images/neck5.jpeg",
     badge: "Collections",

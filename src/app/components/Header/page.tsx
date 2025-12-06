@@ -44,19 +44,20 @@ export default function Header() {
 
   const collectionsMenu = {
     items: [
-      { name: 'Celestial Dreams', href: '/collections/celestial-dreams' },
-      { name: 'Art Deco Revival', href: '/collections/art-deco-revival' },
-      { name: 'Minimalist Threads', href: '/collections/minimalist-threads' },
-      { name: 'Summer Collection', href: '/collections/summer-collection' },
-      { name: 'Limited Edition', href: '/collections/limited-edition' },
+      { name: 'American Diamond Jewellery', href: '/collections/american-diamond-jewellery' },
+      { name: 'Premium Gold Plated Jewellery', href: '/collections/premium-gold-plated-jewellery' },
+      { name: 'Kundan Jewellery', href: '/collections/kundan-jewellery' },
+      { name: 'Oxidised Jewellery', href: '/collections/oxidised-jewellery' },
+      { name: 'Antique Jewellery', href: '/collections/antique-jewellery' },
+      { name: 'Premium Panchaloham', href: '/collections/premium-panchaloham' },
     ],
   };
 
   const navigation = [
-    { 
-      name: 'Shop', 
+    {
+      name: 'Shop',
       href: '/shop',
-      hasDropdown: true 
+      hasDropdown: true
     },
     { name: 'Collections', href: '/collections', hasDropdown: true },
     { name: 'Our Story', href: '/our-story' },
@@ -139,13 +140,13 @@ export default function Header() {
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
           <Image
-            src="/images/logo.png"
+            src="/images/logoo.png"
             alt="Pink Dot"
-            width={160}
-            height={56}
+            width={220}
+            height={77}
             className={styles.logoImage}
             priority
-            style={{ height: 'auto', width: '160px', maxWidth: '100%' }}
+            style={{ height: 'auto', width: '220px', maxWidth: '100%' }}
           />
         </Link>
 
@@ -173,11 +174,10 @@ export default function Header() {
                   <div className={`${styles.dropdownHeader} dropdownHeader`}>
                     <Link
                       href={item.href}
-                      className={`${styles.link} ${
-                        pathname.startsWith(item.href) || openDropdown === item.name
+                      className={`${styles.link} ${pathname.startsWith(item.href) || openDropdown === item.name
                           ? styles.active
                           : ''
-                      }`}
+                        }`}
                       aria-expanded={openDropdown === item.name}
                       onClick={(event) => {
                         if (
@@ -222,9 +222,8 @@ export default function Header() {
                     </Link>
                   </div>
                   <div
-                    className={`${styles.dropdownContent} ${
-                      openDropdown === item.name ? styles.dropdownOpen : ''
-                    }`}
+                    className={`${styles.dropdownContent} ${openDropdown === item.name ? styles.dropdownOpen : ''
+                      }`}
                     onTouchStart={(e) => {
                       // Prevent touch from bubbling up and closing dropdown
                       e.stopPropagation();
@@ -343,7 +342,7 @@ export default function Header() {
           </div>
         </div>
 
-        <button 
+        <button
           className={`${styles.mobileButton} ${isMobileMenuOpen ? styles.open : ''}`}
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
@@ -356,7 +355,7 @@ export default function Header() {
         </button>
       </div>
 
-      <div 
+      <div
         className={`${styles.mobileMenuBackdrop} ${isMobileMenuOpen ? styles.open : ''}`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
@@ -372,8 +371,8 @@ export default function Header() {
             <Image
               src="/images/logo.png"
               alt="Pink Dot"
-              width={120}
-              height={42}
+              width={160}
+              height={56}
               priority
               className={styles.mobileLogoImage}
             />

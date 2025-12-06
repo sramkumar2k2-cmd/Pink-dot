@@ -6,9 +6,9 @@ import { getProductBySlug } from "@/app/shop/productData";
 import styles from "../collectionDetail.module.css";
 import { getCollectionBySlug } from "../collectionData";
 
-const collection = getCollectionBySlug("art-deco-revival");
+const collection = getCollectionBySlug("premium-gold-plated-jewellery");
 
-export default function ArtDecoRevivalPage() {
+export default function PremiumGoldPlatedJewelleryPage() {
   if (!collection) {
     return null;
   }
@@ -40,7 +40,9 @@ export default function ArtDecoRevivalPage() {
         actions={[
           {
             label: "Shop featured pieces",
-            href: primaryProduct ? `/shop/product/${primaryProduct.slug}` : "/shop/all-jewellery",
+            href: primaryProduct
+              ? `/shop/product/${encodeURIComponent(primaryProduct.slug.toLowerCase())}`
+              : "/shop/all-jewellery",
           },
           { label: "View all collections", href: "/collections", variant: "ghost" },
         ]}
@@ -100,3 +102,5 @@ export default function ArtDecoRevivalPage() {
     </div>
   );
 }
+
+export const dynamic = 'force-static';

@@ -6,9 +6,9 @@ import { getProductBySlug } from "@/app/shop/productData";
 import styles from "../collectionDetail.module.css";
 import { getCollectionBySlug } from "../collectionData";
 
-const collection = getCollectionBySlug("minimalist-threads");
+const collection = getCollectionBySlug("premium-panchaloham");
 
-export default function MinimalistThreadsPage() {
+export default function PremiumPanchalohamPage() {
   if (!collection) {
     return null;
   }
@@ -26,27 +26,29 @@ export default function MinimalistThreadsPage() {
     description: collection.description,
     image: collection.heroImage,
     imageAlt: `${collection.name} hero visual`,
-    meta: [`${collection.featuredProducts.length} featured pieces`, "Featherlight layering"],
+    meta: [`${collection.featuredProducts.length} featured pieces`, "Traditional craftsmanship"],
     swatches: collection.highlights.slice(0, 3),
   };
 
   return (
     <div className={styles.page}>
       <AnimatedHero
-        tag="Signature Collection"
+        tag="Premium Panchaloham"
         title={`Discover ${collection.name}`}
-        subtitle="Weightless silhouettes and tactile finishes designed to melt into your everyday rhythm."
+        subtitle="Sacred metals crafted with traditional artistry and modern elegance—each piece honors ancient wisdom while embracing contemporary design."
         backgroundImage={collection.heroImage}
         actions={[
           {
             label: "Shop featured pieces",
-            href: primaryProduct ? `/shop/product/${primaryProduct.slug}` : "/shop/all-jewellery",
+            href: primaryProduct
+              ? `/shop/product/${encodeURIComponent(primaryProduct.slug.toLowerCase())}`
+              : "/shop/all-jewellery",
           },
           { label: "View all collections", href: "/collections", variant: "ghost" },
         ]}
         highlights={heroHighlights}
-        overlayGradient="linear-gradient(135deg, rgba(18, 26, 28, 0.6), rgba(80, 118, 130, 0.32))"
-        glowColors={{ primary: "rgba(180, 224, 220, 0.55)", secondary: "rgba(120, 160, 200, 0.45)" }}
+        overlayGradient="linear-gradient(135deg, rgba(28, 20, 16, 0.65), rgba(180, 140, 80, 0.32))"
+        glowColors={{ primary: "rgba(255, 220, 180, 0.6)", secondary: "rgba(220, 180, 120, 0.5)" }}
         spotlight={heroSpotlight}
       />
 
@@ -100,3 +102,6 @@ export default function MinimalistThreadsPage() {
     </div>
   );
 }
+
+export const dynamic = 'force-static';
+

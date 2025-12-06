@@ -21,44 +21,51 @@ const heroSpotlight = {
 
 const featuredCollections = [
   {
-    name: 'Celestial Dreams',
+    name: 'American Diamond Jewellery',
     description:
       'A luminous ode to moonlit nights—ethereal gemstones, halo details, and shimmering silhouettes to light up every celebration.',
     image: '/images/neck3.jpeg',
-    href: '/collections/celestial-dreams',
+    href: '/collections/american-diamond-jewellery',
     badge: 'Bestselling edit',
   },
   {
-    name: 'Art Deco Revival',
+    name: 'Premium Gold Plated Jewellery',
     description:
       'Architectural lines, mirrored surfaces, and bold geometry inspired by the glamour of the Roaring Twenties.',
     image: '/images/ring3.jpeg',
-    href: '/collections/art-deco-revival',
+    href: '/collections/premium-gold-plated-jewellery',
     badge: 'Limited edition',
   },
 ];
 
 const capsulePreviews = [
   {
-    name: 'Minimalist Threads',
+    name: 'Kundan Jewellery',
     description:
       'Sleek silhouettes and whisper-thin chains with a modern, everyday sensibility. Perfect for layering lightly.',
     image: '/images/bracelets4.jpeg',
-    href: '/collections/minimalist-threads',
+    href: '/collections/kundan-jewellery',
   },
   {
-    name: 'Summer Collection',
+    name: 'Oxidised Jewellery',
     description:
       'Sunlit gemstones, ocean-hued enamels, and textures that echo summer escapades from dawn to dusk.',
     image: '/images/neck6.jpeg',
-    href: '/collections/summer-collection',
+    href: '/collections/oxidised-jewellery',
   },
   {
     name: 'Limited Edition Studio',
     description:
       'Small-batch treasures co-created with our ateliers—each piece individually numbered with a signature card.',
     image: '/images/earrings4.jpeg',
-    href: '/collections/limited-edition',
+    href: '/collections/antique-jewellery',
+  },
+  {
+    name: 'Premium Panchaloham',
+    description:
+      'Sacred five-metal alloy jewellery crafted with traditional artistry and modern elegance—honoring ancient wisdom.',
+    image: '/images/neck1.jpeg',
+    href: '/collections/premium-panchaloham',
   },
 ];
 

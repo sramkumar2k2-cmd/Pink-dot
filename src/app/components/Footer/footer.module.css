@@ -36,7 +36,7 @@
 
 .logoImage {
   height: auto;
-  width: 160px;
+  width: 220px;
   max-width: 100%;
   display: block;
   object-fit: contain;
@@ -269,7 +269,7 @@
   }
 
   .logoImage {
-    width: 140px;
+    width: 200px;
     margin: 0 auto;
     display: block;
     object-fit: contain;
@@ -317,7 +317,7 @@
   }
   
   .logoImage {
-    width: 120px;
+    width: 180px;
   }
 
   .socialLinks {
