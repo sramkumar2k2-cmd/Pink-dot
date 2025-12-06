@@ -51,9 +51,9 @@ const normalizeSlug = (slug: string) =>
     .trim()
     .toLowerCase();
 
-export const dynamicParams = true;
+export const dynamicParams = false;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return getProducts().map((product) => ({
     slug: product.slug.toLowerCase(),
   }));
