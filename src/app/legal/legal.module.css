@@ -9,6 +9,29 @@
   .page {
     padding: 2rem 1rem;
   }
+
+  .updated {
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .content {
+    gap: 1.5rem;
+  }
+
+  .content > div {
+    padding: 1.5rem;
+  }
+
+  .heading {
+    font-size: 1.25rem;
+  }
+
+  .list {
+    gap: 0.75rem;
+    padding-left: 1.25rem;
+  }
 }
 
 .title {
@@ -31,29 +54,91 @@
 
 .updated {
   font-size: 0.95rem;
-  color: var(--text-tertiary);
-  margin-bottom: 1.5rem;
+  color: rgba(45, 48, 71, 0.65);
+  margin-bottom: 2rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, rgba(245, 239, 230, 0.6), rgba(255, 231, 242, 0.4));
+  border-left: 3px solid #C2185B;
+  border-radius: 8px;
+  display: inline-block;
 }
 
 .content {
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--text-secondary);
   display: grid;
-  gap: 1.5rem;
+  gap: 2rem;
+}
+
+.content > div {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(250, 245, 255, 0.9));
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(34, 25, 64, 0.08);
+  border: 1px solid rgba(232, 196, 196, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.content > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(34, 25, 64, 0.12);
 }
 
 .heading {
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #2D3047 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.01em;
+}
+
+.content > div p {
+  margin: 0 0 1rem 0;
+  line-height: 1.8;
+}
+
+.content > div p:last-child {
+  margin-bottom: 0;
+}
+
+.content > div a {
+  color: #C2185B;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.content > div a:hover {
+  color: #8b2354;
+  border-bottom-color: #C2185B;
 }
 
 .list {
   margin: 0;
-  padding-left: 1.25rem;
+  padding-left: 1.5rem;
   display: grid;
-  gap: 0.75rem;
+  gap: 1rem;
+  list-style: none;
+}
+
+.list li {
+  position: relative;
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+.list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #C2185B;
+  font-weight: 700;
+  font-size: 1.2rem;
 }
 
