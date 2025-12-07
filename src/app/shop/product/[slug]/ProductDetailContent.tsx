@@ -23,26 +23,35 @@ type ProductDetailContentProps = {
 
 export function ProductDetailContent({ product, breadcrumb }: ProductDetailContentProps) {
   const { isFavorite, toggleFavorite, saveFavoriteWithCustomName } = useFavoriteProduct(product.slug);
-  const { isInCart, quantity, addToCart, setQuantity, incrementQuantity, decrementQuantity } = useCartProduct(product.slug);
+  const { isInCart, quantity: cartQuantity, setQuantity } = useCartProduct(product.slug);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [showFavoriteDialog, setShowFavoriteDialog] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [quantityInput, setQuantityInput] = useState('0');
+  const [pendingQuantity, setPendingQuantity] = useState(1);
+  const [quantityInput, setQuantityInput] = useState('1');
   const mainImageRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
+  const hasInitialized = useRef(false);
 
   // Handle client-side mounting to avoid hydration mismatch
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // Sync quantity input with actual quantity
+  // Initialize pending quantity from cart quantity on mount only
   useEffect(() => {
-    if (isMounted) {
-      setQuantityInput(quantity.toString() || '0');
+    if (isMounted && !hasInitialized.current) {
+      hasInitialized.current = true;
+      if (cartQuantity > 0) {
+        setPendingQuantity(cartQuantity);
+        setQuantityInput(cartQuantity.toString());
+      } else {
+        setPendingQuantity(1);
+        setQuantityInput('1');
+      }
     }
-  }, [quantity, isMounted]);
+  }, [isMounted, cartQuantity]);
 
   const galleryImages = useMemo(() => {
     const baseImages = (product.images ?? []).filter(
@@ -257,18 +266,20 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
               type="button"
               className={styles.quantityButton}
               onClick={() => {
-                if (quantity > 0) {
-                  decrementQuantity();
+                if (pendingQuantity > 1) {
+                  const newQty = pendingQuantity - 1;
+                  setPendingQuantity(newQty);
+                  setQuantityInput(newQty.toString());
                 }
               }}
-              disabled={!isMounted || quantity === 0}
+              disabled={!isMounted || pendingQuantity <= 1}
               aria-label="Decrease quantity"
             >
               −
             </button>
             <input
               type="number"
-              min="0"
+              min="1"
               value={quantityInput}
               onChange={(e) => {
                 const value = e.target.value;
@@ -276,10 +287,11 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
               }}
               onBlur={(e) => {
                 const numValue = parseInt(e.target.value, 10);
-                if (!isNaN(numValue) && numValue >= 0) {
-                  setQuantity(numValue);
+                if (!isNaN(numValue) && numValue >= 1) {
+                  setPendingQuantity(numValue);
+                  setQuantityInput(numValue.toString());
                 } else {
-                  setQuantityInput(quantity.toString());
+                  setQuantityInput(pendingQuantity.toString());
                 }
               }}
               onKeyDown={(e) => {
@@ -294,7 +306,9 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
               type="button"
               className={styles.quantityButton}
               onClick={() => {
-                incrementQuantity();
+                const newQty = pendingQuantity + 1;
+                setPendingQuantity(newQty);
+                setQuantityInput(newQty.toString());
               }}
               aria-label="Increase quantity"
             >
@@ -305,10 +319,8 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
             type="button"
             className={`${styles.actionButton} ${styles.addToCart}`}
             onClick={() => {
-              if (quantity === 0) {
-                addToCart();
-              }
-              console.info(`Added ${product.slug} to cart from detail page`);
+              setQuantity(pendingQuantity);
+              console.info(`Added ${pendingQuantity} x ${product.slug} to cart from detail page`);
             }}
           >
             Add to cart
@@ -317,6 +329,9 @@ export function ProductDetailContent({ product, breadcrumb }: ProductDetailConte
             type="button"
             className={`${styles.actionButton} ${styles.buyNow}`}
             onClick={() => {
+              // Set quantity in cart first, then proceed to buy
+              setQuantity(pendingQuantity);
+              // Store product for Buy Now flow (quantity is already in cart)
               handleBuyNow([product]);
             }}
           >
