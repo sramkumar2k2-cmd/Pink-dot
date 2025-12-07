@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-height: 100vh;
+  background: #f5efe6;
 }
 
 .main {
@@ -52,6 +54,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(1.5rem, 3vw, 2rem);
+  align-items: stretch;
 }
 
 .shopCategoryCard {
@@ -63,6 +66,7 @@
   display: flex;
   flex-direction: column;
   transition: transform 0.35s ease, box-shadow 0.35s ease;
+  height: 100%;
 }
 
 .shopCategoryCard:hover {
@@ -168,6 +172,133 @@
   box-shadow: 0 12px 24px rgba(45, 48, 71, 0.14);
 }
 
+.productsSection {
+  margin-top: clamp(2rem, 3.5vw, 3rem);
+  padding: clamp(2rem, 4vw, 3rem);
+  border-radius: 30px;
+  background: radial-gradient(circle at top left, rgba(255, 231, 242, 0.7), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(233, 241, 255, 0.75), transparent 55%),
+    rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 28px 60px rgba(31, 38, 135, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.productsHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+}
+
+.productsHeadingText h2 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+  color: #2d3047;
+}
+
+.productsHeadingText p {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: rgba(45, 48, 71, 0.75);
+}
+
+.filtersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+}
+
+.filterChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(194, 24, 91, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  color: #2d3047;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(194, 24, 91, 0.12);
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease,
+    border-color 0.25s ease;
+}
+
+.filterChip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(194, 24, 91, 0.35);
+  box-shadow: 0 14px 26px rgba(194, 24, 91, 0.18);
+}
+
+.filterChipActive {
+  background: linear-gradient(120deg, #c2185b 0%, #f06292 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 16px 30px rgba(194, 24, 91, 0.32);
+}
+
+.filterChipDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.18);
+}
+
+.productsMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.productsCount {
+  font-weight: 600;
+  color: #2d3047;
+}
+
+.productsHint {
+  color: rgba(45, 48, 71, 0.7);
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  align-items: stretch;
+}
+
+.productsGrid > * {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.filtersRow::-webkit-scrollbar {
+  display: none;
+}
+
 @media (max-width: 1200px) {
   .shopCategoryGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -177,6 +308,26 @@
 @media (max-width: 900px) {
   .shopCategoryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .productsHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filtersRow {
+    justify-content: flex-start;
+  }
+
+  .productsSection {
+    padding: 1.8rem 1.6rem 2.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .productsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 }
 
@@ -192,5 +343,20 @@
   .shopCategoryActions {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .productsSection {
+    padding: 1.6rem 1.2rem 1.9rem;
+    border-radius: 24px;
+  }
+
+  .productsMetaRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
   }
 }

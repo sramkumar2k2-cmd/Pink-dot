@@ -1,8 +1,11 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatedHero } from "@/app/components/AnimatedHero";
+import { ProductCard } from "@/app/components/ProductCard";
+import { getProductsByCategory, type ProductCategory } from "@/app/shop/productData";
 import styles from "./page.module.css";
 
 const quickLinks = [
@@ -62,7 +65,25 @@ const quickLinks = [
 
 const heroHighlights = ["Curated for every story", "Navigate by category in one tap", "Explore Pink Dot’s signatures"];
 
+const filterOptions: { id: ProductCategory; label: string }[] = [
+  { id: "all", label: "All jewellery" },
+  { id: "new-arrivals", label: "New arrivals" },
+  { id: "best-sellers", label: "Best sellers" },
+  { id: "necklaces", label: "Necklaces" },
+  { id: "earrings", label: "Earrings" },
+  { id: "rings", label: "Rings" },
+  { id: "bracelets", label: "Bracelets" },
+  { id: "sale", label: "On sale" },
+];
+
 export default function AllJewelleryPage() {
+  const [activeFilter, setActiveFilter] = useState<ProductCategory>("all");
+
+  const filteredProducts = useMemo(
+    () => getProductsByCategory(activeFilter),
+    [activeFilter],
+  );
+
   return (
     <div className={styles.page}>
       <AnimatedHero
@@ -70,32 +91,76 @@ export default function AllJewelleryPage() {
         title={
           <>All Jewellery <span className={styles.highlight}>by Pink Dot</span></>
         }
-        subtitle="Handpicked creations to illuminate every chapter—from dawn rituals to moonlit soirées. Explore the pieces that have defined our signature sparkle."
+        subtitle="Explore every Pink Dot treasure in one shimmering gallery—from studio-fresh arrivals to heirloom-inspired signatures."
         backgroundImage="/images/neck1.jpeg"
         actions={[
-          { label: 'Shop New Arrivals', href: '/shop/new-arrivals' },
-          { label: 'Explore Collections', href: '/collections', variant: 'ghost' },
+          { label: "Shop New Arrivals", href: "/shop/new-arrivals" },
+          { label: "Explore Collections", href: "/collections", variant: "ghost" },
         ]}
         highlights={heroHighlights}
         overlayGradient="linear-gradient(135deg, rgba(24, 18, 28, 0.6), rgba(92, 54, 71, 0.3))"
         glowColors={{
-          primary: 'rgba(255, 208, 220, 0.7)',
-          secondary: 'rgba(135, 105, 220, 0.5)',
+          primary: "rgba(255, 208, 220, 0.7)",
+          secondary: "rgba(135, 105, 220, 0.5)",
         }}
       />
 
       <main className={styles.main}>
+        <section className={styles.productsSection}>
+          <div className={styles.productsHeader}>
+            <div className={styles.productsHeadingText}>
+              <h2>All jewellery in one gallery</h2>
+              <p>
+                Browse our complete library of Pink Dot creations, then narrow your view by category, mood, or moment
+                using the filters.
+              </p>
+            </div>
+            <div className={styles.filtersRow} aria-label="Filter jewellery by category">
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  className={`${styles.filterChip} ${
+                    activeFilter === option.id ? styles.filterChipActive : ""
+                  }`}
+                  onClick={() => setActiveFilter(option.id)}
+                >
+                  <span>{option.label}</span>
+                  {activeFilter === option.id && <span className={styles.filterChipDot} />}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.productsMetaRow}>
+            <span className={styles.productsCount}>
+              Showing {filteredProducts.length}{" "}
+              {activeFilter === "all" ? "jewellery pieces" : "curated pieces for this filter"}
+            </span>
+            <span className={styles.productsHint}>
+              Tip: tap a card to view its full story, specs, and care details.
+            </span>
+          </div>
+
+          <div className={styles.productsGrid}>
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
+        </section>
+
         <section className={styles.collectionSpotlightSection}>
           <div className={styles.collectionSectionHeading}>
-            <h2 className={styles.collectionSectionTitle}>Choose a heading to continue</h2>
+            <h2 className={styles.collectionSectionTitle}>Prefer to jump straight to a section?</h2>
             <p className={styles.collectionSectionSubtitle}>
-              Keep this page light—select the destination that matches what you’re looking for and we’ll take you straight there.
+              Use these guided headings to move directly into new arrivals, best sellers, signature collections, or a
+              specific category.
             </p>
           </div>
           <div className={styles.shopCategoryGrid}>
             {quickLinks.map((card) => {
               const primaryLabel = `Go to ${card.title}`;
-              const secondaryLabel = card.secondaryLabel ?? 'Learn more';
+              const secondaryLabel = card.secondaryLabel ?? "Learn more";
 
               return (
                 <article key={card.title} className={styles.shopCategoryCard}>
