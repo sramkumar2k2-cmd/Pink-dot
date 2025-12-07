@@ -44,12 +44,12 @@ export default function Header() {
 
   const collectionsMenu = {
     items: [
-      { name: 'American Diamond Jewellery', href: '/collections/american-diamond-jewellery' },
       { name: 'Premium Gold Plated Jewellery', href: '/collections/premium-gold-plated-jewellery' },
+      { name: 'Premium Panchaloham', href: '/collections/premium-panchaloham' },
+      { name: 'Antique Jewellery', href: '/collections/antique-jewellery' },
+      { name: 'American Diamond Jewellery', href: '/collections/american-diamond-jewellery' },
       { name: 'Kundan Jewellery', href: '/collections/kundan-jewellery' },
       { name: 'Oxidised Jewellery', href: '/collections/oxidised-jewellery' },
-      { name: 'Antique Jewellery', href: '/collections/antique-jewellery' },
-      { name: 'Premium Panchaloham', href: '/collections/premium-panchaloham' },
     ],
   };
 

@@ -21,12 +21,12 @@ export default function Footer() {
     {
       title: 'Collections',
       links: [
-        { name: 'American Diamond Jewellery', href: '/collections/american-diamond-jewellery' },
         { name: 'Premium Gold Plated Jewellery', href: '/collections/premium-gold-plated-jewellery' },
+        { name: 'Premium Panchaloham', href: '/collections/premium-panchaloham' },
+        { name: 'Antique Jewellery', href: '/collections/antique-jewellery' },
+        { name: 'American Diamond Jewellery', href: '/collections/american-diamond-jewellery' },
         { name: 'Kundan Jewellery', href: '/collections/kundan-jewellery' },
         { name: 'Oxidised Jewellery', href: '/collections/oxidised-jewellery' },
-        { name: 'Antique Jewellery', href: '/collections/antique-jewellery' },
-        { name: 'Premium Panchaloham', href: '/collections/premium-panchaloham' },
       ],
     },
     {
@@ -96,7 +96,7 @@ export default function Footer() {
             {footerSections.map((section) => (
               <div
                 key={section.title}
-                className={`${styles.section} ${section.title === 'Shop' || section.title === 'Collections' ? styles.largeFontSection : ''}`}
+                className={`${styles.section} ${styles.largeFontSection}`}
               >
                 <h3>{section.title}</h3>
                 <div className={styles.links}>
@@ -104,7 +104,7 @@ export default function Footer() {
                     <Link
                       key={link.name}
                       href={link.href}
-                      className={styles.link}
+                      className={`${styles.link} ${link.name === 'Shipping Information' ? styles.shippingLink : ''}`}
                     >
                       {link.name}
                     </Link>

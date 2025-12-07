@@ -29,12 +29,12 @@ const Navigation = () => {
 
   const collectionsMenu = {
     items: [
-      { name: 'American Diamond Jewellery', path: '/collections/american-diamond-jewellery' },
       { name: 'Premium Gold Plated Jewellery', path: '/collections/premium-gold-plated-jewellery' },
+      { name: 'Premium Panchaloham', path: '/collections/premium-panchaloham' },
+      { name: 'Antique Jewellery', path: '/collections/antique-jewellery' },
+      { name: 'American Diamond Jewellery', path: '/collections/american-diamond-jewellery' },
       { name: 'Kundan Jewellery', path: '/collections/kundan-jewellery' },
       { name: 'Oxidised Jewellery', path: '/collections/oxidised-jewellery' },
-      { name: 'Antique Jewellery', path: '/collections/antique-jewellery' },
-      { name: 'Premium Panchaloham', path: '/collections/premium-panchaloham' },
     ],
   };
 

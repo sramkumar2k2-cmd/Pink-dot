@@ -1,20 +1,29 @@
 .page {
-  padding: 2rem;
-  max-width: 800px;
+  padding: 3rem 2rem;
+  max-width: 900px;
   margin: 0 auto;
+  min-height: calc(100vh - 200px);
 }
 
 @media (max-width: 768px) {
   .page {
-    padding: 1.5rem;
+    padding: 2rem 1rem;
+  }
+
+  .title {
+    font-size: 2rem;
   }
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 3rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, #2D3047 0%, #C2185B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   letter-spacing: -0.01em;
 }
 

@@ -189,6 +189,16 @@
   color: #000000;
 }
 
+.shippingLink {
+  font-size: 1rem;
+  color: #2D3047;
+  font-weight: 500;
+}
+
+.shippingLink:hover {
+  color: #1f2338;
+}
+
 .largeFontSection .link {
   font-size: 0.95rem;
 }

@@ -507,7 +507,7 @@ function ContactPageContent() {
 
       <div className={styles.mapSection}>
         <div className={styles.mapContainer}>
-          <h2 className={styles.mapTitle}>Locate Our Studio</h2>
+          <h2 className={styles.mapTitle}>Locate Our Store</h2>
           <div className={styles.mapWrapper}>
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.115914494258!2d77.69097529999999!3d12.835785500000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6db276f5e855%3A0x2386a4a7ee3b513b!2sPink%20Dot%20Fashion%20Jewellery!5e0!3m2!1sen!2sin!4v1762795591265!5m2!1sen!2sin"
