@@ -1,8 +1,11 @@
 .header {
   padding: 0.75rem 2rem;
   background: rgba(245, 239, 230, 0.85);
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 1000;
   border-bottom: 1px solid rgba(255, 255, 255, 0.28);
   animation: slideDown 0.4s ease-out;
@@ -39,6 +42,7 @@
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
+  z-index: 0;
 }
 
 .scrolled {
@@ -73,6 +77,8 @@
   width: 100%;
   flex-direction: row;
   gap: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .logo {
@@ -91,6 +97,8 @@
   height: auto;
   overflow: hidden;
   line-height: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .logoImage {
@@ -101,6 +109,9 @@
   background: transparent;
   mix-blend-mode: normal;
   object-fit: contain;
+  position: relative;
+  z-index: 1;
+  opacity: 1;
 }
 
 .nav {
@@ -115,6 +126,8 @@
   align-items: center;
   justify-content: flex-end;
   gap: 1.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 .link {
@@ -290,6 +303,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  position: relative;
+  z-index: 1;
 }
 
 .favoritesLink {
@@ -404,48 +419,66 @@
 
 .mobileButton {
   display: none;
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(194, 24, 91, 0.18);
   color: #2d0f22;
   cursor: pointer;
-  padding: 6px;
-  width: 42px;
-  height: 42px;
+  padding: 8px;
+  width: 44px;
+  height: 44px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   order: 2;
   flex: 0 0 auto;
   border-radius: 12px;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
   -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 12px rgba(194, 24, 91, 0.12);
 }
 
 .mobileButton span {
-  width: 100%;
-  height: 2px;
-  background: currentColor;
+  width: 22px;
+  height: 2.5px;
+  background: #2d0f22;
   border-radius: 999px;
   display: block;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .mobileButton.open span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
+  transform: translateY(7.5px) rotate(45deg);
 }
 
 .mobileButton.open span:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .mobileButton.open span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transform: translateY(-7.5px) rotate(-45deg);
 }
 
+/* Tablet and below */
+@media (max-width: 968px) {
+  .header {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .nav {
+    gap: 1.5rem;
+  }
+
+  .desktopNavGroup {
+    gap: 1.25rem;
+  }
+}
+
+/* Mobile devices */
 @media (max-width: 768px) {
   .header {
-    padding: 0.75rem 1.1rem;
+    padding: 0.7rem 1rem;
     position: fixed;
     top: 0;
     left: 0;
@@ -457,19 +490,22 @@
   }
 
   .logoImage {
-    width: 220px;
+    width: 150px;
+    max-width: calc(100vw - 120px);
   }
 
   .container {
-    min-height: 56px;
+    min-height: 52px;
     margin: 0;
     padding: 0;
     height: auto;
+    gap: 0.75rem;
   }
 
   .desktopNavGroup {
     justify-content: flex-end;
-    gap: 1rem;
+    gap: 0.75rem;
+    flex-shrink: 0;
   }
 
   .nav {
@@ -478,28 +514,51 @@
 
   .actions {
     order: 1;
-    margin-left: auto;
+    margin-left: 0;
+    gap: 0.5rem;
+    flex-shrink: 0;
   }
 
-  .favoritesLink {
-    width: 40px;
-    height: 40px;
+  .favoritesLink,
+  .cartLink {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+  }
+
+  .favoritesIcon,
+  .cartIcon {
+    width: 18px;
+    height: 18px;
   }
 
   .mobileButton {
     display: flex !important;
     order: 2;
-    margin-left: 0.75rem;
+    margin-left: 0.5rem;
+    z-index: 1001;
+    flex-shrink: 0;
   }
 
-  .mobileButton:hover {
-    background: rgba(255, 255, 255, 0.22);
-    box-shadow: 0 10px 24px rgba(194, 24, 91, 0.16);
+  .mobileButton:hover,
+  .mobileButton:active {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 6px 16px rgba(194, 24, 91, 0.2);
+    transform: scale(1.05);
+  }
+
+  .mobileButton.open {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 20px rgba(194, 24, 91, 0.24);
   }
 
   .logo {
     order: 0 !important;
-    margin-right: auto;
+    margin-right: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
   }
 
   .mobileMenuBackdrop {
@@ -573,8 +632,8 @@
   .mobileLogoImage {
     width: auto;
     height: auto;
-    max-width: 160px;
-    max-height: 42px;
+    max-width: 140px;
+    max-height: 36px;
   }
 
   .mobileCloseButton {
@@ -779,9 +838,46 @@
   }
 }
 
+/* Small mobile devices */
 @media (max-width: 480px) {
+  .header {
+    padding: 0.6rem 0.85rem;
+  }
+
   .logoImage {
-    width: 160px;
+    width: 130px;
+    max-width: calc(100vw - 110px);
+  }
+
+  .container {
+    min-height: 48px;
+    gap: 0.5rem;
+  }
+
+  .favoritesLink,
+  .cartLink {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .favoritesIcon,
+  .cartIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mobileButton {
+    width: 40px;
+    height: 40px;
+    padding: 7px;
+    margin-left: 0.4rem;
+  }
+
+  .mobileButton span {
+    width: 20px;
+    height: 2px;
   }
 
   .mobileMenu {
@@ -792,5 +888,36 @@
     border-radius: 22px 22px 0 0;
     padding: 1rem 1rem 1rem;
     border-bottom: none;
+  }
+
+  .mobileLogoImage {
+    max-width: 120px;
+    max-height: 32px;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .header {
+    padding: 0.55rem 0.7rem;
+  }
+
+  .logoImage {
+    width: 120px;
+    max-width: calc(100vw - 100px);
+  }
+
+  .favoritesLink,
+  .cartLink {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
+  }
+
+  .mobileButton {
+    width: 38px;
+    height: 38px;
+    padding: 6px;
   }
 }

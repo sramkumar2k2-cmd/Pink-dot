@@ -90,18 +90,32 @@ a {
   touch-action: pan-y;
   position: relative;
   width: 100%;
+  /* Add padding-top to account for fixed header on desktop */
+  padding-top: 80px;
   /* Don't set overflow - let parent body handle scrolling */
 }
 
 /* Add padding-top on mobile to account for fixed header */
 @media (max-width: 768px) {
   .app-main {
-    padding-top: 94px;
+    padding-top: 68px;
     margin-top: 0;
   }
   
   body {
     padding-top: 0;
     margin-top: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-main {
+    padding-top: 64px;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-main {
+    padding-top: 60px;
   }
 }
